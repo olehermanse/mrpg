@@ -1,31 +1,31 @@
 # Gameplay
+TODO
 
 ## Skills
-* nothing
-* attack
-* cast
-* heal
-* shock
-* fire
-* ice
-* block
-* protect
-* shout
-* empower
-* kick
-* disable
-* execute
-* lifesteal
-* quickstrike
-* slowswing
-* bloodbolt
-* bloodboil
-
+<ol start="0">
+<li>nothing</li>
+<li>attack</li>
+<li>cast</li>
+<li>heal</li>
+<li>shock</li>
+<li>fire</li>
+<li>ice</li>
+<li>block</li>
+<li>protect</li>
+<li>shout</li>
+<li>empower</li>
+<li>kick</li>
+<li>disable</li>
+<li>execute</li>
+<li>lifesteal</li>
+<li>quickstrike</li>
+<li>slowswing</li>
+<li>bloodbolt</li>
+<li>bloodboil</li>
+</ol>
 
 ## Effects
-Increase or decrease combat stats by absolute or relative values.
+TODO
 
 ## Passives
-
-
-## Equipment
+TODO
