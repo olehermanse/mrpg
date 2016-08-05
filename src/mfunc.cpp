@@ -1,10 +1,6 @@
-//
 //  mfunc.cpp
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 26/02/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
 
 #include "mfunc.hpp"
 
@@ -91,4 +87,37 @@ void mError( const char* fmt, ...){
     vprintf(fmt, args);
     va_end(args);
 	exit(1);
+}
+
+
+std::string readFile(const std::string& path){
+    std::ifstream inStream(path.c_str());
+    std::stringstream ss;
+    ss << inStream.rdbuf();
+    inStream.close();
+    return ss.str();
+}
+
+void writeFile(std::string& data, const std::string& path){
+    std::ofstream outStream(path.c_str());
+    outStream << data;
+    outStream.close();
+}
+
+void writeJSON(Json::Value& data, const std::string& path){
+    std::string jsonString = data.toStyledString();
+    writeFile(jsonString, path);
+}
+
+Json::Value* readJSON(std::string& data){
+    Json::Reader reader;
+    Json::Value* root = new Json::Value();
+    reader.parse(data, *root);
+    return root;
+}
+
+Json::Value* readJSONFile(const std::string& path){
+    std::string data = readFile(path);
+    Json::Value* root = readJSON(data);
+    return root;
 }

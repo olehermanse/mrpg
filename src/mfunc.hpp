@@ -1,13 +1,8 @@
-//
 //  mfunc.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 26/02/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
 
-#ifndef mRPG_mfunc_h
-#define mRPG_mfunc_h
+#pragma once
 
 #include "definitions.hpp"
 
@@ -27,4 +22,9 @@ void mprintf( const char* fmt, ...) __printflike(1,2);
 void mError( const char* fmt, ...) __printflike(1,2);
 std::string mInputString(const char* fmt, ...) __printflike(1,2);
 #endif
-#endif
+
+std::string readFile(const std::string& path);
+void writeFile(std::string& data, const std::string& path);
+void writeJSON(Json::Value& data, const std::string& path);
+Json::Value* readJSON(std::string& data);
+Json::Value* readJSONFile(const std::string& path);

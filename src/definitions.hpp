@@ -1,13 +1,7 @@
-//
-//  mdef.h
-//  mRPG
-//
+//  definitions.h
 //  Created by Ole Herman S. Elgesem on 28/01/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
-
-#ifndef mRPG_mdef_h
-#define mRPG_mdef_h
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,9 +14,9 @@
 #include <map>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include "json/json.h"
 
 #define DEBUG_
 #define CLIENT_
@@ -57,5 +51,3 @@ typedef unsigned char BYTE;
 typedef double FLOAT;
 
 enum DMG_TYPES {DMG_NONE = 0, DMG_PHYSICAL, DMG_MAGICAL, DMG_TRUE};
-
-#endif
