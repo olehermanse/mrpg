@@ -1,7 +1,4 @@
-//
 //  stats.cpp
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 30/01/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
 

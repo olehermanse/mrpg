@@ -1,13 +1,7 @@
-//
 //  stats.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 30/01/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
-
-#ifndef __mRPG__stats__
-#define __mRPG__stats__
+#pragma once
 
 #include "../mfunc.hpp"
 
@@ -38,4 +32,3 @@ public:
     void checkLimits();
 };
 
-#endif /* defined(__mRPG__stats__) */

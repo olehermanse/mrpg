@@ -1,13 +1,7 @@
-//
 //  Effect.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 18/04/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-
-#ifndef __mRPG__Effect__
-#define __mRPG__Effect__
-
+#pragma once
 #include "../definitions.hpp"
 #include "Stats.hpp"
 
@@ -43,4 +37,3 @@ public:
     ~Effect(){}
 };
 
-#endif

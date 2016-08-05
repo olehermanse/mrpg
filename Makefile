@@ -15,10 +15,12 @@ POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 CPP_FILES = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 OBJ_FILES = $(addprefix obj/, $(notdir $(CPP_FILES:.cpp=.o)))
 
+run: bin/mrpg
+	./bin/mrpg
+
 # Executable depends on all .o files:
 bin/mrpg: $(OBJ_FILES)
 	$(CC) -O2 -Wall -o $@ $(OBJ_FILES)
-	./bin/mrpg
 
 obj/%.o: src/%.cpp
 obj/%.o: src/%.cpp $(DEPDIR)/%.d
@@ -42,7 +44,7 @@ clean:
 	mkdir bin
 	mkdir obj
 
-.PHONY: clean
+.PHONY: clean run
 
 $(DEPDIR)/%.d: ;
 .PRECIOUS: $(DEPDIR)/%.d bin/mrpg

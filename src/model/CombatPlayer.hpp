@@ -1,13 +1,7 @@
-//
 //  CombatPlayer.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 11/02/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-
-#ifndef __mRPG__CombatPlayer__
-#define __mRPG__CombatPlayer__
-
+#pragma once
 #include "Player.hpp"
 #include "SkillBase.hpp"
 #include "Effect.hpp"
@@ -91,5 +85,3 @@ public:
     void printInfo();
     void printEffects();
 };
-
-#endif /* defined(__mRPG__CombatPlayer__) */
