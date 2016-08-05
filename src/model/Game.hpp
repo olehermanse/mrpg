@@ -1,13 +1,7 @@
-//
 //  Game.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 26/04/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
-
-#ifndef __mRPG__Game__
-#define __mRPG__Game__
+#pragma once
 
 #include "Player.hpp"
 #include "Passives.hpp"
@@ -30,5 +24,3 @@ public:
     Passives* passives;
     Skills* skills;
 };
-
-#endif /* defined(__mRPG__Game__) */

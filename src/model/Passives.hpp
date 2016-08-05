@@ -1,13 +1,7 @@
-//
 //  Passives.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 21/04/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
-
-#ifndef __mRPG__Passives__
-#define __mRPG__Passives__
+#pragma once
 
 #include "Effect.hpp"
 
@@ -65,5 +59,3 @@ public:
         return (BYTE)i;
     }
 };
-
-#endif /* defined(__mRPG__Passives__) */

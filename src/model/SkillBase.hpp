@@ -1,13 +1,7 @@
-//
 //  SkillBase.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 16/04/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
-
-#ifndef __mRPG__SkillBase__
-#define __mRPG__SkillBase__
+#pragma once
 
 #include "../definitions.hpp"
 
@@ -39,5 +33,3 @@ public:
     BYTE num;
     static SkillBase* sArr[256];
 };
-
-#endif /* defined(__mRPG__SkillBase__) */

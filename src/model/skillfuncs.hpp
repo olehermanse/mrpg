@@ -1,13 +1,7 @@
-//
 //  skillfuncs.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 26/04/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
-
-#ifndef mRPG_skillfuncs_h
-#define mRPG_skillfuncs_h
+#pragma once
 
 #include "CombatPlayer.hpp"
 
@@ -31,4 +25,3 @@ void skill_slowswing( CombatPlayer& user, CombatPlayer& enemy);
 void skill_bloodbolt( CombatPlayer& user, CombatPlayer& enemy);
 void skill_bloodboil( CombatPlayer& user, CombatPlayer& enemy);
 
-#endif

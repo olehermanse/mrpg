@@ -1,10 +1,6 @@
-//
 //  Combat CombatPlayer.cpp
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 11/02/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
 
 #include "CombatPlayer.hpp"
 

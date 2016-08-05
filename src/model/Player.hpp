@@ -1,13 +1,7 @@
-//
 //  Player.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 11/02/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
-
-#ifndef __mRPG__Player__
-#define __mRPG__Player__
+#pragma once
 
 #include "stats.hpp"
 
@@ -37,5 +31,3 @@ public:
 	std::string saveString();
 	void loadString(std::string save);
 };
-
-#endif /* defined(__mRPG__Player__) */

@@ -1,14 +1,8 @@
-//
 //  combat.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 28/01/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
 
-#ifndef __mRPG__combat__
-#define __mRPG__combat__
-
+#pragma once
 #include "Skills.hpp"
 
 enum type_winner {WINNER_NO = 0, WINNER_A, WINNER_B, WINNER_DRAW};
@@ -36,5 +30,3 @@ private:
     SSHORT inputA;
     SSHORT inputB;
 };
-
-#endif /* defined(__mRPG__combat__) */

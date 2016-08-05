@@ -1,10 +1,6 @@
-//
 //  skills.cpp
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 09/02/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
 
 #include "Skills.hpp"
 

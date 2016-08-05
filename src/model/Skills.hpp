@@ -1,13 +1,9 @@
-//
 //  skills.h
-//  mRPG
-//
 //  Created by Ole Herman S. Elgesem on 09/02/14.
 //  Copyright (c) 2014 olehermanse. All rights reserved.
-//
 
-#ifndef __mRPG__skills__
-#define __mRPG__skills__
+#pragma once
+
 #include "skillfuncs.hpp"
 
 //Derived Skill class introduces skill function pointer
@@ -52,5 +48,3 @@ private:
 
     void makeSkill(BYTE i, std::string name, BYTE cast, BYTE cooldown, void (*perform)( CombatPlayer&,  CombatPlayer&));
 };
-
-#endif /* defined(__mRPG__skills__) */
