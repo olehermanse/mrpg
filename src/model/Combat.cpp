@@ -47,34 +47,24 @@ void Combat::orderedTurn( CombatPlayer& x,  CombatPlayer& y){
 }
 
 void Combat::speedTieTurn(){
-    if(a.lvl > b.lvl){
-        orderedTurn(a,b);
-    }else if(b.lvl > a.lvl){
-        orderedTurn(b,a);
-    }else if(a.current.hp > b.current.hp){
-        orderedTurn(a,b);
-    }else if(b.current.hp > a.current.hp){
-        orderedTurn(b,a);
-    }else{
-        printf("%s and %s acted at the same time:\n", a.name.c_str(), b.name.c_str());
-        Stats preA;
-        Stats preB;
-        Stats postB;
+    printf("%s and %s acted at the same time:\n", a.name.c_str(), b.name.c_str());
+    Stats preA;
+    Stats preB;
+    Stats postB;
 
-        //SAVE BEGIN STATE
-        a.current.copyTo(preA);
-        b.current.copyTo(preB);
-        //DO ONE SKILL
-        doSkill(a,b);
-        //SAVE B
-        b.current.copyTo(postB);
-        //RESET
-        preA.copyTo(a.current);
-        preB.copyTo(b.current);
-        //DO SKILL 2
-        doSkill(b,a);
-        //CARRY OVER B
-        postB.copyTo(b.current);
-        //FINISHED
-    }
+    //SAVE BEGIN STATE
+    a.current.copyTo(preA);
+    b.current.copyTo(preB);
+    //DO ONE SKILL
+    doSkill(a,b);
+    //SAVE B
+    b.current.copyTo(postB);
+    //RESET
+    preA.copyTo(a.current);
+    preB.copyTo(b.current);
+    //DO SKILL 2
+    doSkill(b,a);
+    //CARRY OVER B
+    postB.copyTo(b.current);
+    //FINISHED
 }
