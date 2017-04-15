@@ -23,15 +23,12 @@ type_winner Combat::checkWinner(){
 void Combat::doTurn(){
     SSHORT as = a.current.speed;
     SSHORT bs = b.current.speed;
-    if(as == bs)
-        speedTieTurn();
-    else if(as > bs)
+    if(as > bs)
         orderedTurn(a,b);
     else if(as < bs)
         orderedTurn(b,a);
     else
-        debug_error("Cannot determine speed priority");
-    return;
+        speedTieTurn();
 }
 
 void Combat::doSkill(CombatPlayer& a,  CombatPlayer& b){
