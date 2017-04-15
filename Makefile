@@ -15,9 +15,6 @@ POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 CPP_FILES = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 OBJ_FILES = $(addprefix obj/, $(notdir $(CPP_FILES:.cpp=.o)))
 
-run: bin/mrpg
-	./bin/mrpg
-
 # Executable depends on all .o files:
 bin/mrpg: $(OBJ_FILES)
 	$(CC) -O2 -Wall -o $@ $(OBJ_FILES)
@@ -37,6 +34,9 @@ obj/%.o: src/*/%.cpp $(DEPDIR)/%.d
 
 # Can be used to print variable: "make print-COMPILE"
 print-%  : ; @echo $* = $($*)
+
+run: bin/mrpg
+	./bin/mrpg
 
 clean:
 	rm -rf bin
