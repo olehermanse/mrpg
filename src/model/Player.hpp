@@ -3,7 +3,7 @@
 //  Copyright (c) 2014 olehermanse. All rights reserved.
 #pragma once
 
-#include "stats.hpp"
+#include "Stats.hpp"
 
 #define NUM_PASSIVES 4
 #define NUM_SKILLS 8
