@@ -2,3 +2,6 @@ bin/*
 .DS_Store
 obj/*
 .d/*
+
+__pycache__
+data
