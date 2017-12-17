@@ -7,19 +7,36 @@ sys.path.insert(0, "./")
 
 from mrpg.platform.files import jsonify, json_load, save, load
 from mrpg.core.creature import Creature
+from mrpg.core.battle import Battle
 from collections import OrderedDict
-from mrpg.ui.creator import create
-from mrpg.ui.term import menu
+from mrpg.ui.terminal import menu, fancy_print, character_creator
+
+def battle_loop(player):
+    enemy = Creature("Ogre", 11)
+    battle = Battle(player, enemy)
+    while True:
+        choice = menu("Battle Menu:", "turn", f="flee")
+        if choice == "turn":
+            results = battle.resolve_turn()
+            fancy_print("\n".join(results))
+            continue
+        elif choice == "flee":
+            fancy_print("{} fled like a big coward.".format(player.name))
+            break
 
 def game_loop(player):
     while True:
-        print()
-        choice = menu("Main Menu:", "stats", q="quit")
+        choice = menu("Main Menu:", "stats", "battle", s="save", q="quit")
         if choice == "stats":
             print()
             print(player.string_long())
+        elif choice == "battle":
+            battle_loop(player)
+        elif choice == "save":
+            save(data, "data/player.json")
+            fancy_print("Game has been saved")
         elif choice == "quit":
-            print("Goodbye!")
+            fancy_print("Goodbye!")
             sys.exit(0)
 
 def get_args():
@@ -32,7 +49,15 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-
-    player = create(args.new, args.test)
-    print("{} is ready to start an adventure".format(player))
+    player = Creature()
+    data = load("data/player.json")
+    if args.test:
+        player.name = "Tester"
+        player.set_level(level = 99)
+    elif args.new or not data:
+        player = character_creator()
+        data = player.export_data()
+    else:
+        player.import_data(data)
+    fancy_print("{} is ready to start an adventure".format(player))
     game_loop(player)

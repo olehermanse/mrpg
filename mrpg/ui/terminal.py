@@ -1,15 +1,28 @@
+from time import sleep
+
+from mrpg.platform.files import save, load
+from mrpg.core.creature import Creature
+
+def character_creator():
+    player = Creature()
+    player.name = input("Name:")
+    player.set_level(level = int(input("Level:")))
+    data = player.export_data()
+    return player
+
 def menu(*args, **kwargs):
     headline = args[0]
     args = list(args[1:])
     extended_args = []
-    indices = list(range(len(args)))
+    indices = list(range(1,len(args)+1))
     for key, value in kwargs.items():
         indices.append(key)
         extended_args.append(value)
     for index, arg in enumerate(args):
-        kwargs[str(index)] = arg
+        kwargs[str(index+1)] = arg
     args += extended_args
     while True:
+        print()
         print(headline)
         for ind, opt in zip(indices, args):
             print("{}: {}".format(ind, opt))
@@ -20,3 +33,9 @@ def menu(*args, **kwargs):
             return kwargs[choice]
         except:
             pass
+
+def fancy_print(msg):
+    for c in msg:
+        print(c, end="", flush=True)
+        sleep(0.01)
+    input()
