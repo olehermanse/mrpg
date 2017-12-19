@@ -25,7 +25,6 @@ def battle_loop(player):
             break
 
 def game_loop(player):
-    fancy_print("{} is ready to start an adventure".format(player))
     while True:
         choice = menu("Game Menu:", "stats", "battle", s="save", q="quit")
         if choice == "stats":
@@ -38,7 +37,7 @@ def game_loop(player):
             save(data, "data/player.json")
             fancy_print("Game has been saved")
         elif choice == "quit":
-            fancy_print("Goodbye!")
+            fancy_print("Goodbye!", block=False)
             sys.exit(0)
 
 def main_menu(args):
@@ -47,14 +46,16 @@ def main_menu(args):
         choice = menu("Main Menu:", "new", "load", q="quit")
         if choice == "new":
             player = character_creator()
+            fancy_print("Hello, {}.".format(player.name))
         elif choice == "load":
             data = load("data/player.json")
             if not data:
                 fancy_print("No saved game found")
                 continue
+            fancy_print("Welcome back, {}.".format(player.name))
             player.import_data(data)
         elif choice == "quit":
-            fancy_print("Goodbye!")
+            fancy_print("Goodbye!", block=False)
             return
         game_loop(player)
 

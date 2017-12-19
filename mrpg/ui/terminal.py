@@ -34,8 +34,15 @@ def menu(*args, **kwargs):
         except:
             pass
 
-def fancy_print(msg):
+def fancy_print(msg, block=True):
+    delay = 0.03
+    if len(msg) > 16:
+        delay = 0.01
     for c in msg:
         print(c, end="", flush=True)
-        sleep(0.01)
-    input()
+        sleep(delay)
+    sleep(0.1)
+    if block:
+        input()
+    else:
+        print()
