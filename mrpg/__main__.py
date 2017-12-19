@@ -25,19 +25,38 @@ def battle_loop(player):
             break
 
 def game_loop(player):
+    fancy_print("{} is ready to start an adventure".format(player))
     while True:
-        choice = menu("Main Menu:", "stats", "battle", s="save", q="quit")
+        choice = menu("Game Menu:", "stats", "battle", s="save", q="quit")
         if choice == "stats":
             print()
             print(player.string_long())
         elif choice == "battle":
             battle_loop(player)
         elif choice == "save":
+            data = player.export_data()
             save(data, "data/player.json")
             fancy_print("Game has been saved")
         elif choice == "quit":
             fancy_print("Goodbye!")
             sys.exit(0)
+
+def main_menu(args):
+    player = Creature()
+    while True:
+        choice = menu("Main Menu:", "new", "load", q="quit")
+        if choice == "new":
+            player = character_creator()
+        elif choice == "load":
+            data = load("data/player.json")
+            if not data:
+                fancy_print("No saved game found")
+                continue
+            player.import_data(data)
+        elif choice == "quit":
+            fancy_print("Goodbye!")
+            return
+        game_loop(player)
 
 def get_args():
     ap = argparse.ArgumentParser(description="MRPG",
@@ -49,15 +68,4 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-    player = Creature()
-    data = load("data/player.json")
-    if args.test:
-        player.name = "Tester"
-        player.set_level(level = 99)
-    elif args.new or not data:
-        player = character_creator()
-        data = player.export_data()
-    else:
-        player.import_data(data)
-    fancy_print("{} is ready to start an adventure".format(player))
-    game_loop(player)
+    main_menu(args)
