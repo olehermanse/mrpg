@@ -52,8 +52,8 @@ def main_menu(args):
             if not data:
                 fancy_print("No saved game found")
                 continue
-            fancy_print("Welcome back, {}.".format(player.name))
             player.import_data(data)
+            fancy_print("Welcome back, {}.".format(player.name))
         elif choice == "quit":
             fancy_print("Goodbye!", block=False)
             return
