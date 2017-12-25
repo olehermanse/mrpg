@@ -9,12 +9,19 @@ from mrpg.platform.files import jsonify, json_load, save, load
 from mrpg.core.creature import Creature
 from mrpg.core.battle import Battle
 from collections import OrderedDict
-from mrpg.ui.terminal import menu, fancy_print, character_creator
+from mrpg.ui.terminal import menu, fancy_print, character_creator, clear
+from mrpg.core.funcs import column_lines, column_string
 
 def battle_loop(player):
-    enemy = Creature("Ogre", 11)
+    enemy = Creature("Ogre", 10)
     battle = Battle(player, enemy)
     while True:
+        a = player.string_long().split(sep="\n")
+        b = enemy.string_long().split(sep="\n")
+
+        clear()
+        print(column_string("| ", a, " | ", b, " |"))
+        print()
         choice = menu("Battle Menu:", "turn", f="flee")
         if choice == "turn":
             results = battle.resolve_turn()
@@ -26,10 +33,12 @@ def battle_loop(player):
 
 def game_loop(player):
     while True:
-        choice = menu("Game Menu:", "stats", "battle", s="save", q="quit")
+        clear()
+        choice = menu("Game Menu:", "battle", "stats", s="save", q="quit")
         if choice == "stats":
-            print()
+            clear()
             print(player.string_long())
+            input()
         elif choice == "battle":
             battle_loop(player)
         elif choice == "save":
@@ -43,6 +52,7 @@ def game_loop(player):
 def main_menu(args):
     player = Creature()
     while True:
+        clear()
         choice = menu("Main Menu:", "new", "load", q="quit")
         if choice == "new":
             player = character_creator()
