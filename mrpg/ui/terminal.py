@@ -3,6 +3,12 @@ from time import sleep
 from mrpg.platform.files import save, load
 from mrpg.core.creature import Creature
 
+import sys
+
+def clear():
+    sys.stdout.write("\x1b[2J\x1b[H")
+    sys.stdout.flush()
+
 def character_creator():
     player = Creature()
     player.name = input("Name:")
@@ -22,7 +28,6 @@ def menu(*args, **kwargs):
         kwargs[str(index+1)] = arg
     args += extended_args
     while True:
-        print()
         print(headline)
         for ind, opt in zip(indices, args):
             print("{}: {}".format(ind, opt))

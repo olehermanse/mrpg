@@ -1,21 +1,22 @@
 from collections import OrderedDict
 from mrpg.platform.files import jsonify
-from mrpg.core.funcs import column_string
+from mrpg.core.funcs import column_lines
+from mrpg.core.skills import Skills
 
 class CustomDict:
     def __init__(self):
         self.d = OrderedDict()
-
-    def __getattr__(self, name):
-        if name in self.__dict__:
-            return self.__dict__[name]
-        return self.d[name]
 
     def __getitem__(self, key):
         return self.d[key]
 
     def __setitem__(self, key, value):
         self.d[key] = value
+
+    def __contains__(self, key):
+        if key in self.d:
+            return True
+        return False
 
 class Stats(CustomDict):
     def __init__(self, level=0):
@@ -30,34 +31,54 @@ class Stats(CustomDict):
                 values.append("{}/{}".format(self.d[key], compare.d[key]))
             else:
                 values.append(str(self.d[key]))
-        lines = column_string(keys, "=", values)
+        lines = column_lines(keys, " = ", values)
         return lines
 
     def set_level(self, level):
         assert type(level) is int
         assert level >= 0
-        self.d["hp"]  = level * 2 + (10 if level > 0 else 0)
-        self.d["mp"]  = level * 2 + (10 if level > 0 else 0)
-        self.d["str"] = level + (5 if level > 0 else 0)
-        self.d["dex"] = level + (5 if level > 0 else 0)
-        self.d["int"] = level + (5 if level > 0 else 0)
+        self["hp"]  = level * 2 + (10 if level > 0 else 0)
+        self["mp"]  = level * 2 + (10 if level > 0 else 0)
+        self["str"] = level + (5 if level > 0 else 0)
+        self["dex"] = level + (5 if level > 0 else 0)
+        self["int"] = level + (5 if level > 0 else 0)
 
     def copy_from(self, source):
         for key in self.d:
             self[key] = source[key]
 
-class Creature(CustomDict):
+class Creature:
     def __init__(self, name="Not", level=1):
         assert isinstance(level, int)
-        self.d = OrderedDict()
+        self.init(name, level)
+
+    def init(self, name, level):
         self.name = name
-        self.level = level
         self.base = Stats(level)
         self.current = Stats(level)
-        self.skills = []
-        self.skill_pick = None
+        self.set_level(level)
+        self.skills = [Skills.get("attack"), Skills.get("heal")]
+        self.skill_choice = None
+
+    def damage(self, amount):
+        self.current["hp"] -= amount
+        return ["{} lost {} hit points".format(self.name, amount)]
+
+    def restore(self, amount):
+        self.current["hp"] += amount
+        return ["{} restored {} hit points".format(self.name, amount)]
+
+    def limit_check(self):
+        if self.current["hp"] <= 0:
+            self.current["hp"] = 0
+            return ["{} died".format(self.name)]
+        if self.current["hp"] > self.base.hp:
+            self.current["hp"] = self.base.hp
+            return ["{} was fully healed".format(self.name)]
+        return []
 
     def set_level(self, level):
+        self.level = level
         self.base.set_level(level)
         self.current.set_level(level)
 
@@ -67,9 +88,13 @@ class Creature(CustomDict):
     def string_short(self):
         return "Lv.{lvl} {n}".format(n=self.name, lvl=self.level)
 
-    def string_long(self):
+    def long_lines(self):
         lines = [self.string_short()]
-        lines += self.current.get_strings(self.current)
+        lines += self.current.get_strings(self.base)
+        return lines
+
+    def string_long(self):
+        lines = self.long_lines()
         s = "\n".join(lines)
         return s
 
