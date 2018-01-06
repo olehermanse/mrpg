@@ -5,10 +5,10 @@ class Battle():
         self.b = b
 
     def pre_step(self, src, target):
-        return src.skills[src.skill_choice].prepare(src, target)
+        return src.use_skill.prepare(src, target)
 
     def apply_step(self, src, target):
-        return src.skills[src.skill_choice].resolve()
+        return src.use_skill.resolve()
 
     def one_player_turn(self, src, target):
         s = []
@@ -18,7 +18,6 @@ class Battle():
 
     def resolve_turn(self):
         a,b = self.a, self.b
-        a.skill_choice = b.skill_choice = 0
 
         s = []
         s += self.one_player_turn(a,b)

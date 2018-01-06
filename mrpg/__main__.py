@@ -22,14 +22,21 @@ def battle_loop(player):
         clear()
         print(column_string("| ", a, " | ", b, " |"))
         print()
-        choice = menu("Battle Menu:", "turn", f="flee")
-        if choice == "turn":
-            results = battle.resolve_turn()
-            fancy_print("\n".join(results))
-            continue
-        elif choice == "flee":
+        skill_names = player.get_skill_names()
+        choice = menu("Battle Menu:", *skill_names, f="flee")
+
+        if choice == "flee":
             fancy_print("{} fled like a big coward.".format(player.name))
             break
+        if choice not in skill_names:
+            assert False
+
+        player.use_skill = player.get_skill(choice)
+        enemy.use_skill = enemy.skills[0]
+
+        results = battle.resolve_turn()
+        fancy_print("\n".join(results))
+        continue
 
 def game_loop(player):
     while True:

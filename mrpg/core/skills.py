@@ -20,9 +20,9 @@ class Skills:
         return resolve
 
     def heal(user, target):
-        amount = user.current.int
+        amount = user.current["int"]
         def resolve():
-            return target.restore(amount)
+            return user.restore(amount) # TODO: Add targetable heal?
         return resolve
 
     @classmethod

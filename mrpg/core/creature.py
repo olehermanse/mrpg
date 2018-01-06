@@ -58,7 +58,15 @@ class Creature:
         self.current = Stats(level)
         self.set_level(level)
         self.skills = [Skills.get("attack"), Skills.get("heal")]
-        self.skill_choice = None
+        self.use_skill = None
+
+    def get_skill(self, name):
+        matches = list(filter(lambda x: x.name == name, self.skills))
+        assert len(matches) == 1
+        return matches[0]
+
+    def get_skill_names(self):
+        return list(map(lambda x: x.name, self.skills))
 
     def damage(self, amount):
         self.current["hp"] -= amount
