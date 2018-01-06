@@ -40,10 +40,15 @@ class Creature:
         if self.current["hp"] <= 0:
             self.current["hp"] = 0
             return ["{} died".format(self.name)]
-        if self.current["hp"] > self.base.hp:
-            self.current["hp"] = self.base.hp
+        if self.current["hp"] > self.base["hp"]:
+            self.current["hp"] = self.base["hp"]
             return ["{} was fully healed".format(self.name)]
         return []
+
+    def is_alive(self):
+        hp = self.current["hp"]
+        assert hp >= 0
+        return hp > 0
 
     def set_level(self, level):
         self.level = level

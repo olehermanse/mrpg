@@ -14,6 +14,8 @@ class Battle():
         s = []
         s += self.pre_step(src, target)
         s += self.apply_step(src, target)
+        s += src.limit_check()
+        s += target.limit_check()
         return s
 
     def resolve_turn(self):
@@ -21,6 +23,7 @@ class Battle():
 
         s = []
         s += self.one_player_turn(a,b)
-        s += self.one_player_turn(b,a)
+        if b.is_alive():
+            s += self.one_player_turn(b,a)
 
         return s
