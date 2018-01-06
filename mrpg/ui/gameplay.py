@@ -1,7 +1,30 @@
 from mrpg.core.creature import Creature
 from mrpg.core.battle import Battle
+from mrpg.core.adventure import get_monster
 from mrpg.ui.terminal import clear, menu, fancy_print
 from mrpg.utils import column_string
+
+class GameOver(Exception):
+    pass
+
+def start_adventure(player):
+    for _ in range(3):
+        enemy = get_monster(player)
+        clear()
+        fancy_print("You encounter a {}".format(enemy.string_short()))
+        winner = battle_loop(player, enemy)
+        if not player.is_alive():
+            raise GameOver()
+        if not winner:
+            clear()
+            fancy_print("You failed miserably.")
+            return False
+        clear()
+        fancy_print("Victory, you defeated {}.".format(enemy.name))
+
+    clear()
+    fancy_print("Successful adventure!")
+    return True
 
 def battle_loop(player, enemy):
     battle = Battle(player, enemy)
