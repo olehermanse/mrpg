@@ -3,8 +3,7 @@ from mrpg.core.battle import Battle
 from mrpg.ui.terminal import clear, menu, fancy_print
 from mrpg.utils import column_string
 
-def battle_menu(player):
-    enemy = Creature("Ogre", 10)
+def battle_loop(player, enemy):
     battle = Battle(player, enemy)
     while True:
         a = player.string_long().split(sep="\n")
@@ -27,4 +26,12 @@ def battle_menu(player):
 
         results = battle.resolve_turn()
         fancy_print("\n".join(results))
-        continue
+        if enemy.is_alive() and player.is_alive():
+            continue
+        else:
+            break
+    if enemy.is_alive():
+        return enemy
+    if player.is_alive():
+        return player
+    return None

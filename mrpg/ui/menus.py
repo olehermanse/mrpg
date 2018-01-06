@@ -4,7 +4,7 @@ from mrpg.core.creature import Creature
 
 from mrpg.platform.files import save, load
 from mrpg.ui.terminal import menu, fancy_print, character_creator, clear
-from mrpg.ui.battle import battle_menu
+from mrpg.ui.battle import battle_loop
 
 def game_menu(player):
     while True:
@@ -15,7 +15,12 @@ def game_menu(player):
             print(player.string_long())
             input()
         elif choice == "battle":
-            battle_menu(player)
+            enemy = Creature("Ogre", 10)
+            winner = battle_loop(player, enemy)
+            if not player.is_alive():
+                clear()
+                fancy_print("Game over")
+                return
         elif choice == "save":
             data = player.export_data()
             save(data, "data/player.json")
