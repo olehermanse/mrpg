@@ -1,3 +1,20 @@
+from collections import OrderedDict
+
+class CustomDict:
+    def __init__(self):
+        self.d = OrderedDict()
+
+    def __getitem__(self, key):
+        return self.d[key]
+
+    def __setitem__(self, key, value):
+        self.d[key] = value
+
+    def __contains__(self, key):
+        if key in self.d:
+            return True
+        return False
+
 def column_lines(*args):
     row_count = 1
     for arg in args:
