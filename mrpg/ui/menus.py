@@ -4,23 +4,18 @@ from mrpg.core.creature import Creature
 
 from mrpg.platform.files import save, load
 from mrpg.ui.terminal import menu, fancy_print, character_creator, clear
-from mrpg.ui.battle import battle_loop
+from mrpg.ui.gameplay import start_adventure, GameOver
 
 def game_menu(player):
     while True:
         clear()
-        choice = menu("Game Menu:", "battle", "stats", s="save", q="quit")
+        choice = menu("Game Menu:", "adventure", "stats", s="save", q="quit")
         if choice == "stats":
             clear()
             print(player.string_long())
             input()
-        elif choice == "battle":
-            enemy = Creature("Ogre", 10)
-            winner = battle_loop(player, enemy)
-            if not player.is_alive():
-                clear()
-                fancy_print("Game over")
-                return
+        elif choice == "adventure":
+            start_adventure(player)
         elif choice == "save":
             data = player.export_data()
             save(data, "data/player.json")
@@ -47,4 +42,9 @@ def main_menu(args):
         elif choice == "quit":
             fancy_print("Goodbye!", block=False)
             return
-        game_menu(player)
+        try:
+            game_menu(player)
+        except GameOver:
+            clear()
+            fancy_print("Game over")
+            continue
