@@ -1,51 +1,11 @@
 from collections import OrderedDict
+
+from mrpg.utils import CustomDict
+
 from mrpg.platform.files import jsonify
-from mrpg.core.funcs import column_lines
+from mrpg.utils import column_lines
 from mrpg.core.skills import Skills
-
-class CustomDict:
-    def __init__(self):
-        self.d = OrderedDict()
-
-    def __getitem__(self, key):
-        return self.d[key]
-
-    def __setitem__(self, key, value):
-        self.d[key] = value
-
-    def __contains__(self, key):
-        if key in self.d:
-            return True
-        return False
-
-class Stats(CustomDict):
-    def __init__(self, level=0):
-        super().__init__()
-        self.set_level(level)
-
-    def get_strings(self, compare=None):
-        keys = list(filter(lambda x: x!="name" and x!="level", self.d))
-        values = []
-        for key in keys:
-            if compare and key in compare.d:
-                values.append("{}/{}".format(self.d[key], compare.d[key]))
-            else:
-                values.append(str(self.d[key]))
-        lines = column_lines(keys, " = ", values)
-        return lines
-
-    def set_level(self, level):
-        assert type(level) is int
-        assert level >= 0
-        self["hp"]  = level * 2 + (10 if level > 0 else 0)
-        self["mp"]  = level * 2 + (10 if level > 0 else 0)
-        self["str"] = level + (5 if level > 0 else 0)
-        self["dex"] = level + (5 if level > 0 else 0)
-        self["int"] = level + (5 if level > 0 else 0)
-
-    def copy_from(self, source):
-        for key in self.d:
-            self[key] = source[key]
+from mrpg.core.stats import Stats
 
 class Creature:
     def __init__(self, name="Not", level=1):
