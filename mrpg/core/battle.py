@@ -18,12 +18,26 @@ class Battle():
         s += target.limit_check()
         return s
 
+    def speed_tie(self, a,b):
+        s = ["{} and {} acted at the same time!".format(a.name, b.name)]
+        s += self.pre_step(a,b)
+        s += self.pre_step(b,a)
+        s += self.apply_step(a,b)
+        s += self.apply_step(b,a)
+        return s
+
     def resolve_turn(self):
         a,b = self.a, self.b
+        if a.current["dex"] == b.current["dex"]:
+            return self.speed_tie(a,b)
+        if a.current["dex"] < b.current["dex"]:
+            a,b = b,a
+
+        first, last = a,b
 
         s = []
-        s += self.one_player_turn(a,b)
-        if b.is_alive():
-            s += self.one_player_turn(b,a)
+        s += self.one_player_turn(first,last)
+        if last.is_alive():
+            s += self.one_player_turn(last,first)
 
         return s
