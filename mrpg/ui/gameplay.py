@@ -36,7 +36,8 @@ def battle_loop(player, enemy):
         print(column_string("| ", a, " | ", b, " |"))
         print()
         skill_names = player.get_skill_names()
-        choice = menu("Battle Menu:", *skill_names, f="flee")
+        skill_hints = player.get_skill_hints()
+        choice = menu("Battle Menu:", lst = skill_names, hints = skill_hints, f="flee")
 
         if choice == "flee":
             fancy_print("{} fled like a big coward.".format(player.name))

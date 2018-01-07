@@ -1,5 +1,12 @@
 from collections import OrderedDict
 
+def limit(x, low, high):
+    if x < low:
+        return low
+    if x > high:
+        return high
+    return x
+
 class CustomDict:
     def __init__(self):
         self.d = OrderedDict()

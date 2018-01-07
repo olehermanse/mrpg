@@ -17,7 +17,8 @@ class Creature:
         self.base = Stats(level)
         self.current = Stats(level)
         self.set_level(level)
-        self.skills = [Skills.get("attack"), Skills.get("heal")]
+        skill_names = ["attack", "fireball", "life_drain", "heal"]
+        self.skills = [Skills.get(x) for x in skill_names]
         self.use_skill = None
 
     def get_skill(self, name):
@@ -27,6 +28,9 @@ class Creature:
 
     def get_skill_names(self):
         return list(map(lambda x: x.name, self.skills))
+
+    def get_skill_hints(self):
+        return list(map(lambda x: x.hint, self.skills))
 
     def damage(self, amount):
         self.current["hp"] -= amount
