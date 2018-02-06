@@ -24,6 +24,8 @@ class Battle():
         s += self.pre_step(b,a)
         s += self.apply_step(a,b)
         s += self.apply_step(b,a)
+        s += a.limit_check()
+        s += b.limit_check()
         return s
 
     def resolve_turn(self):
