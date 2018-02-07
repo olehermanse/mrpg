@@ -1,12 +1,6 @@
 from mrpg.core.skill import Skill
 
-class Skills:
-    @classmethod
-    def get(cls, name):
-        skill_func = getattr(cls, name)
-        hint = skill_func(None, None, hint=True)
-        return Skill(name, skill_func, hint)
-
+class SkillFuncs:
     def attack(user, target, hint=False):
         if hint:
             return "Physical attack"
@@ -47,3 +41,11 @@ class Skills:
         def resolve():
             return user.restore(amount) # TODO: Add targetable heal?
         return resolve
+
+class Skills:
+    def get(name):
+        skill_func = getattr(SkillFuncs, name)
+        hint = skill_func(None, None, hint=True)
+        return Skill(name, skill_func, hint)
+
+    names = [x for x in dir(SkillFuncs) if "__" not in x]

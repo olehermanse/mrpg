@@ -31,6 +31,7 @@ def main_menu(args):
         choice = menu("Main Menu:", "new", "load", q="quit")
         if choice == "new":
             player = character_creator()
+            clear()
             fancy_print("Hello, {}.".format(player.name))
         elif choice == "load":
             data = load("data/player.json")

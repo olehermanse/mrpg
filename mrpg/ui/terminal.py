@@ -2,6 +2,7 @@ from time import sleep
 
 from mrpg.platform.files import save, load
 from mrpg.core.creature import Creature
+from mrpg.core.skills import Skills
 from mrpg.utils import column_string
 
 import sys
@@ -10,10 +11,29 @@ def clear():
     sys.stdout.write("\x1b[2J\x1b[H")
     sys.stdout.flush()
 
+def skill_picker(max_skills):
+    remaining_skills = [x for x in Skills.names]
+    picked_skills = []
+    counter = 1
+    while counter <= max_skills and remaining_skills:
+        clear()
+        if picked_skills:
+            print("Your skills:")
+            [print(picked) for picked in picked_skills]
+            print()
+        choice = menu("Pick skill no.{}/{}".format(counter,max_skills), *remaining_skills)
+        picked_skills.append(choice)
+        remaining_skills.remove(choice)
+        counter += 1
+    return picked_skills
+
 def character_creator():
+    clear()
     player = Creature()
     player.name = input("Name:")
     player.set_level(level = int(input("Level:")))
+    skill_names = skill_picker(8)
+    player.set_skills(skill_names)
     data = player.export_data()
     return player
 

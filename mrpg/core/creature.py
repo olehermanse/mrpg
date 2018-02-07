@@ -17,9 +17,13 @@ class Creature:
         self.base = Stats(level)
         self.current = Stats(level)
         self.set_level(level)
-        skill_names = ["attack", "fireball", "life_drain", "heal"]
-        self.skills = [Skills.get(x) for x in skill_names]
+        skill_names = ["attack"]
+        self.set_skills(skill_names)
         self.use_skill = None
+
+    def set_skills(self, skill_names):
+        self.skill_names = skill_names
+        self.skills = [Skills.get(x) for x in skill_names]
 
     def get_skill(self, name):
         matches = list(filter(lambda x: x.name == name, self.skills))
@@ -68,6 +72,8 @@ class Creature:
     def long_lines(self):
         lines = [self.string_short()]
         lines += self.current.get_strings(self.base)
+        lines += ["", "Skills:"]
+        lines += self.skill_names
         return lines
 
     def string_long(self):
@@ -79,6 +85,7 @@ class Creature:
         d = OrderedDict()
         d["name"] = self.name
         d["level"] = self.level
+        d["skills"] = self.skill_names
         s = jsonify(d)
         return s
 
@@ -87,3 +94,4 @@ class Creature:
             data = json_load(data)
         self.name  = data["name"]
         self.set_level(data["level"])
+        self.set_skills(data["skills"])

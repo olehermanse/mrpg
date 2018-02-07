@@ -27,7 +27,10 @@ def column_lines(*args):
     for arg in args:
         if type(arg) is list and len(arg) > row_count:
             row_count = len(arg)
-    args = map(lambda x: [x] * row_count if type(x) is str else x, args)
+    args = list(map(lambda x: [x] * row_count if type(x) is str else x, args))
+    for l in args:
+        while len(l) < row_count:
+            l.append("")
     zipped = zip(*args)
     rows = list(zipped)
     rows = [[str(cell) for cell in row] for row in rows]
