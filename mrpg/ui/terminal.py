@@ -84,6 +84,8 @@ def menu(*args, **kwargs):
             pass
 
 def fancy_print(msg, block=True):
+    if isinstance(msg, list):
+        msg = "\n".join(msg)
     delay = 0.03
     if len(msg) > 16:
         delay = 0.01

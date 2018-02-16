@@ -27,9 +27,11 @@ def start_adventure(player):
             return False
         clear()
         fancy_print("Victory, you defeated {}.".format(enemy.name))
+        fancy_print(player.gain_exp(enemy.exp_reward()))
 
     clear()
     fancy_print("Successful adventure!")
+    fancy_print(player.gain_exp(200))
     return True
 
 def battle_loop(player, enemy):

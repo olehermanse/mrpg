@@ -2,8 +2,8 @@ from collections import OrderedDict
 
 from mrpg.utils import CustomDict
 
-from mrpg.platform.files import jsonify
-from mrpg.utils import column_lines
+from mrpg.platform.files import jsonify, json_load
+from mrpg.utils import column_lines, limit
 from mrpg.core.skills import Skills
 from mrpg.core.stats import Stats
 
@@ -17,6 +17,7 @@ class Creature:
         self.base = Stats(level)
         self.current = Stats(level)
         self.set_level(level)
+        self.exp = 0
         skill_names = ["attack"]
         self.set_skills(skill_names)
         self.use_skill = None
@@ -36,13 +37,19 @@ class Creature:
     def get_skill_hints(self):
         return list(map(lambda x: x.hint, self.skills))
 
-    def damage(self, amount):
+    def damage(self, amount, limit_check=False):
         self.current["hp"] -= amount
-        return ["{} lost {} hit points".format(self.name, amount)]
+        msg =  ["{} lost {} hit points".format(self.name, amount)]
+        if limit_check:
+            msg.append(self.limit_check())
+        return msg
 
-    def restore(self, amount):
+    def restore(self, amount, limit_check=False):
         self.current["hp"] += amount
-        return ["{} restored {} hit points".format(self.name, amount)]
+        msg =  ["{} restored {} hit points".format(self.name, amount)]
+        if limit_check:
+            msg.append(self.limit_check())
+        return msg
 
     def limit_check(self):
         if self.current["hp"] <= 0:
@@ -62,6 +69,22 @@ class Creature:
         self.level = level
         self.base.set_level(level)
         self.current.set_level(level)
+
+    def exp_reward(self):
+        return (3 * self.level) // 2
+
+    def max_exp(self):
+        return self.exp_reward() * limit(self.level, 1, 8)
+
+    def gain_exp(self, exp):
+        msg = ["{} gained {} experience points".format(self.name, exp)]
+        self.exp += exp
+        max_exp = self.max_exp()
+        if self.exp >= max_exp:
+            self.exp -= max_exp
+            self.set_level(self.level + 1)
+            msg.append("{} leveled up".format(self.name))
+        return msg
 
     def __str__(self):
         return self.string_short()

@@ -7,13 +7,13 @@ class Stats(CustomDict):
         self.set_level(level)
 
     def get_strings(self, compare=None):
-        keys = list(filter(lambda x: x!="name" and x!="level", self.d))
+        keys = list(filter(lambda x: x!="name" and x!="level", self))
         values = []
         for key in keys:
-            if compare and key in compare.d:
-                values.append("{}/{}".format(self.d[key], compare.d[key]))
+            if compare and key in compare:
+                values.append("{}/{}".format(self[key], compare[key]))
             else:
-                values.append(str(self.d[key]))
+                values.append(str(self[key]))
         lines = column_lines(keys, " = ", values)
         return lines
 
@@ -27,5 +27,5 @@ class Stats(CustomDict):
         self["int"] = level + (5 if level > 0 else 0)
 
     def copy_from(self, source):
-        for key in self.d:
+        for key in self:
             self[key] = source[key]
