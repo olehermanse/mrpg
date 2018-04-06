@@ -2,7 +2,7 @@ import sys
 
 from mrpg.core.creature import Creature
 
-from mrpg.platform.files import save, load
+from mrpg.platform.files import save_data, load_data
 from mrpg.ui.terminal import menu, fancy_print, character_creator, clear
 from mrpg.ui.gameplay import start_adventure, GameOver
 
@@ -19,7 +19,7 @@ def game_menu(player):
             start_adventure(player)
         elif choice == "save":
             data = player.export_data()
-            save(data, "data/player.json")
+            save_data(data, "data/player.json")
             fancy_print("Game has been saved")
         elif choice == "quit":
             fancy_print("Goodbye!", block=False)
@@ -36,7 +36,7 @@ def main_menu(args):
             clear()
             fancy_print("Hello, {}.".format(player.name))
         elif choice == "load":
-            data = load("data/player.json")
+            data = load_data("data/player.json")
             if not data:
                 fancy_print("No saved game found")
                 continue

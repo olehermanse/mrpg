@@ -37,7 +37,8 @@ def character_creator():
     player.name = input("Name: ")
     player.set_level(level=int(input("Level: ")))
     skill_names = skill_picker(8)
-    player.set_skills(skill_names)
+    player.skills.learn(skill_names)
+    player.skills.equip(skill_names)
     return player
 
 

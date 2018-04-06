@@ -15,7 +15,7 @@ def json_load(data):
         sys.exit(1)
 
 
-def save(data, path):
+def save_data(data, path):
     folder = os.path.dirname(path)
     if not os.path.exists(folder):
         os.makedirs(folder, exist_ok=True)
@@ -25,7 +25,7 @@ def save(data, path):
         out_file.write(data)
 
 
-def load(path):
+def load_data(path):
     try:
         with open(path, 'r', encoding="utf-8") as in_file:
             return json_load(in_file.read())

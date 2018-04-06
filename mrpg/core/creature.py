@@ -2,39 +2,23 @@ from collections import OrderedDict
 
 from mrpg.platform.files import jsonify, json_load
 from mrpg.utils import limit
-from mrpg.core.skills import Skills
+from mrpg.core.skills import Skills, CreatureSkillCollection
 from mrpg.core.stats import Stats
 
 
 class Creature:
-    def __init__(self, name="Not", level=1):
+    def __init__(self, name="Not", level=1, skill_names=None):
         assert isinstance(level, int)
-        self.init(name, level)
+        self.init(name, level, skill_names)
 
-    def init(self, name, level):
+    def init(self, name, level, skill_names=None):
         self.name = name
         self.base = Stats(level)
         self.current = Stats(level)
         self.set_level(level)
         self.exp = 0
-        skill_names = ["attack"]
-        self.set_skills(skill_names)
+        self.skills = CreatureSkillCollection(skill_names)
         self.use_skill = None
-
-    def set_skills(self, skill_names):
-        self.skill_names = skill_names
-        self.skills = [Skills.get(x) for x in skill_names]
-
-    def get_skill(self, name):
-        matches = list(filter(lambda x: x.name == name, self.skills))
-        assert len(matches) == 1
-        return matches[0]
-
-    def get_skill_names(self):
-        return list(map(lambda x: x.name, self.skills))
-
-    def get_skill_hints(self):
-        return list(map(lambda x: x.hint, self.skills))
 
     def damage(self, amount, limit_check=False):
         self.current["hp"] -= amount
@@ -95,7 +79,7 @@ class Creature:
         lines = [self.string_short()]
         lines += self.current.get_strings(self.base)
         lines += ["", "Skills:"]
-        lines += self.skill_names
+        lines += self.skills.equipped.names()
         return lines
 
     def string_long(self):
@@ -107,13 +91,10 @@ class Creature:
         d = OrderedDict()
         d["name"] = self.name
         d["level"] = self.level
-        d["skills"] = self.skill_names
-        s = jsonify(d)
-        return s
+        d["skills"] = self.skills.export_data()
+        return d
 
     def import_data(self, data):
-        if isinstance(data, str):
-            data = json_load(data)
         self.name = data["name"]
         self.set_level(data["level"])
-        self.set_skills(data["skills"])
+        self.skills.import_data(data["skills"])

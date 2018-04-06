@@ -22,9 +22,9 @@ def test_creature_level():
 def test_creature_skills():
     c = Creature("Fighter", 11)
     skills = ["attack", "heal"]
-    c.set_skills(skills)
-    res = c.get_skill_names()
-    hints = c.get_skill_hints()
+    c.skills.learn(skills)
+    res = c.skills.learned.names()
+    hints = c.skills.learned.hints()
     assert len(res) == len(skills) and len(hints) == len(skills)
     for a, b in zip(skills, res):
         assert a.lower() == b.lower()

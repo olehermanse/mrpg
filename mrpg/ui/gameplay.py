@@ -1,18 +1,11 @@
-import random
-
 from mrpg.core.battle import Battle
-from mrpg.core.adventure import get_monster
+from mrpg.core.adventure import get_monster, fail_message
 from mrpg.ui.terminal import clear, menu, fancy_print
 from mrpg.utils import column_string
 
 
 class GameOver(Exception):
     pass
-
-
-def adventure_fail():
-    msgs = ["The adventure was an embarassing failure.", "Failed adventure!"]
-    return random.choice(msgs)
 
 
 def start_adventure(player):
@@ -25,7 +18,7 @@ def start_adventure(player):
             raise GameOver()
         if not winner:
             clear()
-            fancy_print(adventure_fail())
+            fancy_print(fail_message())
             return False
         clear()
         fancy_print("Victory, you defeated {}.".format(enemy.name))
@@ -46,8 +39,8 @@ def battle_loop(player, enemy):
         clear()
         print(column_string("| ", a, " | ", b, " |"))
         print()
-        skill_names = player.get_skill_names()
-        skill_hints = player.get_skill_hints()
+        skill_names = player.skills.equipped.names()
+        skill_hints = player.skills.equipped.hints()
         choice = menu(
             "Battle Menu:", lst=skill_names, hints=skill_hints, f="flee")
 
@@ -57,8 +50,8 @@ def battle_loop(player, enemy):
         if choice not in skill_names:
             assert False
 
-        player.use_skill = player.get_skill(choice)
-        enemy.use_skill = enemy.skills[0]
+        player.use_skill = player.skills.equipped.get(choice)
+        enemy.use_skill = enemy.skills.equipped.get(0)
 
         results = battle.resolve_turn()
         fancy_print("\n".join(results))
