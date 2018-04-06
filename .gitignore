@@ -6,3 +6,6 @@ obj/*
 __pycache__
 .cache
 data
+.pytest_cache
+
+.ropeproject

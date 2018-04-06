@@ -1,4 +1,4 @@
 default: run
 
 run:
-	python3 mrpg
+	python3 -m mrpg
