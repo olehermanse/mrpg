@@ -6,6 +6,7 @@ from mrpg.platform.files import save, load
 from mrpg.ui.terminal import menu, fancy_print, character_creator, clear
 from mrpg.ui.gameplay import start_adventure, GameOver
 
+
 def game_menu(player):
     while True:
         clear()
@@ -23,6 +24,7 @@ def game_menu(player):
         elif choice == "quit":
             fancy_print("Goodbye!", block=False)
             sys.exit(0)
+
 
 def main_menu(args):
     player = Creature()

@@ -1,17 +1,19 @@
 import os
 import json
 import sys
+
 from collections import OrderedDict
 
-def jsonify(data):
-    return json.dumps(data, indent=2, ensure_ascii=False)
+from mrpg.utils import jsonify
+
 
 def json_load(data):
     try:
         return json.loads(data, object_pairs_hook=OrderedDict)
     except json.decoder.JSONDecodeError as err:
-        print("ERROR: Invalid json syntax: {}".format(data,err))
+        print("ERROR: Invalid json syntax: {}".format(data, err))
         sys.exit(1)
+
 
 def save(data, path):
     folder = os.path.dirname(path)
@@ -21,6 +23,7 @@ def save(data, path):
         data = jsonify(data)
     with open(path, 'w', encoding="utf-8") as out_file:
         out_file.write(data)
+
 
 def load(path):
     try:

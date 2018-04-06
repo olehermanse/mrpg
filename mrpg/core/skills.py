@@ -1,5 +1,6 @@
 from mrpg.core.skill import Skill
 
+
 class SkillFuncs:
     def attack(user, target, hint=False):
         if hint:
@@ -8,8 +9,10 @@ class SkillFuncs:
         damage = 3 * (usr["str"] + usr["dex"]) // 2
         damage -= tar["str"] + tar["dex"]
         damage = max([damage, 1])
+
         def resolve():
             return target.damage(damage)
+
         return resolve
 
     def fireball(user, target, hint=False):
@@ -18,8 +21,10 @@ class SkillFuncs:
         usr, tar = user.current, target.current
         damage = 2 * usr["int"] - tar["int"]
         damage = max([damage, 1])
+
         def resolve():
             return target.damage(damage)
+
         return resolve
 
     def life_drain(user, target, hint=False):
@@ -29,8 +34,10 @@ class SkillFuncs:
         amount = usr["int"] - tar["int"]
         amount = max([amount, 2])
         amount = min([amount, user.base["hp"]])
+
         def resolve():
             return target.damage(amount) + user.restore(amount)
+
         return resolve
 
     def heal(user, target, hint=False):
@@ -38,9 +45,12 @@ class SkillFuncs:
             return "Heal self"
         amount = user.current["int"]
         amount = min([amount, user.base["hp"]])
+
         def resolve():
-            return user.restore(amount) # TODO: Add targetable heal?
+            return user.restore(amount)  # TODO: Add targetable heal?
+
         return resolve
+
 
 class Skills:
     def get(name):

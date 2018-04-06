@@ -1,9 +1,11 @@
 from mrpg.core.creature import Creature
 
+
 def test_creature():
     c = Creature("Tester", 2)
     assert c.name == "Tester"
     assert c.level == 2
+
 
 def test_creature_level():
     c = Creature("Tester", 2)
@@ -16,6 +18,7 @@ def test_creature_level():
         print(m)
         assert type(m) is str
 
+
 def test_creature_skills():
     c = Creature("Fighter", 11)
     skills = ["attack", "heal"]
@@ -23,8 +26,9 @@ def test_creature_skills():
     res = c.get_skill_names()
     hints = c.get_skill_hints()
     assert len(res) == len(skills) and len(hints) == len(skills)
-    for a,b in zip(skills,res):
+    for a, b in zip(skills, res):
         assert a.lower() == b.lower()
+
 
 def test_creature_damage():
     c = Creature("Fighter", 11)
@@ -35,7 +39,8 @@ def test_creature_damage():
     msg = c.damage(1, limit_check=True)
     assert msg
     assert len(msg) > 0
-    assert c.is_alive() == False
+    assert c.is_alive() is False
+
 
 def test_creature_restore():
     c = Creature("Fighter", 11)
@@ -44,8 +49,9 @@ def test_creature_restore():
     msg += c.restore(1, limit_check=True)
     assert msg
     assert len(msg) >= 2
-    assert c.is_alive() == True
+    assert c.is_alive() is True
     assert c.current["hp"] == 1
+
 
 def test_creature_export():
     j = Creature("Jason", 42)

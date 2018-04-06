@@ -1,11 +1,10 @@
 from collections import OrderedDict
 
-from mrpg.utils import CustomDict
-
 from mrpg.platform.files import jsonify, json_load
-from mrpg.utils import column_lines, limit
+from mrpg.utils import limit
 from mrpg.core.skills import Skills
 from mrpg.core.stats import Stats
+
 
 class Creature:
     def __init__(self, name="Not", level=1):
@@ -39,14 +38,14 @@ class Creature:
 
     def damage(self, amount, limit_check=False):
         self.current["hp"] -= amount
-        msg =  ["{} lost {} hit points".format(self.name, amount)]
+        msg = ["{} lost {} hit points".format(self.name, amount)]
         if limit_check:
             msg.append(self.limit_check())
         return msg
 
     def restore(self, amount, limit_check=False):
         self.current["hp"] += amount
-        msg =  ["{} restored {} hit points".format(self.name, amount)]
+        msg = ["{} restored {} hit points".format(self.name, amount)]
         if limit_check:
             msg.append(self.limit_check())
         return msg
@@ -115,6 +114,6 @@ class Creature:
     def import_data(self, data):
         if isinstance(data, str):
             data = json_load(data)
-        self.name  = data["name"]
+        self.name = data["name"]
         self.set_level(data["level"])
         self.set_skills(data["skills"])

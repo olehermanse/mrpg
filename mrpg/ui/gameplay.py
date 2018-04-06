@@ -1,17 +1,19 @@
-from mrpg.core.creature import Creature
+import random
+
 from mrpg.core.battle import Battle
 from mrpg.core.adventure import get_monster
 from mrpg.ui.terminal import clear, menu, fancy_print
 from mrpg.utils import column_string
-import random
+
 
 class GameOver(Exception):
     pass
 
+
 def adventure_fail():
-    msgs = ["The adventure was an embarassing failure.",
-            "Failed adventure!"]
+    msgs = ["The adventure was an embarassing failure.", "Failed adventure!"]
     return random.choice(msgs)
+
 
 def start_adventure(player):
     for _ in range(3):
@@ -34,6 +36,7 @@ def start_adventure(player):
     fancy_print(player.gain_exp(200))
     return True
 
+
 def battle_loop(player, enemy):
     battle = Battle(player, enemy)
     while True:
@@ -45,7 +48,8 @@ def battle_loop(player, enemy):
         print()
         skill_names = player.get_skill_names()
         skill_hints = player.get_skill_hints()
-        choice = menu("Battle Menu:", lst = skill_names, hints = skill_hints, f="flee")
+        choice = menu(
+            "Battle Menu:", lst=skill_names, hints=skill_hints, f="flee")
 
         if choice == "flee":
             fancy_print("{} fled like a big coward.".format(player.name))

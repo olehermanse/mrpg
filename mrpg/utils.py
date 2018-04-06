@@ -1,4 +1,11 @@
+import json
+
 from collections import OrderedDict
+
+
+def jsonify(data):
+    return json.dumps(data, indent=2, ensure_ascii=False)
+
 
 def limit(x, low, high):
     if x < low:
@@ -7,8 +14,10 @@ def limit(x, low, high):
         return high
     return x
 
+
 class CustomDict(OrderedDict):
     pass
+
 
 def column_lines(*args):
     row_count = 1
@@ -23,7 +32,7 @@ def column_lines(*args):
     rows = list(zipped)
     rows = [[str(cell) for cell in row] for row in rows]
     columns = list(zip(*rows))
-    widths = [max(map(len,col)) for col in columns]
+    widths = [max(map(len, col)) for col in columns]
     lines = []
     for row in rows:
         line = []
@@ -31,6 +40,7 @@ def column_lines(*args):
             line.append(element.ljust(widths[index], " "))
         lines.append("".join(line))
     return lines
+
 
 def column_string(*args):
     lines = column_lines(*args)
