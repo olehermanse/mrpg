@@ -8,8 +8,8 @@ class SkillFuncs:
         if hint:
             return "Physical attack"
         usr, tar = user.current, target.current
-        damage = 3 * (usr["str"] + usr["dex"]) // 2
-        damage -= tar["str"] + tar["dex"]
+        damage = 2 * usr["str"]
+        damage -= tar["str"]
         damage = max([damage, 1])
 
         def resolve():
@@ -21,7 +21,8 @@ class SkillFuncs:
         if hint:
             return "Hot magic"
         usr, tar = user.current, target.current
-        damage = 2 * usr["int"] - tar["int"]
+        damage = 2 * usr["int"]
+        damage -= tar["int"]
         damage = max([damage, 1])
 
         def resolve():
@@ -33,7 +34,8 @@ class SkillFuncs:
         if hint:
             return "Damage and restore"
         usr, tar = user.current, target.current
-        amount = usr["int"] - tar["int"]
+        amount = 3 * usr["int"] // 2
+        amount -= tar["int"]
         amount = max([amount, 2])
         amount = min([amount, user.base["hp"]])
 
@@ -45,7 +47,7 @@ class SkillFuncs:
     def heal(user, target, hint=False):
         if hint:
             return "Heal self"
-        amount = user.current["int"]
+        amount = 2 * user.current["int"]
         amount = min([amount, user.base["hp"]])
 
         def resolve():
