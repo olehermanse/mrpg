@@ -4,7 +4,7 @@ from mrpg.core.creature import Creature
 
 from mrpg.platform.files import save_data, load_data
 from mrpg.ui.terminal import menu, fancy_print, character_creator, clear
-from mrpg.ui.gameplay import start_adventure, GameOver
+from mrpg.ui.gameplay import start_adventure
 
 
 def game_menu(player):
@@ -16,7 +16,9 @@ def game_menu(player):
             print(player.string_long())
             input()
         elif choice == "adventure":
-            start_adventure(player)
+            result = start_adventure(player)
+            if result == "dead":
+                return
         elif choice == "save":
             data = player.export_data()
             save_data(data, "data/player.json")
@@ -45,9 +47,9 @@ def main_menu(args):
         elif choice == "quit":
             fancy_print("Goodbye!", block=False)
             return
-        try:
-            game_menu(player)
-        except GameOver:
-            clear()
-            fancy_print("Game over")
-            continue
+
+        game_menu(player)
+
+        # If game menu returns it's game over:
+        clear()
+        fancy_print("Game over")

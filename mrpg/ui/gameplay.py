@@ -4,10 +4,6 @@ from mrpg.ui.terminal import clear, menu, fancy_print
 from mrpg.utils import column_string
 
 
-class GameOver(Exception):
-    pass
-
-
 def start_adventure(player):
     for _ in range(3):
         enemy = get_monster(player)
@@ -15,11 +11,11 @@ def start_adventure(player):
         fancy_print("You encounter a {}".format(enemy.string_short()))
         winner = battle_loop(player, enemy)
         if not player.is_alive():
-            raise GameOver()
+            return "dead"
         if not winner:
             clear()
             fancy_print(fail_message())
-            return False
+            return "fail"
         clear()
         fancy_print("Victory, you defeated {}.".format(enemy.name))
         fancy_print(player.gain_exp(enemy.exp_reward()))
@@ -27,7 +23,7 @@ def start_adventure(player):
     clear()
     fancy_print("Successful adventure!")
     fancy_print(player.gain_exp(200))
-    return True
+    return "success"
 
 
 def battle_loop(player, enemy):
