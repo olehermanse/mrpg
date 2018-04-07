@@ -21,11 +21,11 @@ class Stats(CustomDict):
     def set_level(self, level):
         assert type(level) is int
         assert level >= 0
-        self["hp"] = level * 2 + (10 if level > 0 else 0)
-        self["mp"] = level * 2 + (10 if level > 0 else 0)
-        self["str"] = level + (5 if level > 0 else 0)
-        self["dex"] = level + (5 if level > 0 else 0)
-        self["int"] = level + (5 if level > 0 else 0)
+        self["hp"] = level * 2 + (8 if level > 0 else 0)
+        self["mp"] = level * 2 + (8 if level > 0 else 0)
+        self["str"] = level + (2 if level > 0 else 0)
+        self["dex"] = level + (2 if level > 0 else 0)
+        self["int"] = level + (2 if level > 0 else 0)
 
     def copy_from(self, source):
         for key in self:
