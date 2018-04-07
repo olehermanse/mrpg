@@ -60,6 +60,7 @@ class Skills:
     def get(name):
         if type(name) is not str:
             name = name.name
+        name = name.lower()
         skill_func = getattr(SkillFuncs, name)
         hint = skill_func(None, None, hint=True)
         return Skill(name, skill_func, hint)
