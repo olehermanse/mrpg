@@ -5,10 +5,11 @@ from mrpg.core.skills import Skills
 from mrpg.utils import column_string
 
 import sys
+import os
 
 
 def clear():
-    sys.stdout.write("\x1b[2J\x1b[H")
+    os.system('cls' if os.name == 'nt' else 'clear')
     sys.stdout.flush()
 
 
