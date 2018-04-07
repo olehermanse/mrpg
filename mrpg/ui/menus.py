@@ -32,6 +32,8 @@ def main_menu(args):
     player = Creature()
     while True:
         clear()
+        fancy_print("=== MRPG - Prototype ===", block=False)
+        fancy_print("", block=False)
         choice = menu("Main Menu:", "new", "load", q="quit")
         if choice == "new":
             player = character_creator()
