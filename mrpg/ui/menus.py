@@ -28,7 +28,7 @@ def game_menu(player):
             sys.exit(0)
 
 
-def main_menu(args):
+def main_menu():
     player = Creature()
     while True:
         clear()
