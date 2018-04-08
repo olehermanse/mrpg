@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from mrpg.utils import limit
+from mrpg.utils.utils import limit
 from mrpg.core.skills import CreatureSkillCollection
 from mrpg.core.stats import Stats
 
@@ -11,6 +11,7 @@ class Creature:
         self.init(name, level, skill_names)
 
     def init(self, name, level, skill_names=None):
+        self.fleeing = False
         self.name = name
         self.base = Stats(level)
         self.current = Stats(level)
@@ -18,6 +19,15 @@ class Creature:
         self.exp = 0
         self.skills = CreatureSkillCollection(skill_names)
         self.use_skill = None
+
+    def flee(self):
+        self.fleeing = True
+        return "{} fled like a big coward.".format(self.name)
+
+    def pick_skill(self, skill):
+        assert skill is not None
+        self.use_skill = self.skills.equipped.get(skill)
+        assert self.use_skill is not None
 
     def damage(self, amount, limit_check=False):
         self.current["hp"] -= amount
@@ -33,6 +43,9 @@ class Creature:
             msg.append(self.limit_check())
         return msg
 
+    def town_heal(self):
+        self.current["hp"] = self.base["hp"]
+
     def limit_check(self):
         if self.current["hp"] <= 0:
             self.current["hp"] = 0
@@ -46,6 +59,9 @@ class Creature:
         hp = self.current["hp"]
         assert hp >= 0
         return hp > 0
+
+    def is_dead(self):
+        return not self.is_alive()
 
     def set_level(self, level):
         self.level = level

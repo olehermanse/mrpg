@@ -1,7 +1,19 @@
+from mrpg.utils.utils import column_string
+
+
 class Battle():
     def __init__(self, a, b):
         self.a = a
         self.b = b
+
+    def stats(self):
+        a = self.a.string_long().split(sep="\n")
+        b = self.b.string_long().split(sep="\n")
+
+        return column_string("| ", a, " | ", b, " |")
+
+    def is_over(self):
+        return self.a.is_dead() or self.b.is_dead()
 
     def pre_step(self, src, target):
         return src.use_skill.prepare(src, target)

@@ -80,7 +80,7 @@ class SkillCollection:
             return self.skills.index(skill)
         if type(skill) is str:
             for s in self.skills:
-                if s.name == skill:
+                if s.name.lower() == skill.lower():
                     return self.skills.index(s)
         return None
 

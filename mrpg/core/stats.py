@@ -1,5 +1,5 @@
-from mrpg.utils import CustomDict
-from mrpg.utils import column_lines
+from mrpg.utils.utils import CustomDict
+from mrpg.utils.utils import column_lines
 
 
 class Stats(CustomDict):

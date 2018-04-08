@@ -4,7 +4,7 @@ import sys
 
 from collections import OrderedDict
 
-from mrpg.utils import jsonify
+from mrpg.utils.utils import jsonify
 
 
 def json_load(data):

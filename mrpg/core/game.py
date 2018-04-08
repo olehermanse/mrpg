@@ -1,0 +1,156 @@
+import sys
+
+from enum import Enum, unique, auto
+
+from mrpg.utils.menu import Menu
+from mrpg.platform.files import save_data, load_data
+from mrpg.core.creature import Creature
+from mrpg.core.adventure import Adventure
+from mrpg.core.battle import Battle
+
+
+class Output():
+    class Fancy():
+        def __init__(self, msg):
+            self.data = msg
+
+    class Display():
+        def __init__(self, msg):
+            self.data = msg
+
+
+@unique
+class State(Enum):
+    MAIN_MENU = auto()
+    GAME_MENU = auto()
+    BATTLE_MENU = auto()
+    NONE = auto()
+
+
+class Game():
+    def __init__(self):
+        self.state = State.NONE
+        self.menu = None
+        self.player = None
+        self.adventure = None
+        self.output = []
+
+        self.set_state(State.MAIN_MENU)
+
+    def set_state(self, state):
+        self.state = state
+        if state == State.MAIN_MENU:
+            self.adventure = None
+            self.battle = None
+            self.player = None
+            self.menu = Menu("Main Menu:", "new", "load", q="quit")
+        elif state == State.GAME_MENU:
+            self.adventure = None
+            self.battle = None
+            self.menu = Menu(
+                "Game Menu:", "adventure", "stats", s="save", q="quit")
+        elif state == State.BATTLE_MENU:
+            self.set_battle_menu()
+
+    def set_battle_menu(self):
+        player = self.player
+        skill_names = player.skills.equipped.names()
+        skill_hints = player.skills.equipped.hints()
+        self.menu = Menu(
+            "Battle Menu:", lst=skill_names, hints=skill_hints, f="flee")
+
+    def main_menu_choice(self, choice):
+        if choice == "new":
+            self.player = Creature("Alice", skill_names=["attack", "heal"])
+            self.set_state(State.GAME_MENU)
+        elif choice == "load":
+            data = load_data("data/player.json")
+            if not data:
+                self.put_output("No saved game found")
+                return
+            self.player = Creature()
+            self.player.import_data(data)
+            self.put_output("Welcome back, {}.".format(self.player.name))
+            self.set_state(State.GAME_MENU)
+        elif choice == "quit":
+            sys.exit(0)  # TODO
+
+    def game_menu_choice(self, choice):
+        if choice == "adventure":
+            self.adventure = Adventure(self.player)
+            self.progress_adventure()
+        elif choice == "stats":
+            self.put_output(self.player.string_long(), Output.Display)
+        elif choice == "save":
+            data = self.player.export_data()
+            save_data(data, "data/player.json")
+            self.put_output("Save success!")
+        elif choice == "quit":
+            sys.exit(0)  # TODO
+
+    def battle_menu_choice(self, choice):
+        if choice == "flee":
+            self.put_output(self.player.flee())
+            self.end_battle()
+            return
+        self.battle.a.pick_skill(choice)
+        self.battle.b.pick_skill("attack")
+        self.progress_battle()
+
+    def progress_battle(self):
+        if self.battle.is_over():
+            self.end_battle()
+        out = self.battle.resolve_turn()
+        self.put_output(out)
+        if self.battle.is_over():
+            self.end_battle()
+
+    def end_battle(self):
+        player, enemy = self.battle.a, self.battle.b
+        self.battle = None
+        if player.is_dead():
+            self.put_output("Game over!")
+            self.set_state(State.MAIN_MENU)
+            return
+
+        if enemy.is_dead():
+            self.put_output("")
+            self.put_output("Victory, you defeated {}.".format(enemy.name))
+            self.put_output(player.gain_exp(enemy.exp_reward()))
+
+        if self.adventure:
+            self.progress_adventure()
+        else:
+            self.set_state(State.GAME_MENU)
+
+    def progress_adventure(self):
+        if self.adventure.is_over():
+            self.put_output(self.adventure.end())
+            self.adventure = None
+            self.battle = None
+            self.player.town_heal()
+            self.set_state(State.GAME_MENU)
+            return
+        enemy = self.adventure.next_monster()
+        self.battle = Battle(self.player, enemy)
+        self.set_state(State.BATTLE_MENU)
+
+    def submit(self, choice):
+        result = self.menu.choice(choice)
+        if not result:
+            return None
+        state = self.state
+        if state is State.MAIN_MENU:
+            self.main_menu_choice(result)
+        elif state is State.GAME_MENU:
+            self.game_menu_choice(result)
+        elif state is State.BATTLE_MENU:
+            self.battle_menu_choice(result)
+
+    def put_output(self, msg, formatter=Output.Fancy):
+        self.output.append(formatter(msg))
+
+    def get_output(self):
+        output = self.output
+        self.output = []
+        return output
