@@ -2,9 +2,12 @@
 
 import pyglet
 
+FONT_SIZE = 32
+SPACING = FONT_SIZE // 2
+
 
 class Color:
-    # Off black and white look a little more pleasant
+    # Off black and white look a little more pleasant:
     BLACK = (16, 16, 16, 255)
     WHITE = (230, 230, 230, 255)
 
@@ -20,14 +23,18 @@ class Renderer():
         window.set_mouse_cursor(cursor)
 
         self.labels = []
+
+        self.init_content()
+
+    def init_content(self):
         title = pyglet.text.Label(
-            'MRPG - Prototype',
-            font_name='Arial',
-            font_size=36,
-            x=0,
-            y=self.window.height,
-            anchor_x='left',
-            anchor_y='top',
+            "MRPG - Prototype",
+            font_name=["Ubuntu Mono", "Consolas"],
+            font_size=FONT_SIZE,
+            x=SPACING,
+            y=self.window.height - SPACING,
+            anchor_x="left",
+            anchor_y="top",
             color=Color.WHITE)
         self.labels.append(title)
 

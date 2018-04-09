@@ -7,7 +7,7 @@ class Controller():
     def __init__(self, width=1280, height=720):
         self.width = width
         self.height = height
-        window = wrapper.init(self, width, height)
+        window = wrapper.init(self, width, height, caption="MRPG")
         self.game = Game()
         self.renderer = Renderer(self, window)
 

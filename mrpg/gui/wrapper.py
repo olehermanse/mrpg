@@ -5,11 +5,22 @@ from pyglet.window import mouse
 controller = None
 window = None
 
-def init(ctrl, w, h):
+
+def update(dt):
+    controller.update(dt)
+
+
+def run():
+    pyglet.app.run()
+
+
+def init(ctrl, w, h, caption=None):
     global window
     global controller
     controller = ctrl
     window = pyglet.window.Window(w, h, resizable=True)
+    if caption:
+        window.set_caption(caption)
     pyglet.clock.schedule_interval(update, 0.01)
 
     # Event callbacks need to be registered here because of the window object:
@@ -50,11 +61,5 @@ def init(ctrl, w, h):
     @window.event
     def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
         controller.mouse_drag(x, y, dx, dy, get_button(buttons), modifiers)
+
     return window
-
-def update(dt):
-    controller.update(dt)
-
-
-def run():
-    pyglet.app.run()
