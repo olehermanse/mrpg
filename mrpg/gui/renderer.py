@@ -2,17 +2,8 @@
 
 import pyglet
 
-FONT_SIZE = 32
-SPACING = FONT_SIZE // 2
-
-
-class Color:
-    # Off black and white look a little more pleasant:
-    BLACK = (16, 16, 16, 255)
-    WHITE = (230, 230, 230, 255)
-
-    def float(c):
-        return (x / 255 for x in c)
+from mrpg.gui.commons import Color, FRAME_SPACING, create_label
+from mrpg.gui.menu import Menu
 
 
 class Renderer():
@@ -27,19 +18,19 @@ class Renderer():
         self.init_content()
 
     def init_content(self):
-        title = pyglet.text.Label(
+        title = create_label(
             "MRPG - Prototype",
-            font_name=["Ubuntu Mono", "Consolas"],
-            font_size=FONT_SIZE,
-            x=SPACING,
-            y=self.window.height - SPACING,
+            x=FRAME_SPACING,
+            y=self.window.height - FRAME_SPACING,
             anchor_x="left",
-            anchor_y="top",
-            color=Color.WHITE)
+            anchor_y="top")
         self.labels.append(title)
+        self.menu = Menu()
+        self.menu.choices("New", "Load", "Quit")
 
     def render(self):
         self.window.clear()
         pyglet.gl.glClearColor(*Color.float(Color.BLACK))
         for label in self.labels:
             label.draw()
+        self.menu.draw()
