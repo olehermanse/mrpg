@@ -12,16 +12,3 @@ class Color:
 
     def float(c):
         return (x / 255 for x in c)
-
-
-def create_label(*args, **kwargs):
-    defaults = dict(
-        font_name=["Ubuntu Mono", "Consolas"],
-        font_size=FONT_SIZE,
-        anchor_x="left",
-        anchor_y="bottom",
-        color=Color.WHITE)
-    for key in defaults:
-        if key not in kwargs:
-            kwargs[key] = defaults[key]
-    return pyglet.text.Label(*args, **kwargs)

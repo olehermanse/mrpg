@@ -1,9 +1,16 @@
 """Create a pyglet window and attach appropriate callbacks"""
 import pyglet
-from pyglet.window import mouse
+from pyglet.window import mouse, key
 
 controller = None
 window = None
+
+key_map = {
+    key.MOTION_UP: "up",
+    key.MOTION_DOWN: "down",
+    key.MOTION_LEFT: "left",
+    key.MOTION_RIGHT: "right"
+}
 
 
 def update(dt):
@@ -61,5 +68,22 @@ def init(ctrl, w, h, caption=None):
     @window.event
     def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
         controller.mouse_drag(x, y, dx, dy, get_button(buttons), modifiers)
+
+    @window.event
+    def on_key_press(symbol, modifiers):
+        if symbol in key_map:
+            controller.key_press(key_map[symbol])
+
+    @window.event
+    def on_key_release(symbol, modifiers):
+        pass
+
+    @window.event
+    def on_text(text):
+        pass
+
+    @window.event
+    def on_text_motion(text):
+        pass
 
     return window
