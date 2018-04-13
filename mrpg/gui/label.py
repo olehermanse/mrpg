@@ -18,7 +18,8 @@ class Label():
 
         self.animation_speed = 200
         self.start_x = self.label.x
-        self.travel_distance = 20
+        self.travel_distance = self.label.content_width / len(self.label.text)
+
         self.offset_x = 0
         self.selected = False
 
