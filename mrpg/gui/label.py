@@ -3,10 +3,10 @@ import pyglet
 from mrpg.gui.commons import FONT_SIZE, Color
 
 
-class Label(pyglet.text.Label):
+class Label():
     def __init__(self, *args, **kwargs):
         defaults = dict(
-            font_name=["Ubuntu Mono", "Consolas"],
+            font_name=["Ubuntu Mono", "Consolas", "Menlo", "Monaco"],
             font_size=FONT_SIZE,
             anchor_x="left",
             anchor_y="bottom",
