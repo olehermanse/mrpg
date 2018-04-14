@@ -1,3 +1,5 @@
+import sys
+
 import pyglet
 
 from mrpg.core.game import Game
@@ -16,14 +18,13 @@ class GUI():
         self.init_content()
 
     def init_content(self):
-        title = Label(
-            "MRPG - Prototype",
+        self.header = Label(
+            "MRPG Prototype",
             x=FRAME_SPACING,
             y=self.window.height - FRAME_SPACING,
             anchor_x="left",
             anchor_y="top")
-        self.labels.append(title)
-        self.menu.choices("New", "Load", "Quit")
+        self.labels.append(self.header)
 
     def draw(self):
         for label in self.labels:
@@ -32,6 +33,7 @@ class GUI():
 
     def update(self, dt):
         self.menu.update(dt)
+        self.header.update(dt)
 
 
 class Controller():
@@ -41,6 +43,8 @@ class Controller():
         self.window = wrapper.init(self, width, height, caption="MRPG")
         self.game = Game()
         self.gui = GUI(self.window)
+
+        self.gui.menu.choices(*self.game.menu.choices)
 
         cursor = self.window.get_system_mouse_cursor("crosshair")
         self.window.set_mouse_cursor(cursor)
@@ -68,8 +72,24 @@ class Controller():
     def mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         pass
 
+    def update_header(self):
+        if self.game.menu:
+            self.gui.header.text = self.game.menu.headline.replace(":", "")
+
+    def enter(self):
+        choice = self.gui.menu.pick()
+        self.game.submit(choice)
+        if self.game.menu:
+            self.gui.menu.choices(*self.game.menu.choices)
+
+        self.update_header()
+
     def key_press(self, inp):
-        if inp == "up":
-            self.gui.menu.up()
-        elif inp == "down":
-            self.gui.menu.down()
+        actions = {
+            "up": self.gui.menu.up,
+            "down": self.gui.menu.down,
+            "escape": sys.exit,
+            "enter": self.enter
+        }
+        if inp in actions:
+            actions[inp]()

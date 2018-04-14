@@ -52,3 +52,6 @@ class Menu:
     def up(self):
         if self.index > 0:
             self.index -= 1
+
+    def pick(self):
+        return self.selected()
