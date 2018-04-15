@@ -16,6 +16,26 @@ class Label(pyglet.text.Label):
                 kwargs[key] = defaults[key]
         self.label = super().__init__(*args, **kwargs)
 
+    def draw(self):
+        super().draw()
+
+    def update(self, dt):
+        pass
+
+
+class AnimatedLabel(pyglet.text.Label):
+    def __init__(self, *args, **kwargs):
+        defaults = dict(
+            font_name=["Ubuntu Mono", "Consolas", "Menlo", "Monaco"],
+            font_size=FONT_SIZE,
+            anchor_x="left",
+            anchor_y="bottom",
+            color=Color.WHITE)
+        for key in defaults:
+            if key not in kwargs:
+                kwargs[key] = defaults[key]
+        self.label = super().__init__(*args, **kwargs)
+
         self.animation_speed = 200
         self.start_x = self.x
         self.travel_distance = self.content_width / len(self.text)

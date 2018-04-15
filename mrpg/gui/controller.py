@@ -45,15 +45,20 @@ class Controller():
         pass
 
     def update_header(self):
-        if self.game.menu:
-            self.gui.header.text = self.game.menu.headline.replace(":", "")
+        self.gui.header.text = ""
+        # if self.game.menu:
+        #     self.gui.header.text = self.game.menu.headline.replace(":", "")
 
     def enter(self):
         choice = self.gui.menu.pick()
         self.game.submit(choice)
         if self.game.menu:
             self.gui.menu.choices(*self.game.menu.choices)
-
+        if self.game.battle:
+            self.gui.display.text = self.game.battle.stats()
+        else:
+            self.gui.display.text = ""
+        self.gui.set_output(self.game.get_output())
         self.update_header()
 
     def key_press(self, inp):
