@@ -7,8 +7,8 @@ class Battle():
         self.b = b
 
     def stats(self):
-        a = self.a.string_long().split(sep="\n")
-        b = self.b.string_long().split(sep="\n")
+        a = self.a.string_long(skills=False).split(sep="\n")
+        b = self.b.string_long(skills=False).split(sep="\n")
 
         return column_string("| ", a, " | ", b, " |")
 

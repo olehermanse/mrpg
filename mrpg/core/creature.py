@@ -90,15 +90,16 @@ class Creature:
     def string_short(self):
         return "Lv.{lvl} {n}".format(n=self.name, lvl=self.level)
 
-    def long_lines(self):
+    def long_lines(self, skills=True):
         lines = [self.string_short()]
         lines += self.current.get_strings(self.base)
-        lines += ["", "Skills:"]
-        lines += self.skills.equipped.names()
+        if skills:
+            lines += ["", "Skills:"]
+            lines += self.skills.equipped.names()
         return lines
 
-    def string_long(self):
-        lines = self.long_lines()
+    def string_long(self, skills=True):
+        lines = self.long_lines(skills)
         s = "\n".join(lines)
         return s
 
