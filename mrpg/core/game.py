@@ -61,7 +61,9 @@ class Game():
 
     def main_menu_choice(self, choice):
         if choice == "new":
-            self.player = Creature("Alice", skill_names=["attack", "heal"])
+            self.player = Creature(
+                "Alice",
+                skill_names=["attack", "heal", "fireball", "life_drain"])
             self.set_state(State.GAME_MENU)
         elif choice == "load":
             data = load_data("data/player.json")
