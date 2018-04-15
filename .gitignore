@@ -2,6 +2,7 @@ bin/*
 .DS_Store
 obj/*
 .d/*
+build/
 
 __pycache__
 .cache
