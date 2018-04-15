@@ -11,6 +11,7 @@ class Menu:
         self.index = 0
 
     def choices(self, *args):
+        inv_index = len(self._labels) - self.index
         for arg in args:
             assert type(arg) is str
         strings = args
@@ -27,12 +28,17 @@ class Menu:
             label = AnimatedLabel(s, x=FRAME_SPACING, y=FRAME_SPACING + y)
             labels.append(label)
         self._length = len(labels)
+        self.index = len(self._labels) - inv_index
 
     def draw(self):
         for label in self._labels:
             label.draw()
 
     def update(self, dt):
+        if self.index is None and len(self._labels) > 0:
+            self.index = 0
+        if self.index >= len(self._labels):
+            self.index = 0
         for index, label in enumerate(self._labels):
             if index == self.index:
                 label.selected = True
