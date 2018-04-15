@@ -64,6 +64,7 @@ class Game():
             self.player = Creature(
                 "Alice",
                 skill_names=["attack", "heal", "fireball", "life_drain"])
+            self.put_output("Hello, {}.".format(self.player.name))
             self.set_state(State.GAME_MENU)
         elif choice == "load":
             data = load_data("data/player.json")
