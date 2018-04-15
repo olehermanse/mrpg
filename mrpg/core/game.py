@@ -135,6 +135,7 @@ class Game():
             self.set_state(State.GAME_MENU)
             return
         enemy = self.adventure.next_monster()
+        self.put_output("A wild {} appeared".format(enemy.name))
         self.battle = Battle(self.player, enemy)
         self.set_state(State.BATTLE_MENU)
 
