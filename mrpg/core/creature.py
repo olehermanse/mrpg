@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from mrpg.utils.utils import limit
-from mrpg.core.skills import CreatureSkillCollection
+from mrpg.core.skill_collections import CreatureSkillCollection
 from mrpg.core.stats import Stats
 
 
