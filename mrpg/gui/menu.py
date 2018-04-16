@@ -15,20 +15,24 @@ class Menu:
         for arg in args:
             assert type(arg) is str
         strings = args
-        self._strings = strings
-        self._labels = []
-        if not strings:
-            return
+        labels = []
 
-        labels = self._labels
         ROW_SIZE = FONT_SIZE + SPACING
         y = len(strings) * (ROW_SIZE)
         for s in strings:
             y -= ROW_SIZE
             label = AnimatedLabel(s, x=FRAME_SPACING, y=FRAME_SPACING + y)
             labels.append(label)
-        self._length = len(labels)
-        self.index = len(self._labels) - inv_index
+
+        length = len(labels)
+        index = length - inv_index
+        if index < 0:
+            index = 0
+
+        self._length = length
+        self._strings = strings
+        self._labels = labels
+        self.index = index
 
     def draw(self):
         for label in self._labels:
