@@ -3,6 +3,14 @@ import json
 from collections import OrderedDict
 
 
+def printable(name):
+    return name[0].upper() + name[1:].lower().replace("_", " ")
+
+
+def internal(name):
+    return name.lower().replace(" ", "_").replace("'", "")
+
+
 def jsonify(data):
     return json.dumps(data, indent=2, ensure_ascii=False)
 
