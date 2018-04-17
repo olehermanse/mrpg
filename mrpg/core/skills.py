@@ -63,7 +63,6 @@ class Skills:
         name = name.lower()
         name = name.replace(" ", "_")
         skill_func = getattr(SkillFuncs, name)
-        hint = skill_func(None, None, hint=True)
-        return Skill(name, skill_func, hint)
+        return Skill(name, skill_func)
 
     names = [x for x in dir(SkillFuncs) if "__" not in x]

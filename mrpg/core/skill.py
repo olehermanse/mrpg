@@ -1,7 +1,7 @@
 class Skill:
-    def __init__(self, name, func, hint):
+    def __init__(self, name, func):
         self.func = func
-        self.hint = hint
+        self.hint = func(None, None, hint=True)
         name = name[0].upper() + name[1:]
         self.name = name.replace("_", " ")
 
