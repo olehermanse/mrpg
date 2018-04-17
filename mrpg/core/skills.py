@@ -1,5 +1,6 @@
 from mrpg.utils.utils import printable, internal
 
+
 class SkillUse:
     def __init__(self, name=None, hint=None):
         self.name = name
@@ -92,6 +93,7 @@ class SkillFuncs:
         obj.func_pair(prepare, resolve)
 
         return obj
+
 
 class Skills:
     def get(name):

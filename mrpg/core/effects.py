@@ -1,5 +1,6 @@
 from mrpg.utils.utils import printable, internal
 
+
 class Effect:
     def __init__(self, name=None, hint=None):
         self.name = name
@@ -40,6 +41,7 @@ class EffectFuncs:
         obj.func_pair(prepare, apply)
 
         return obj
+
 
 class Effects:
     def get(name):
