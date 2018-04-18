@@ -19,6 +19,34 @@ class Creature:
         self.exp = 0
         self.skills = CreatureSkillCollection(skill_names)
         self.use_skill = None
+        self.effects = []
+
+    def add_effect(self, effect, source=None):
+        self.effects.append(effect)
+        msg = "{} applied {} to {}".format(source, effect.name, self.name)
+        return [effect.message or msg]
+
+    def calculate_effects(self):
+        return [effect.calculate() for effect in self.effects]
+
+    def apply_effects(self):
+        return [effect.apply() for effect in self.effects]
+
+    def tick_effects(self):
+        return [effect.tick() for effect in self.effects]
+
+    def clean_effects(self):
+        messages = []
+        new_effects = []
+        for effect in self.effects:
+            if effect.is_done():
+                messages.append(
+                    "{}'s {} faded".format(self.name, effect.name))
+            else:
+                new_effects.append(effect)
+
+        self.effects = new_effects
+        return messages
 
     def flee(self):
         self.fleeing = True
@@ -29,16 +57,20 @@ class Creature:
         self.use_skill = self.skills.equipped.get(skill)
         assert self.use_skill is not None
 
-    def damage(self, amount, limit_check=False):
+    def damage(self, amount, limit_check=False, source=None):
         self.current["hp"] -= amount
         msg = ["{} lost {} hit points".format(self.name, amount)]
+        if source:
+            msg[0] += " from {}".format(source)
         if limit_check:
             msg.append(self.limit_check())
         return msg
 
-    def restore(self, amount, limit_check=False):
+    def restore(self, amount, limit_check=False, source=None):
         self.current["hp"] += amount
         msg = ["{} restored {} hit points".format(self.name, amount)]
+        if source:
+            msg[0] += " from {}".format(source)
         if limit_check:
             msg.append(self.limit_check())
         return msg

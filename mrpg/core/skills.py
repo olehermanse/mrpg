@@ -1,4 +1,5 @@
 from mrpg.utils.utils import printable, internal
+from mrpg.core.effects import Effects
 
 
 class SkillUse:
@@ -56,7 +57,13 @@ class SkillFuncs:
             skill.power = damage
 
         def resolve(skill, user, target):
-            return target.damage(skill.power)
+            ret = []
+            ret += target.damage(skill.power)
+            burn = Effects.get("burn")
+            burn.setup(skill, target)
+            burn.message = "{} was burned".format(target.name)
+            ret += target.add_effect(burn, source=skill.name)
+            return ret
 
         obj.func_pair(prepare, resolve)
 
