@@ -1,5 +1,4 @@
-from mrpg.utils.utils import column_string
-
+from mrpg.utils.utils import column_string, single_newline
 
 class Battle():
     def __init__(self, a, b):

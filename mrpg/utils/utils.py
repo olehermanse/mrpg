@@ -15,6 +15,29 @@ def jsonify(data):
     return json.dumps(data, indent=2, ensure_ascii=False)
 
 
+def single_newline(lst):
+    if lst[-1] != "":
+        lst.append("")
+    return lst
+
+
+def flatten_strings(strings):
+    if strings is None:
+        return []
+    if type(strings) is str:
+        return [strings]
+    assert type(strings) is list
+
+    new_list = []
+    for element in strings:
+        expanded = flatten_strings(element)
+        for string in expanded:
+            new_list.append(string)
+    for s in new_list:
+        assert type(s) is str
+    return new_list
+
+
 def limit(x, low, high):
     if x < low:
         return low

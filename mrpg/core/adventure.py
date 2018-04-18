@@ -29,7 +29,7 @@ class Adventure():
         return self.success()
 
     def success(self):
-        msg = [""]
+        msg = []
         msg.append(random.choice(["Successful adventure!", "Great success!"]))
         msg += self.player.gain_exp(self.player.exp_reward() * 3)
 

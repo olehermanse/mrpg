@@ -3,6 +3,7 @@ import sys
 from enum import Enum, unique, auto
 
 from mrpg.utils.menu import Menu
+from mrpg.utils.utils import flatten_strings
 from mrpg.platform.files import save_data, load_data
 from mrpg.core.creature import Creature
 from mrpg.core.adventure import Adventure
@@ -117,7 +118,6 @@ class Game():
             return
 
         if enemy.is_dead():
-            self.put_output("")
             self.put_output("Victory, you defeated {}.".format(enemy.name))
             self.put_output(player.gain_exp(enemy.exp_reward()))
 
@@ -152,7 +152,9 @@ class Game():
             self.battle_menu_choice(result)
 
     def put_output(self, msg, formatter=Output.Fancy):
-        self.output.append(formatter(msg))
+        strings = flatten_strings(msg)
+        for s in strings:
+            self.output.append(formatter(s))
 
     def get_output(self):
         output = self.output

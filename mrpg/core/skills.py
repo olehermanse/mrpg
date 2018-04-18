@@ -23,7 +23,8 @@ class SkillUse:
         return res
 
     def resolve(self):
-        return self.resolver(self, self.user, self.target)
+        msg = ["{} used {}".format(self.user.name, self.name)]
+        return msg + self.resolver(self, self.user, self.target)
 
 
 class SkillFuncs:
@@ -73,7 +74,10 @@ class SkillFuncs:
             skill.power = amount
 
         def resolve(skill, user, target):
-            return target.damage(skill.power) + user.restore(skill.power)
+            messages = []
+            messages += target.damage(skill.power)
+            messages += user.restore(skill.power)
+            return messages
 
         obj.func_pair(prepare, resolve)
 
