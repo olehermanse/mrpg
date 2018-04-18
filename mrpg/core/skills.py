@@ -1,62 +1,46 @@
 from mrpg.utils.utils import printable, internal
 from mrpg.core.effects import Effects
+from mrpg.core.applier import Applier
 
 
-class SkillUse:
-    def __init__(self, name=None, hint=None):
-        self.name = name
-        self.hint = hint
-        self.preparer = None
-        self.resolver = None
-        self.user = None
-        self.target = None
+class Skill(Applier):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-    def func_pair(self, preparer, resolver):
-        self.preparer, self.resolver = preparer, resolver
-
-    def prepare(self, user, target):
-        skill = self
-        self.user = user
-        self.target = target
-        res = self.preparer(skill, user, target)
-        if not res:
-            return []
-        return res
-
-    def resolve(self):
-        msg = ["{} used {}".format(self.user.name, self.name)]
-        return msg + self.resolver(self, self.user, self.target)
+    def apply(self):
+        msg = ["{} used {}".format(self.source.name, self.name)]
+        return msg + super().apply()
 
 
 class SkillFuncs:
     def attack():
-        obj = SkillUse(hint="Physical attack")
+        obj = Skill(hint="Physical attack")
 
-        def prepare(skill, user, target):
+        def calculate(skill, user, target):
             usr, tar = user.current, target.current
             damage = 2 * usr["str"]
             damage -= tar["str"]
             damage = max([damage, 1])
             skill.power = damage
 
-        def resolve(skill, user, target):
+        def apply(skill, user, target):
             return target.damage(skill.power)
 
-        obj.func_pair(prepare, resolve)
+        obj.steps(calculate, apply)
 
         return obj
 
     def fireball():
-        obj = SkillUse(hint="Hot magic")
+        obj = Skill(hint="Hot magic")
 
-        def prepare(skill, user, target):
+        def calculate(skill, user, target):
             usr, tar = user.current, target.current
             damage = 2 * usr["int"]
             damage -= tar["int"]
             damage = max([damage, 1])
             skill.power = damage
 
-        def resolve(skill, user, target):
+        def apply(skill, user, target):
             ret = []
             ret += target.damage(skill.power)
             burn = Effects.get("burn")
@@ -65,14 +49,14 @@ class SkillFuncs:
             ret += target.add_effect(burn, source=skill.name)
             return ret
 
-        obj.func_pair(prepare, resolve)
+        obj.steps(calculate, apply)
 
         return obj
 
     def life_drain():
-        obj = SkillUse(hint="Damage and restore")
+        obj = Skill(hint="Damage and restore")
 
-        def prepare(skill, user, target):
+        def calculate(skill, user, target):
             usr, tar = user.current, target.current
             amount = 3 * usr["int"] // 2
             amount -= tar["int"]
@@ -80,28 +64,28 @@ class SkillFuncs:
             amount = min([amount, user.base["hp"]])
             skill.power = amount
 
-        def resolve(skill, user, target):
+        def apply(skill, user, target):
             messages = []
             messages += target.damage(skill.power)
             messages += user.restore(skill.power)
             return messages
 
-        obj.func_pair(prepare, resolve)
+        obj.steps(calculate, apply)
 
         return obj
 
     def heal():
-        obj = SkillUse(hint="Heal self")
+        obj = Skill(hint="Heal self")
 
-        def prepare(skill, user, target):
+        def calculate(skill, user, target):
             amount = 2 * user.current["int"]
             amount = min([amount, user.base["hp"]])
             skill.power = amount
 
-        def resolve(skill, user, target):
-            return skill.user.restore(skill.power)
+        def apply(skill, user, target):
+            return skill.source.restore(skill.power)
 
-        obj.func_pair(prepare, resolve)
+        obj.steps(calculate, apply)
 
         return obj
 

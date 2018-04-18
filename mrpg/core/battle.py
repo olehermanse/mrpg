@@ -1,5 +1,6 @@
 from mrpg.utils.utils import column_string, single_newline
 
+
 class Battle():
     def __init__(self, a, b):
         self.a = a
@@ -14,18 +15,21 @@ class Battle():
     def is_over(self):
         return self.a.is_dead() or self.b.is_dead()
 
-    def pre_step(self, src, target):
-        return src.use_skill.prepare(src, target)
+    def pre_step(self, user, target):
+        skill = user.use_skill
+        skill.setup(user, target)
+        return skill.calculate()
 
-    def apply_step(self, src, target):
-        return src.use_skill.resolve()
+    def apply_step(self, user):
+        return user.use_skill.apply()
 
     def one_player_turn(self, src, target):
         out = []
         out += self.pre_step(src, target)
-        out += self.apply_step(src, target)
+        out += self.apply_step(src)
         out += src.limit_check()
         out += target.limit_check()
+        single_newline(out)
         return out
 
     def effect_resolve(self):
@@ -51,6 +55,8 @@ class Battle():
         if self.b.is_alive():
             out += self.b.tick_effects()
             out += self.b.clean_effects()
+
+        single_newline(out)
         return out
 
     def sequential_turn(self, first, last):
@@ -68,9 +74,9 @@ class Battle():
         out = ["{} and {} acted at the same time!".format(a.name, b.name)]
         out += self.pre_step(a, b)
         out += self.pre_step(b, a)
-        out += self.apply_step(a, b)
+        out += self.apply_step(a)
         single_newline(out)
-        out += self.apply_step(b, a)
+        out += self.apply_step(b)
         single_newline(out)
         out += a.limit_check()
         out += b.limit_check()

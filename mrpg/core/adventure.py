@@ -1,7 +1,7 @@
 import random
 
 from mrpg.core.creature import Creature
-from mrpg.utils.utils import limit
+from mrpg.utils.utils import limit, single_newline
 
 
 class Adventure():
@@ -32,6 +32,7 @@ class Adventure():
         msg = []
         msg.append(random.choice(["Successful adventure!", "Great success!"]))
         msg += self.player.gain_exp(self.player.exp_reward() * 3)
+        single_newline(msg)
 
         return msg
 

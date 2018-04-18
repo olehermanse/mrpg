@@ -1,35 +1,14 @@
 from mrpg.utils.utils import printable, internal
+from mrpg.core.applier import Applier
 
-
-class Effect:
-    def __init__(self, name=None, hint=None, duration=None):
-        self.name = name
-        self.hint = hint
-        self.duration = duration
-        self.preparer = None
-        self.applier = None
-        self.skill = None
-        self.target = None
+class Effect(Applier):
+    def __init__(
+            self,
+            duration=None,
+            **kwargs):
+        super().__init__(**kwargs)
         self.skip_calc = False
-        self.message = None
-
-    def func_pair(self, calc, apply):
-        self.calculator = calc
-        self.applier = apply
-
-    def setup(self, skill, target):
-        effect = self
-        effect.skill = skill
-        effect.target = target
-
-    def calculate(self):
-        if self.calculator and not self.skip_calc:
-            return self.calculator(self, self.skill, self.target)
-        return []
-
-    def apply(self):
-        assert self.applier
-        return self.applier(self, self.target)
+        self.duration = duration
 
     def tick(self):
         assert self.duration is not None
@@ -46,10 +25,10 @@ class EffectFuncs:
         def calculate(effect, skill, target):
             effect.power = skill.power // 3
 
-        def apply(effect, target):
+        def apply(effect, skill, target):
             return target.damage(effect.power, source=effect.name)
 
-        obj.func_pair(calculate, apply)
+        obj.steps(calculate, apply)
 
         return obj
 

@@ -16,7 +16,7 @@ def jsonify(data):
 
 
 def single_newline(lst):
-    if lst[-1] != "":
+    if len(lst) > 0 and lst[-1] != "":
         lst.append("")
     return lst
 
