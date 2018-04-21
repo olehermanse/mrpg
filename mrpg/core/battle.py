@@ -76,6 +76,7 @@ class Battle():
 
     def concurrent_turn(self, a, b):
         out = ["{} and {} acted at the same time!".format(a.name, b.name)]
+        single_newline(out)
         out += self.pre_step(a, b)
         out += self.pre_step(b, a)
         out += self.apply_step(a)
