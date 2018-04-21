@@ -57,6 +57,13 @@ class Creature:
         self.use_skill = self.skills.equipped.get(skill)
         assert self.use_skill is not None
 
+    def mitigation(self, amount, type):
+        if type == "physical":
+            return max(1, amount - self.current["str"])
+        if type == "magic":
+            return max(1, amount - self.current["int"])
+        raise AssertionError
+
     def damage(self, amount, limit_check=False, source=None):
         self.current["hp"] -= amount
         msg = ["{} lost {} hit points".format(self.name, amount)]

@@ -1,4 +1,4 @@
-from mrpg.utils.utils import printable, internal
+from mrpg.utils.utils import printable, internal, limit
 from mrpg.core.effects import Effects
 from mrpg.core.applier import Applier
 
@@ -14,54 +14,37 @@ class Skill(Applier):
 
 class SkillFuncs:
     def attack():
-        obj = Skill(hint="Physical attack")
-
         def calculate(skill, user, target):
-            usr, tar = user.current, target.current
-            damage = 2 * usr["str"]
-            damage -= tar["str"]
-            damage = max([damage, 1])
+            power = 2 * user.current["str"]
+            damage = target.mitigation(power, "physical")
             skill.power = damage
 
         def apply(skill, user, target):
             return target.damage(skill.power)
 
-        obj.steps(calculate, apply)
-
-        return obj
+        return Skill(hint="Physical attack", calculate=calculate, apply=apply)
 
     def fireball():
-        obj = Skill(hint="Hot magic")
-
         def calculate(skill, user, target):
-            usr, tar = user.current, target.current
-            damage = 2 * usr["int"]
-            damage -= tar["int"]
-            damage = max([damage, 1])
+            power = 2 * user.current["int"]
+            damage = target.mitigation(power, "magic")
             skill.power = damage
 
         def apply(skill, user, target):
-            ret = []
-            ret += target.damage(skill.power)
-            burn = Effects.get("burn")
-            burn.setup(skill, target)
+            burn = Effects.get("burn", skill=skill, target=target)
             burn.message = "{} was burned".format(target.name)
+            ret = target.damage(skill.power)
             ret += target.add_effect(burn, source=skill.name)
             return ret
 
-        obj.steps(calculate, apply)
-
-        return obj
+        return Skill(hint="Hot magic", calculate=calculate, apply=apply)
 
     def life_drain():
-        obj = Skill(hint="Damage and restore")
-
         def calculate(skill, user, target):
-            usr, tar = user.current, target.current
+            usr = user.current
             amount = 3 * usr["int"] // 2
-            amount -= tar["int"]
-            amount = max([amount, 2])
-            amount = min([amount, user.base["hp"]])
+            amount = target.mitigation(amount, "magic")
+            amount = limit(amount, 2, user.base["hp"])
             skill.power = amount
 
         def apply(skill, user, target):
@@ -70,13 +53,10 @@ class SkillFuncs:
             messages += user.restore(skill.power)
             return messages
 
-        obj.steps(calculate, apply)
-
-        return obj
+        return Skill(
+            hint="Damage and restore", calculate=calculate, apply=apply)
 
     def heal():
-        obj = Skill(hint="Heal self")
-
         def calculate(skill, user, target):
             amount = 2 * user.current["int"]
             amount = min([amount, user.base["hp"]])
@@ -85,9 +65,7 @@ class SkillFuncs:
         def apply(skill, user, target):
             return skill.source.restore(skill.power)
 
-        obj.steps(calculate, apply)
-
-        return obj
+        return Skill(hint="Heal self", calculate=calculate, apply=apply)
 
 
 class Skills:

@@ -34,15 +34,14 @@ class EffectFuncs:
 
 
 class Effects:
-    def get(name, skill=None):
+    def get(name, skill=None, target=None):
         if type(name) is not str:
             name = name.name
         internal_name = internal(name)
         default_name = printable(internal_name)
         effect_func = getattr(EffectFuncs, internal_name)
         effect_obj = effect_func()
-        if skill:
-            effect_obj.skill = skill
+        effect_obj.setup(skill, target)
         if not effect_obj.name:
             assert "'" not in name  # Effects with quotes must always set name
             effect_obj.name = default_name
