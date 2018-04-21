@@ -59,6 +59,11 @@ class Creature:
         self.effects = [val for key, val in new_effects.items()]
         return messages
 
+    def battle_end(self):
+        self.effects = []
+        self.effect_queue = []
+        self.use_skill = None
+
     def flee(self):
         self.fleeing = True
         return "{} fled like a big coward.".format(self.name)

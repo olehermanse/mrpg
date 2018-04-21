@@ -12,6 +12,10 @@ class Battle():
 
         return column_string("| ", a, " | ", b, " |")
 
+    def end(self):
+        self.a.battle_end()
+        self.b.battle_end()
+
     def is_over(self):
         return self.a.is_dead() or self.b.is_dead()
 

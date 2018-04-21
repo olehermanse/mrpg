@@ -117,6 +117,7 @@ class Game():
 
     def end_battle(self):
         player, enemy = self.battle.a, self.battle.b
+        self.battle.end()
         self.battle = None
         if player.is_dead():
             self.put_output("Game over!")
