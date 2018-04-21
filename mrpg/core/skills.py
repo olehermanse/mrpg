@@ -34,7 +34,7 @@ class SkillFuncs:
             burn = Effects.get("burn", skill=skill, target=target)
             burn.message = "{} was burned".format(target.name)
             ret = target.damage(skill.power)
-            ret += target.add_effect(burn, source=skill.name)
+            target.add_effect(burn, source=skill.name)
             return ret
 
         return Skill(hint="Hot magic", calculate=calculate, apply=apply)
@@ -76,9 +76,8 @@ class SkillFuncs:
             bleed = Effects.get("Bleed")
             bleed.setup(skill, target)
             bleed.message = "{} started bleeding".format(target.name)
-            return (
-                target.add_effect(bleed, source=skill.name) +
-                skill.source.restore(skill.power))
+            target.add_effect(bleed, source=skill.name)
+            return skill.source.restore(skill.power)
 
         return Skill(
             hint="Fully heal, but start bleeding",

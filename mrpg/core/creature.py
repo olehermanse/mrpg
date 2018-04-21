@@ -20,11 +20,20 @@ class Creature:
         self.skills = CreatureSkillCollection(skill_names)
         self.use_skill = None
         self.effects = []
+        self.effect_queue = []
+
+    def add_effects(self):
+        out = []
+        for effect in self.effect_queue:
+            msg = "{} applied {} to {}".format(
+                effect.source, effect.name, self.name)
+            self.effects.append(effect)
+            out.append(effect.message or msg)
+        self.effect_queue = []
+        return out
 
     def add_effect(self, effect, source=None):
-        self.effects.append(effect)
-        msg = "{} applied {} to {}".format(source, effect.name, self.name)
-        return [effect.message or msg]
+        self.effect_queue.append(effect)
 
     def calculate_effects(self):
         return [effect.calculate() for effect in self.effects]

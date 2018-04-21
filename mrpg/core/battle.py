@@ -15,32 +15,48 @@ class Battle():
     def is_over(self):
         return self.a.is_dead() or self.b.is_dead()
 
-    def pre_step(self, user, target):
+    def skill_calculate(self, user, target):
         skill = user.use_skill
         skill.setup(user, target)
         return skill.calculate()
 
-    def apply_step(self, user):
+    def skill_apply(self, user):
         return user.use_skill.apply()
 
     def one_player_turn(self, src, target):
         out = []
-        out += self.pre_step(src, target)
-        out += self.apply_step(src)
+        out += self.skill_calculate(src, target)
+        out += self.skill_apply(src)
         out += src.limit_check()
         out += target.limit_check()
+        out += self.add_effects()
+        out += self.clean_effects()
         single_newline(out)
+        return out
+
+    def add_effects(self):
+        out = []
+        if self.a.is_alive():
+            out += self.a.add_effects()
+        if self.b.is_alive():
+            out += self.b.add_effects()
+        return out
+
+    def clean_effects(self):
+        out = []
+        if self.a.is_alive():
+            out += self.a.clean_effects()
+        if self.b.is_alive():
+            out += self.b.clean_effects()
         return out
 
     def effect_resolve(self):
         out = []
+        out += self.add_effects()
+        out += self.clean_effects()
+
         # Check once here, because creatures may be "temporarily" dead
-        a = self.a.is_alive()
-        b = self.b.is_alive()
-        if a:
-            out += self.a.clean_effects()
-        if b:
-            out += self.b.clean_effects()
+        a, b = self.a.is_alive(), self.b.is_alive()
         if a:
             out += self.a.calculate_effects()
         if b:
@@ -76,12 +92,12 @@ class Battle():
 
     def concurrent_turn(self, a, b):
         out = ["{} and {} acted at the same time!".format(a.name, b.name)]
+        out += self.skill_calculate(a, b)
+        out += self.skill_calculate(b, a)
         single_newline(out)
-        out += self.pre_step(a, b)
-        out += self.pre_step(b, a)
-        out += self.apply_step(a)
+        out += self.skill_apply(a)
         single_newline(out)
-        out += self.apply_step(b)
+        out += self.skill_apply(b)
         single_newline(out)
         out += a.limit_check()
         out += b.limit_check()
