@@ -67,6 +67,24 @@ class SkillFuncs:
 
         return Skill(hint="Heal self", calculate=calculate, apply=apply)
 
+    def blood_pact():
+        def calculate(skill, user, target):
+            skill.power = user.base["hp"]
+
+        def apply(skill, user, target):
+            target = user
+            bleed = Effects.get("Bleed")
+            bleed.setup(skill, target)
+            bleed.message = "{} started bleeding".format(target.name)
+            return (
+                target.add_effect(bleed, source=skill.name) +
+                skill.source.restore(skill.power))
+
+        return Skill(
+            hint="Fully heal, but start bleeding",
+            calculate=calculate,
+            apply=apply)
+
 
 class Skills:
     def get(name):

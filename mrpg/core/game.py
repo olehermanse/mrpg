@@ -10,6 +10,14 @@ from mrpg.core.adventure import Adventure
 from mrpg.core.battle import Battle
 
 
+def new_player():
+    return Creature(
+        "Alice",
+        skill_names=[
+            "attack", "heal", "fireball", "life_drain", "blood_pact"
+        ])
+
+
 class Output():
     class Fancy():
         def __init__(self, msg):
@@ -62,9 +70,7 @@ class Game():
 
     def main_menu_choice(self, choice):
         if choice == "new":
-            self.player = Creature(
-                "Alice",
-                skill_names=["attack", "heal", "fireball", "life_drain"])
+            self.player = new_player()
             self.put_output("Hello, {}.".format(self.player.name))
             self.set_state(State.GAME_MENU)
         elif choice == "load":

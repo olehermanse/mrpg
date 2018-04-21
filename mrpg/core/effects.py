@@ -1,11 +1,9 @@
 from mrpg.utils.utils import printable, internal
 from mrpg.core.applier import Applier
 
+
 class Effect(Applier):
-    def __init__(
-            self,
-            duration=None,
-            **kwargs):
+    def __init__(self, duration=None, **kwargs):
         super().__init__(**kwargs)
         self.skip_calc = False
         self.duration = duration
@@ -20,17 +18,23 @@ class Effect(Applier):
 
 class EffectFuncs:
     def burn():
-        obj = Effect(hint="Hot", duration=1)
-
         def calculate(effect, skill, target):
             effect.power = skill.power // 3
 
         def apply(effect, skill, target):
             return target.damage(effect.power, source=effect.name)
 
-        obj.steps(calculate, apply)
+        return Effect(
+            hint="Hot", duration=1, calculate=calculate, apply=apply)
 
-        return obj
+    def bleed():
+        def calculate(effect, skill, target):
+            effect.power = skill.power // 5
+
+        def apply(effect, skill, target):
+            return target.damage(effect.power, source=effect.name)
+
+        return Effect(hint="Ow", duration=5, calculate=calculate, apply=apply)
 
 
 class Effects:
