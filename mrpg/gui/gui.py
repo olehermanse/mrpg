@@ -1,5 +1,5 @@
 from mrpg.gui.menu import Menu
-from mrpg.gui.label import AnimatedLabel, Label
+from mrpg.gui.label import MenuLabel, Label
 from mrpg.gui.commons import FRAME_SPACING, FONT_SIZE_SMALL
 
 

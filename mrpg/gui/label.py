@@ -23,7 +23,7 @@ class Label(pyglet.text.Label):
         pass
 
 
-class AnimatedLabel(Label):
+class MenuLabel(Label):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

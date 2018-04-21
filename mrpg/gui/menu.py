@@ -1,5 +1,5 @@
 from mrpg.gui.commons import SPACING, FRAME_SPACING, FONT_SIZE
-from mrpg.gui.label import AnimatedLabel
+from mrpg.gui.label import MenuLabel
 
 
 class Menu:
@@ -22,7 +22,7 @@ class Menu:
         for s in strings:
             y -= ROW_SIZE
             s = s[0].upper() + s[1:]
-            label = AnimatedLabel(s, x=FRAME_SPACING, y=FRAME_SPACING + y)
+            label = MenuLabel(s, x=FRAME_SPACING, y=FRAME_SPACING + y)
             labels.append(label)
 
         length = len(labels)
