@@ -10,6 +10,10 @@ key_map = {
     key.MOTION_DOWN: "down",
     key.MOTION_LEFT: "left",
     key.MOTION_RIGHT: "right",
+    key.W: "up",
+    key.A: "left",
+    key.S: "down",
+    key.D: "right",
     key.ENTER: "enter",
     key.ESCAPE: "escape"
 }
