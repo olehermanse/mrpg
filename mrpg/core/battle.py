@@ -38,6 +38,10 @@ class Battle():
         a = self.a.is_alive()
         b = self.b.is_alive()
         if a:
+            out += self.a.clean_effects()
+        if b:
+            out += self.b.clean_effects()
+        if a:
             out += self.a.calculate_effects()
         if b:
             out += self.b.calculate_effects()

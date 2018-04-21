@@ -37,15 +37,17 @@ class Creature:
 
     def clean_effects(self):
         messages = []
-        new_effects = []
+        new_effects = {}
         for effect in self.effects:
+            name = effect.name
             if effect.is_done():
-                messages.append(
-                    "{}'s {} faded".format(self.name, effect.name))
+                messages.append("{}'s {} faded".format(self.name, name))
             else:
-                new_effects.append(effect)
+                if (name not in new_effects) or (effect.duration >
+                                                 new_effects[name].duration):
+                    new_effects[name] = effect
 
-        self.effects = new_effects
+        self.effects = [val for key, val in new_effects.items()]
         return messages
 
     def flee(self):
