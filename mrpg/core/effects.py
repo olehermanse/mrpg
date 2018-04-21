@@ -19,20 +19,20 @@ class Effect(Applier):
 class EffectFuncs:
     def burn():
         def calculate(effect, skill, target):
-            effect.power = skill.power // 3
+            effect.damage = max(1, skill.damage // 3)
 
         def apply(effect, skill, target):
-            return target.damage(effect.power, source=effect.name)
+            return target.damage(effect.damage, source=effect.name)
 
         return Effect(
             hint="Hot", duration=1, calculate=calculate, apply=apply)
 
     def bleed():
         def calculate(effect, skill, target):
-            effect.power = skill.power // 5
+            effect.damage = skill.damage // 5
 
         def apply(effect, skill, target):
-            return target.damage(effect.power, source=effect.name)
+            return target.damage(effect.damage, source=effect.name)
 
         return Effect(hint="Ow", duration=5, calculate=calculate, apply=apply)
 
