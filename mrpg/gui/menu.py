@@ -21,6 +21,7 @@ class Menu:
         y = len(strings) * (ROW_SIZE)
         for s in strings:
             y -= ROW_SIZE
+            s = s[0].upper() + s[1:]
             label = AnimatedLabel(s, x=FRAME_SPACING, y=FRAME_SPACING + y)
             labels.append(label)
 
