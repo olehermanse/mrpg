@@ -35,6 +35,17 @@ class EffectFuncs:
 
         return Effect(hint="Ow", duration=5, calculate=calculate, apply=apply)
 
+    def shock():
+        def calculate(effect, skill, target):
+            effect.reduction = target.base["dex"] // 3
+
+        def apply(effect, skill, target):
+            target.current["dex"] -= effect.reduction
+            return []
+
+        return Effect(
+            hint="Zap", duration=5, calculate=calculate, apply=apply)
+
 
 class Effects:
     def get(name, skill=None, target=None):

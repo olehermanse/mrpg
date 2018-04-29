@@ -14,7 +14,7 @@ def new_player():
     return Creature(
         "Alice",
         skill_names=[
-            "attack", "heal", "fireball", "life_drain", "blood_pact"
+            "attack", "heal", "fireball", "life_drain", "blood_pact", "lightning"
         ])
 
 

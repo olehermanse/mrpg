@@ -27,7 +27,7 @@ class Creature:
         out = []
         for effect in self.effect_queue:
             msg = "{} applied {} to {}".format(
-                effect.source, effect.name, self.name)
+                effect.source.name, effect.name, self.name)
             self.effects.append(effect)
             out.append(effect.message or msg)
         self.effect_queue = []

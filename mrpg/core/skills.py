@@ -100,6 +100,22 @@ class SkillFuncs:
             calculate=calculate,
             apply=apply)
 
+    def lightning():
+        def calculate(skill, user, target):
+            skill.power = 2 * user.current["int"]
+            skill.damage = target.mitigation(skill.power, "magic")
+
+        def apply(skill, user, target):
+            shock = Effects.get("Shock")
+            shock.setup(skill, target)
+            shock.message = "{} was shocked".format(target.name)
+            target.add_effect(shock)
+
+        return Skill(
+            hint="Hurts and shocks",
+            calculate=calculate,
+            apply=apply)
+
 
 class Skills:
     def get(name):

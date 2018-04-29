@@ -65,6 +65,8 @@ class Battle():
             out += self.a.calculate_effects()
         if b:
             out += self.b.calculate_effects()
+        self.a.reset_stats()
+        self.b.reset_stats()
         if a:
             out += self.a.apply_effects()
         if b:
