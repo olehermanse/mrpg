@@ -141,7 +141,7 @@ class Game():
             self.put_output(self.adventure.end())
             self.adventure = None
             self.battle = None
-            self.player.town_heal()
+            self.player.full_heal()
             self.set_state(State.GAME_MENU)
             return
         enemy = self.adventure.next_monster()

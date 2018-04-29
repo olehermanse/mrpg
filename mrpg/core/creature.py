@@ -109,8 +109,18 @@ class Creature:
             msg.append(self.limit_check())
         return msg
 
-    def town_heal(self):
+    def reset_stats(self):
+        self.current["str"] = self.base["str"]
+        self.current["dex"] = self.base["dex"]
+        self.current["int"] = self.base["int"]
+
+    def reset_resources(self):
         self.current["hp"] = self.base["hp"]
+        self.current["mp"] = self.base["mp"]
+
+    def full_heal(self):
+        self.reset_resources()
+        self.reset_stats()
 
     def limit_check(self):
         if self.current["hp"] <= 0 or self.dead:
