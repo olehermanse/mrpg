@@ -17,6 +17,7 @@ class Applier:
         self.target = target
         self.message = message
         self.skip_calc = False
+        self.skip_apply = False
 
     def steps(self, calculate, apply):
         self._calculate, self._apply = calculate, apply
@@ -26,13 +27,21 @@ class Applier:
         self.target = target
 
     def calculate(self):
+        if self.skip_calc:
+            return []
         res = []
-        if self._calculate and not self.skip_calc:
+        if self._calculate:
             res = self._calculate(self, self.source, self.target)
         if not res:
             return []
         return res
 
     def apply(self):
-        assert self._apply
-        return self._apply(self, self.source, self.target)
+        if self.skip_apply:
+            return []
+        res = []
+        if self._apply:
+            res = self._apply(self, self.source, self.target)
+        if not res:
+            return []
+        return res

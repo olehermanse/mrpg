@@ -5,7 +5,6 @@ from mrpg.core.applier import Applier
 class Effect(Applier):
     def __init__(self, duration=None, **kwargs):
         super().__init__(**kwargs)
-        self.skip_calc = False
         self.duration = duration
 
     def tick(self):

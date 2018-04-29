@@ -6,10 +6,24 @@ from mrpg.core.applier import Applier
 class Skill(Applier):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.mana_cost = None
 
     def apply(self):
+        if self.skip_apply:
+            return []
         msg = ["{} used {}".format(self.source.name, self.name)]
+        if self.mana_cost:
+            self.source.current["mp"] -= self.mana_cost
         return msg + super().apply()
+
+    def calculate(self):
+        if self.skip_calc:
+            return []
+        res = super().calculate()
+        if self.mana_cost and self.mana_cost > self.source.current["mp"]:
+            self.skip_apply = True
+            return ["{} doesn't have enough mana".format(self.source.name)]
+        return res
 
 
 class SkillFuncs:
@@ -27,6 +41,7 @@ class SkillFuncs:
         def calculate(skill, user, target):
             skill.power = 2 * user.current["int"]
             skill.healing = min([skill.power, user.base["hp"]])
+            skill.mana_cost = user.level + 2
 
         def apply(skill, user, target):
             return skill.source.restore(skill.healing)
@@ -37,6 +52,7 @@ class SkillFuncs:
         def calculate(skill, user, target):
             skill.power = 2 * user.current["int"]
             skill.damage = target.mitigation(skill.power, "magic")
+            skill.mana_cost = user.level + 2
 
         def apply(skill, user, target):
             burn = Effects.get("burn", skill=skill, target=target)
