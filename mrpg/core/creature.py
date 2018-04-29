@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-from mrpg.utils.utils import limit
+from mrpg.utils.utils import limit, internal
 from mrpg.core.skill_collections import CreatureSkillCollection
 from mrpg.core.stats import Stats
 
@@ -21,6 +21,7 @@ class Creature:
         self.use_skill = None
         self.effects = []
         self.effect_queue = []
+        self.dead = False
 
     def add_effects(self):
         out = []
@@ -34,6 +35,14 @@ class Creature:
 
     def add_effect(self, effect, source=None):
         self.effect_queue.append(effect)
+
+    def has_effect(self, effect_name):
+        effect_name = internal(effect_name)
+        for e in self.effects:
+            compare = internal(e.name)
+            if compare == effect_name:
+                return True
+        return False
 
     def calculate_effects(self):
         return [effect.calculate() for effect in self.effects]
@@ -85,6 +94,8 @@ class Creature:
         msg = ["{} lost {} hit points".format(self.name, amount)]
         if source:
             msg[0] += " from {}".format(source)
+        if self.dead:
+            msg = []  # Nice to not print extra damage messages when dead
         if limit_check:
             msg.append(self.limit_check())
         return msg
@@ -102,7 +113,7 @@ class Creature:
         self.current["hp"] = self.base["hp"]
 
     def limit_check(self):
-        if self.current["hp"] <= 0:
+        if self.current["hp"] <= 0 or self.dead:
             self.current["hp"] = 0
             return ["{} died".format(self.name)]
         if self.current["hp"] > self.base["hp"]:
@@ -113,7 +124,7 @@ class Creature:
     def is_alive(self):
         hp = self.current["hp"]
         assert hp >= 0
-        return hp > 0
+        return hp > 0 and not self.dead
 
     def is_dead(self):
         return not self.is_alive()

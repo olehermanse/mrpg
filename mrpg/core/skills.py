@@ -82,8 +82,12 @@ class SkillFuncs:
     def blood_pact():
         def calculate(skill, user, target):
             skill.damage = skill.healing = user.base["hp"]
+            skill.kill = user.has_effect("Bleed")
 
         def apply(skill, user, target):
+            if skill.kill:
+                user.dead = True
+                return ["{} bled out".format(user.name)]
             target = user
             bleed = Effects.get("Bleed")
             bleed.setup(skill, target)
