@@ -112,7 +112,17 @@ class SkillFuncs:
             target.add_effect(shock)
 
         return Skill(
-            hint="Hurts and shocks",
+            hint="Hurts and shocks", calculate=calculate, apply=apply)
+
+    def true_strike():
+        def calculate(skill, user, target):
+            skill.damage = user.current["dex"]
+
+        def apply(skill, user, target):
+            target.damage(skill.damage)
+
+        return Skill(
+            hint="Ignores damage mitigation",
             calculate=calculate,
             apply=apply)
 
