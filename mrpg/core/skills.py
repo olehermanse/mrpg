@@ -121,7 +121,7 @@ class SkillFuncs:
             skill.damage = user.current["dex"]
 
         def apply(skill, user, target):
-            target.damage(skill.damage)
+            return target.damage(skill.damage)
 
         return Skill(
             hint="Ignores damage mitigation",
