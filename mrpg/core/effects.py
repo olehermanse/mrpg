@@ -28,7 +28,7 @@ class EffectFuncs:
 
     def bleed():
         def calculate(effect, skill, target):
-            effect.damage = skill.damage // 5
+            effect.damage = max(1, target.base["hp"] // 10)
 
         def apply(effect, skill, target):
             return target.damage(effect.damage, source=effect.name)
