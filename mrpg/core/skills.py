@@ -128,6 +128,20 @@ class SkillFuncs:
             calculate=calculate,
             apply=apply)
 
+    def slash():
+        def calculate(skill, user, target):
+            skill.power = user.current["str"]
+            skill.damage = target.mitigation(skill.power, "physical")
+
+        def apply(skill, user, target):
+            bleed = Effects.get("Bleed")
+            bleed.setup(skill, target)
+            bleed.message = "{} started bleeding".format(target.name)
+            target.add_effect(bleed)
+            return target.damage(skill.damage)
+
+        return Skill(hint="Causes bleed", calculate=calculate, apply=apply)
+
 
 class Skills:
     def get(name):

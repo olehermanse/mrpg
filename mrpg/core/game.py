@@ -15,7 +15,7 @@ def new_player():
         "Alice",
         skill_names=[
             "attack", "heal", "fireball", "life_drain", "blood_pact",
-            "lightning", "true_strike"
+            "lightning", "true_strike", "slash"
         ])
 
 
