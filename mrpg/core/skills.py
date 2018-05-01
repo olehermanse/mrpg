@@ -57,6 +57,8 @@ class SkillFuncs:
         def apply(skill, user, target):
             burn = Effects.get("burn", skill=skill, target=target)
             burn.message = "{} was burned".format(target.name)
+            burn.damage = skill.damage // 5
+            burn.duration = 5
             ret = target.damage(skill.damage)
             target.add_effect(burn)
             return ret

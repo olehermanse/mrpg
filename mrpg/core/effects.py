@@ -18,13 +18,13 @@ class Effect(Applier):
 class EffectFuncs:
     def burn():
         def calculate(effect, skill, target):
-            effect.damage = max(1, skill.damage // 4)
+            effect.damage = max(effect.damage, 1)
 
         def apply(effect, skill, target):
             return target.damage(effect.damage, source=effect.name)
 
         return Effect(
-            hint="Hot", duration=3, calculate=calculate, apply=apply)
+            hint="Hot", calculate=calculate, apply=apply)
 
     def bleed():
         def calculate(effect, skill, target):
