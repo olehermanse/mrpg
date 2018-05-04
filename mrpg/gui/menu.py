@@ -3,12 +3,14 @@ from mrpg.gui.label import MenuLabel
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, x=FRAME_SPACING, y=FRAME_SPACING):
         self._strings = []
         self.background = None
         self._labels = []
         self._length = 0
         self.index = 0
+        self.x = x
+        self.y = y
 
     def choices(self, *args):
         inv_index = len(self._labels) - self.index
@@ -22,7 +24,7 @@ class Menu:
         for s in strings:
             y -= ROW_SIZE
             s = s[0].upper() + s[1:]
-            label = MenuLabel(s, x=FRAME_SPACING, y=FRAME_SPACING + y)
+            label = MenuLabel(s, x=self.x, y=self.y + y)
             labels.append(label)
 
         length = len(labels)

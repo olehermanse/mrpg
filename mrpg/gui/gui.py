@@ -1,6 +1,7 @@
 from mrpg.gui.menu import Menu
-from mrpg.gui.label import MenuLabel, Label, TypingLabel
+from mrpg.gui.label import MenuLabel, Label, Printer
 from mrpg.gui.commons import FRAME_SPACING, FONT_SIZE_SMALL
+from mrpg.core.game import Output
 
 
 class GUI():
@@ -28,15 +29,13 @@ class GUI():
             font_size=FONT_SIZE_SMALL,
             multiline=True,
             width=600)
-        self.outputter = TypingLabel(
+        self.outputter = Printer(
             "",
-            x=self.window.width - FRAME_SPACING,
+            x=self.window.width - FRAME_SPACING - 600,
             y=self.window.height - FRAME_SPACING,
-            anchor_x="right",
+            anchor_x="left",
             anchor_y="top",
-            font_size=FONT_SIZE_SMALL,
-            multiline=True,
-            width=600)
+            font_size=FONT_SIZE_SMALL)
         self.labels.append(self.header)
         self.labels.append(self.outputter)
         self.labels.append(self.display)
@@ -55,6 +54,9 @@ class GUI():
                 strings.append(message)
                 continue
             data = message.data
+            if type(message) is Output.Display:
+                self.display.text = data
+                continue
             if type(data) is list:
                 data = "\n".join(data)
             strings.append(data)
