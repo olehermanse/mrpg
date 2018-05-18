@@ -1,11 +1,27 @@
 from mrpg.utils.utils import printable, internal
-from mrpg.core.applier import Applier
+from mrpg.core.event import Event
 
 
-class Effect(Applier):
-    def __init__(self, duration=None, **kwargs):
-        super().__init__(**kwargs)
+class Effect:
+    def __init__(
+            self,
+            duration=None,
+            hint=None,
+            proc=None,
+            name=None,
+            skip=False,
+            source=None,
+            target=None):
         self.duration = duration
+        self.hint = hint
+        self._proc = proc
+        self.name = name
+        self.skip = skip
+        self.source = source
+        self.target = target
+
+    def __str__(self):
+        return self.name
 
     def tick(self):
         assert self.duration is not None
@@ -14,37 +30,38 @@ class Effect(Applier):
     def is_done(self):
         return (self.duration <= 0)
 
+    def proc(self):
+        if self._proc:
+            res = self._proc(self, self.source, self.target)
+            if not res:
+                return []
+            if type(res) is not list:
+                return [res]
+            return res
+        return []
+
 
 class EffectFuncs:
     def burn():
-        def calculate(effect, skill, target):
-            effect.damage = max(effect.damage, 1)
+        def proc(effect, skill, target):
+            damage = max(effect.damage, 1)
+            return Event(target=target, damage=damage, source=effect)
 
-        def apply(effect, skill, target):
-            return target.damage(effect.damage, source=effect.name)
-
-        return Effect(
-            hint="Hot", calculate=calculate, apply=apply)
+        return Effect(hint="Hot", proc=proc)
 
     def bleed():
-        def calculate(effect, skill, target):
-            effect.damage = max(1, target.base["hp"] // 10)
+        def proc(effect, skill, target):
+            damage = max(1, target.base["hp"] // 10)
+            return Event(target=target, damage=damage, source=effect)
 
-        def apply(effect, skill, target):
-            return target.damage(effect.damage, source=effect.name)
-
-        return Effect(hint="Ow", duration=5, calculate=calculate, apply=apply)
+        return Effect(hint="Ow", duration=5, proc=proc)
 
     def shock():
-        def calculate(effect, skill, target):
-            effect.reduction = target.base["dex"] // 3
+        def proc(effect, skill, target):
+            reduction = target.base["dex"] // 3
+            return Event(target=target, reduction={"dex": reduction})
 
-        def apply(effect, skill, target):
-            target.current["dex"] -= effect.reduction
-            return []
-
-        return Effect(
-            hint="Zap", duration=5, calculate=calculate, apply=apply)
+        return Effect(hint="Zap", duration=5, proc=proc)
 
 
 class Effects:
@@ -55,7 +72,10 @@ class Effects:
         default_name = printable(internal_name)
         effect_func = getattr(EffectFuncs, internal_name)
         effect_obj = effect_func()
-        effect_obj.setup(skill, target)
+        if skill:
+            effect_obj.skill = skill
+        if target:
+            effect_obj.target = target
         if not effect_obj.name:
             assert "'" not in name  # Effects with quotes must always set name
             effect_obj.name = default_name

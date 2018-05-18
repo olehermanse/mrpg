@@ -3,7 +3,7 @@ from collections import OrderedDict
 from mrpg.utils.utils import limit, internal
 from mrpg.core.skill_collections import CreatureSkillCollection
 from mrpg.core.stats import Stats
-
+from mrpg.core.event import Event
 
 class Creature:
     def __init__(self, name="Not", level=1, skill_names=None):
@@ -20,21 +20,13 @@ class Creature:
         self.skills = CreatureSkillCollection(skill_names)
         self.use_skill = None
         self.effects = []
-        self.effect_queue = []
-        self.dead = False
+        self.alive = True
 
-    def add_effects(self):
-        out = []
-        for effect in self.effect_queue:
-            msg = "{} applied {} to {}".format(
-                effect.source.name, effect.name, self.name)
-            self.effects.append(effect)
-            out.append(effect.message or msg)
-        self.effect_queue = []
-        return out
+    def __str__(self):
+        return self.name
 
     def add_effect(self, effect, source=None):
-        self.effect_queue.append(effect)
+        self.effects.append(effect)
 
     def has_effect(self, effect_name):
         effect_name = internal(effect_name)
@@ -44,14 +36,14 @@ class Creature:
                 return True
         return False
 
-    def calculate_effects(self):
-        return [effect.calculate() for effect in self.effects]
-
-    def apply_effects(self):
-        return [effect.apply() for effect in self.effects]
+    def proc_effects(self):
+        outcomes = []
+        for effect in self.effects:
+            outcomes += effect.proc()
+        return outcomes
 
     def tick_effects(self):
-        return [effect.tick() for effect in self.effects]
+        return filter(None, [effect.tick() for effect in self.effects])
 
     def clean_effects(self):
         messages = []
@@ -59,7 +51,8 @@ class Creature:
         for effect in self.effects:
             name = effect.name
             if effect.is_done():
-                messages.append("{}'s {} faded".format(self.name, name))
+                msg = Event(message="{}'s {} faded".format(self.name, name))
+                messages.append(msg)
             else:
                 if (name not in new_effects) or (effect.duration >
                                                  new_effects[name].duration):
@@ -70,7 +63,6 @@ class Creature:
 
     def battle_end(self):
         self.effects = []
-        self.effect_queue = []
         self.use_skill = None
 
     def flee(self):
@@ -89,24 +81,18 @@ class Creature:
             return max(1, amount - self.current["int"])
         raise AssertionError
 
-    def damage(self, amount, limit_check=False, source=None):
+    def damage(self, amount, source=None):
         self.current["hp"] -= amount
         msg = ["{} lost {} hit points".format(self.name, amount)]
         if source:
             msg[0] += " from {}".format(source)
-        if self.dead:
-            msg = []  # Nice to not print extra damage messages when dead
-        if limit_check:
-            msg.append(self.limit_check())
         return msg
 
-    def restore(self, amount, limit_check=False, source=None):
+    def restore(self, amount, source=None):
         self.current["hp"] += amount
         msg = ["{} restored {} hit points".format(self.name, amount)]
         if source:
             msg[0] += " from {}".format(source)
-        if limit_check:
-            msg.append(self.limit_check())
         return msg
 
     def reset_stats(self):
@@ -122,19 +108,20 @@ class Creature:
         self.reset_resources()
         self.reset_stats()
 
+    def kill(self):
+        self.current["hp"] = 0
+        self.alive = False
+
     def limit_check(self):
-        if self.current["hp"] <= 0 or self.dead:
+        if self.alive and (self.current["hp"] <= 0):
             self.current["hp"] = 0
-            return ["{} died".format(self.name)]
+            return [Event(target=self, dead=True)]
         if self.current["hp"] > self.base["hp"]:
             self.current["hp"] = self.base["hp"]
-            return ["{} was fully healed".format(self.name)]
         return []
 
     def is_alive(self):
-        hp = self.current["hp"]
-        assert hp >= 0
-        return hp > 0 and not self.dead
+        return self.alive
 
     def is_dead(self):
         return not self.is_alive()
@@ -159,9 +146,6 @@ class Creature:
             self.set_level(self.level + 1)
             msg.append("{} leveled up".format(self.name))
         return msg
-
-    def __str__(self):
-        return self.string_short()
 
     def string_short(self):
         return "Lv.{lvl} {n}".format(n=self.name, lvl=self.level)

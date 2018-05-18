@@ -32,24 +32,32 @@ def test_creature_skills():
 
 def test_creature_damage():
     c = Creature("Fighter", 11)
-    msg = c.damage(c.current["hp"] - 1, limit_check=True)
+    msg = c.damage(c.current["hp"] - 1)
+    for o in c.limit_check():
+        o.apply()
+
     assert msg
     assert len(msg) > 0
     assert c.is_alive()
-    msg = c.damage(1, limit_check=True)
+    msg = c.damage(1)
+    for o in c.limit_check():
+        o.apply()
     assert msg
     assert len(msg) > 0
-    assert c.is_alive() is False
+    assert not c.is_alive()
 
 
 def test_creature_restore():
     c = Creature("Fighter", 11)
     msg = []
-    msg += c.damage(c.current["hp"], limit_check=False)
-    msg += c.restore(1, limit_check=True)
+    msg += c.damage(c.current["hp"])
+    msg += c.restore(1)
+    for o in c.limit_check():
+        o.apply()
+
     assert msg
     assert len(msg) >= 2
-    assert c.is_alive() is True
+    assert c.is_alive()
     assert c.current["hp"] == 1
 
 

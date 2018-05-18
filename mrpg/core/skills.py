@@ -1,146 +1,143 @@
 from mrpg.utils.utils import printable, internal, limit
 from mrpg.core.effects import Effects
-from mrpg.core.applier import Applier
+from mrpg.core.event import Event
 
 
-class Skill(Applier):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.mana_cost = None
+class Skill:
+    def __init__(
+            self,
+            hint=None,
+            use=None,
+            name=None,
+            skip=False,
+            user=None,
+            mana_cost=None,
+            target=None):
+        self.skip = skip
+        self.hint = hint
+        self._use = use
+        self.user = user
+        self.name = name
+        self._mana_cost = mana_cost
 
-    def apply(self):
-        if self.skip_apply:
+    def __str__(self):
+        return self.name
+
+    def setup(self, user, target):
+        self.user = user
+        self.target = target
+
+    @property
+    def mana_cost(self):
+        if not self._mana_cost:
+            return None
+        return self._mana_cost(self.user)
+
+    def use(self):
+        if self.skip:
             return []
-        msg = ["{} used {}".format(self.source.name, self.name)]
+        if not self._use:
+            return []
+        if self.mana_cost and self.mana_cost > self.user.current["mp"]:
+            return [Event(message="Not enough mana")]
+        outcomes = self._use(self, self.user, self.target)
+        assert outcomes
+        if type(outcomes) is not list:
+            outcomes = [outcomes]
+        assert type(outcomes[0]) is Event
         if self.mana_cost:
-            self.source.current["mp"] -= self.mana_cost
-        return msg + super().apply()
-
-    def calculate(self):
-        if self.skip_calc:
-            return []
-        res = super().calculate()
-        if self.mana_cost and self.mana_cost > self.source.current["mp"]:
-            self.skip_apply = True
-            return ["{} doesn't have enough mana".format(self.source.name)]
-        return res
+            mana = Event(mana=-self.mana_cost, target=self.user)
+            outcomes = outcomes[0:1] + [mana] + outcomes[1:]
+        outcomes[0].skill = self
+        outcomes[0].user = self.user
+        return outcomes
 
 
 class SkillFuncs:
     def attack():
-        def calculate(skill, user, target):
-            skill.power = 2 * user.current["str"]
-            skill.damage = target.mitigation(skill.power, "physical")
+        def use(skill, user, target):
+            power = 2 * user.current["str"]
+            damage = target.mitigation(power, "physical")
+            return Event(target=target, damage=damage)
 
-        def apply(skill, user, target):
-            return target.damage(skill.damage)
-
-        return Skill(hint="Physical attack", calculate=calculate, apply=apply)
+        return Skill(hint="Physical attack", use=use)
 
     def heal():
-        def calculate(skill, user, target):
-            skill.power = 2 * user.current["int"]
-            skill.healing = min([skill.power, user.base["hp"]])
-            skill.mana_cost = user.level + 2
+        def use(skill, user, target):
+            power = 2 * user.current["int"]
+            healing = min(power, user.base["hp"])
+            return Event(target=user, restore=healing)
 
-        def apply(skill, user, target):
-            return skill.source.restore(skill.healing)
-
-        return Skill(hint="Heal self", calculate=calculate, apply=apply)
+        mana_cost = lambda user: user.level + 2
+        return Skill(hint="Heal self", use=use, mana_cost=mana_cost)
 
     def fireball():
-        def calculate(skill, user, target):
-            skill.power = 2 * user.current["int"]
-            skill.damage = target.mitigation(skill.power, "magic")
-            skill.mana_cost = user.level + 2
+        def use(skill, user, target):
+            power = 2 * user.current["int"]
+            damage = target.mitigation(power, "magic")
 
-        def apply(skill, user, target):
             burn = Effects.get("burn", skill=skill, target=target)
             burn.message = "{} was burned".format(target.name)
-            burn.damage = skill.damage // 5
+            burn.damage = damage // 5
             burn.duration = 5
-            ret = target.damage(skill.damage)
-            target.add_effect(burn)
-            return ret
+            return Event(target=target, damage=damage, effect=burn)
 
-        return Skill(hint="Hot magic", calculate=calculate, apply=apply)
+        mana_cost = lambda user: user.level + 2
+        return Skill(hint="Hot magic", use=use, mana_cost=mana_cost)
 
     def life_drain():
-        def calculate(skill, user, target):
-            usr = user.current
-            skill.power = 3 * usr["int"] // 2
-            amount = target.mitigation(skill.power, "magic")
-            skill.damage = limit(amount, 2, user.base["hp"])
+        def use(skill, user, target):
+            power = 3 * user.current["int"] // 2
+            amount = target.mitigation(power, "magic")
+            amount = limit(amount, 2, user.base["hp"])
 
-        def apply(skill, user, target):
-            messages = []
-            messages += target.damage(skill.damage)
-            messages += user.restore(skill.damage)
-            return messages
+            return [
+                Event(damage=amount, target=target),
+                Event(restore=amount, target=user)
+            ]
 
-        return Skill(
-            hint="Damage and restore", calculate=calculate, apply=apply)
+        mana_cost = lambda user: user.level + 2
+        return Skill(hint="Damage and restore", use=use, mana_cost=mana_cost)
 
     def blood_pact():
-        def calculate(skill, user, target):
-            skill.damage = skill.healing = user.base["hp"]
-            skill.kill = user.has_effect("Bleed")
+        def use(skill, user, target):
+            if user.has_effect("Bleed"):
+                msg = None  # "{} bled out.".format(user.name)
+                return Event(target=user, dead=True, message=msg)
 
-        def apply(skill, user, target):
-            if skill.kill:
-                user.dead = True
-                return ["{} bled out".format(user.name)]
-            target = user
-            bleed = Effects.get("Bleed")
-            bleed.setup(skill, target)
-            bleed.message = "{} started bleeding".format(target.name)
-            target.add_effect(bleed)
-            return skill.source.restore(skill.healing)
+            healing = user.base["hp"]
+            bleed = Effects.get("Bleed", skill=skill, target=user)
+            return Event(target=user, effect=bleed, restore=healing)
 
-        return Skill(
-            hint="Fully heal, but start bleeding",
-            calculate=calculate,
-            apply=apply)
+        return Skill(hint="Fully heal, but start bleeding", use=use)
 
     def lightning():
-        def calculate(skill, user, target):
-            skill.power = 2 * user.current["int"]
-            skill.damage = target.mitigation(skill.power, "magic")
+        def use(skill, user, target):
+            power = 2 * user.current["int"]
+            damage = target.mitigation(power, "magic")
+            shock = Effects.get("Shock", skill=skill, target=target)
+            return Event(target=target, effect=shock, damage=damage)
 
-        def apply(skill, user, target):
-            shock = Effects.get("Shock")
-            shock.setup(skill, target)
-            shock.message = "{} was shocked".format(target.name)
-            target.add_effect(shock)
-
-        return Skill(
-            hint="Hurts and shocks", calculate=calculate, apply=apply)
+        mana_cost = lambda user: user.level + 2
+        return Skill(hint="Hurts and shocks", use=use, mana_cost=mana_cost)
 
     def true_strike():
-        def calculate(skill, user, target):
-            skill.damage = user.current["dex"]
+        def use(skill, user, target):
+            damage = user.current["dex"]
+            return Event(target=target, damage=damage)
 
-        def apply(skill, user, target):
-            return target.damage(skill.damage)
-
-        return Skill(
-            hint="Ignores damage mitigation",
-            calculate=calculate,
-            apply=apply)
+        return Skill(hint="Ignores damage mitigation", use=use)
 
     def slash():
-        def calculate(skill, user, target):
-            skill.power = user.current["str"]
-            skill.damage = target.mitigation(skill.power, "physical")
+        def use(skill, user, target):
+            power = user.current["str"]
+            damage = target.mitigation(power, "physical")
 
-        def apply(skill, user, target):
-            bleed = Effects.get("Bleed")
-            bleed.setup(skill, target)
-            bleed.message = "{} started bleeding".format(target.name)
-            target.add_effect(bleed)
-            return target.damage(skill.damage)
+            bleed = Effects.get("Bleed", skill=skill, target=target)
+            # bleed.message = "{} started bleeding".format(target.name)
+            return Event(target=target, damage=damage, effect=bleed)
 
-        return Skill(hint="Causes bleed", calculate=calculate, apply=apply)
+        return Skill(hint="Causes bleed", use=use)
 
 
 class Skills:

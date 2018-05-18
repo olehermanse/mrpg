@@ -8,6 +8,7 @@ from mrpg.platform.files import save_data, load_data
 from mrpg.core.creature import Creature
 from mrpg.core.adventure import Adventure
 from mrpg.core.battle import Battle
+from mrpg.core.event import Event
 
 
 def new_player():
@@ -111,7 +112,10 @@ class Game():
     def progress_battle(self):
         if self.battle.is_over():
             self.end_battle()
-        out = self.battle.resolve_turn()
+        out = []
+        for outcomes in self.battle.turn():
+            out += Event.apply_all(outcomes)
+            out.append("")
         self.put_output(out)
         if self.battle.is_over():
             self.end_battle()
