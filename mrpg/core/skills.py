@@ -68,7 +68,9 @@ class SkillFuncs:
             healing = min(power, user.base["hp"])
             return Event(target=user, restore=healing)
 
-        mana_cost = lambda user: user.level + 2
+        def mana_cost(user):
+            return user.level + 2
+
         return Skill(hint="Heal self", use=use, mana_cost=mana_cost)
 
     def fireball():
@@ -82,7 +84,9 @@ class SkillFuncs:
             burn.duration = 5
             return Event(target=target, damage=damage, effect=burn)
 
-        mana_cost = lambda user: user.level + 2
+        def mana_cost(user):
+            return user.level + 2
+
         return Skill(hint="Hot magic", use=use, mana_cost=mana_cost)
 
     def life_drain():
@@ -96,7 +100,9 @@ class SkillFuncs:
                 Event(restore=amount, target=user)
             ]
 
-        mana_cost = lambda user: user.level + 2
+        def mana_cost(user):
+            return user.level + 2
+
         return Skill(hint="Damage and restore", use=use, mana_cost=mana_cost)
 
     def blood_pact():
@@ -118,7 +124,9 @@ class SkillFuncs:
             shock = Effects.get("Shock", skill=skill, target=target)
             return Event(target=target, effect=shock, damage=damage)
 
-        mana_cost = lambda user: user.level + 2
+        def mana_cost(user):
+            return user.level + 2
+
         return Skill(hint="Hurts and shocks", use=use, mana_cost=mana_cost)
 
     def true_strike():
