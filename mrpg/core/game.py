@@ -4,7 +4,7 @@ from enum import Enum, unique, auto
 
 from mrpg.utils.menu import Menu
 from mrpg.utils.utils import flatten_strings, single_newline
-from mrpg.platform.files import save_data, load_data
+from mrpg.system.files import save_data, load_data
 from mrpg.core.creature import Creature
 from mrpg.core.adventure import Adventure
 from mrpg.core.battle import Battle
