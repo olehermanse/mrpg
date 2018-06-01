@@ -1,6 +1,9 @@
+import random
+
 from collections import OrderedDict
 
 from mrpg.core.skills import Skills
+
 
 class SkillCollection:
     def __init__(self, add_skills=None):
@@ -27,6 +30,9 @@ class SkillCollection:
             return self.skills[name]
         index = self.index(name)
         return None if index is None else self.skills[index]
+
+    def get_random(self):
+        return random.choice(self.skills)
 
     def add(self, skill):
         if isinstance(skill, list):

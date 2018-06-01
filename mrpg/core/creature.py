@@ -74,6 +74,10 @@ class Creature:
         self.use_skill = self.skills.equipped.get(skill)
         assert self.use_skill is not None
 
+    def ai(self):
+        self.use_skill = self.skills.equipped.get_random()
+        assert self.use_skill is not None
+
     def mitigation(self, amount, type):
         if type == "physical":
             return max(1, amount - self.current["str"])

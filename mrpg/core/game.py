@@ -106,7 +106,7 @@ class Game():
             self.end_battle()
             return
         self.battle.a.pick_skill(choice)
-        self.battle.b.pick_skill("attack")
+        self.battle.b.ai()
         self.progress_battle()
 
     def progress_battle(self):
