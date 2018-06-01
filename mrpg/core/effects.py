@@ -8,6 +8,7 @@ class Effect:
             duration=None,
             hint=None,
             proc=None,
+            modifier=None,
             name=None,
             skip=False,
             source=None,
@@ -15,6 +16,7 @@ class Effect:
         self.duration = duration
         self.hint = hint
         self._proc = proc
+        self._modifier = modifier
         self.name = name
         self.skip = skip
         self.source = source
@@ -40,6 +42,17 @@ class Effect:
             return res
         return []
 
+    def modify(self):
+        if self._modifier:
+            res = self._modifier(self, self.source, self.target)
+            if not res:
+                return []
+            if type(res) is not list:
+                return [res]
+            return res
+        return []
+
+
 
 class EffectFuncs:
     def burn():
@@ -57,11 +70,11 @@ class EffectFuncs:
         return Effect(hint="Ow", duration=5, proc=proc)
 
     def shock():
-        def proc(effect, skill, target):
+        def modifier(effect, skill, target):
             reduction = target.base["dex"] // 3
             return Event(target=target, reduction={"dex": reduction})
 
-        return Effect(hint="Zap", duration=5, proc=proc)
+        return Effect(hint="Zap", duration=5, modifier=modifier)
 
 
 class Effects:

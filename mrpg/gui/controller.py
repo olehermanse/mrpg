@@ -31,6 +31,10 @@ class Controller():
 
     def update(self, dt):
         self.gui.update(dt)
+        if self.game.battle:
+            self.gui.display.text = self.game.battle.stats()
+        else:
+            self.gui.display.text = ""
 
     def mouse_motion(self, x, y, dx, dy):
         pass
@@ -54,10 +58,6 @@ class Controller():
         self.game.submit(choice)
         if self.game.menu:
             self.gui.menu.choices(*self.game.menu.choices)
-        if self.game.battle:
-            self.gui.display.text = self.game.battle.stats()
-        else:
-            self.gui.display.text = ""
         self.gui.set_output(self.game.get_output())
         self.update_header()
 

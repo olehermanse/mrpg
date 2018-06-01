@@ -36,6 +36,12 @@ class Creature:
                 return True
         return False
 
+    def modify_effects(self):
+        outcomes = []
+        for effect in self.effects:
+            outcomes += effect.modify()
+        return outcomes
+
     def proc_effects(self):
         outcomes = []
         for effect in self.effects:

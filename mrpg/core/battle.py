@@ -87,13 +87,18 @@ class Battle():
 
     def effect_step(self):
         out = []
+        self.a.reset_stats()
+        self.b.reset_stats()
+
         out += self.limit_checks()
         out += self.clean_effects()
 
         a, b = self.a.is_alive(), self.b.is_alive()
         if a:
+            out += self.a.modify_effects()
             out += self.a.proc_effects()
         if b:
+            out += self.b.modify_effects()
             out += self.b.proc_effects()
 
         add_pause(out)
@@ -105,15 +110,21 @@ class Battle():
         if self.a.is_alive():
             out += self.a.tick_effects()
             out += self.a.clean_effects()
+            self.a.reset_stats()
+            out += self.a.modify_effects()
         if self.b.is_alive():
             out += self.b.tick_effects()
             out += self.b.clean_effects()
+            self.b.reset_stats()
+            out += self.b.modify_effects()
+
+        self.a.reset_stats()
+        self.b.reset_stats()
+
         return out
 
     def turn(self):
         for outcomes in self.skill_step():
             yield outcomes
-        self.a.reset_stats()
-        self.b.reset_stats()
         yield self.effect_step()
         yield self.end_step()
