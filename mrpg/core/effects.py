@@ -53,7 +53,6 @@ class Effect:
         return []
 
 
-
 class EffectFuncs:
     def burn():
         def proc(effect, skill, target):

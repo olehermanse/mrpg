@@ -63,8 +63,7 @@ class Battle():
 
     def concurrent_turn(self, a, b):
         outcomes = []
-        msg = Event(
-            message="{} and {} acted at the same time!".format(a, b))
+        msg = Event(message="{} and {} acted at the same time!".format(a, b))
         outcomes.append(msg)
         outcomes += self.skill_use(a, b)
         outcomes += self.skill_use(b, a)

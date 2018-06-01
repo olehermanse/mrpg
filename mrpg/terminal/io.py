@@ -68,6 +68,7 @@ def terminal_menu(menu_object):
         if choice is not None:
             return choice
 
+
 def menu(*args, **kwargs):
     """Print a menu in terminal and get input until valid
 

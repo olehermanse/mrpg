@@ -5,6 +5,7 @@ from mrpg.core.skill_collections import CreatureSkillCollection
 from mrpg.core.stats import Stats
 from mrpg.core.event import Event
 
+
 class Creature:
     def __init__(self, name="Not", level=1, skill_names=None):
         assert isinstance(level, int)

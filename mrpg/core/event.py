@@ -36,7 +36,8 @@ class Event():
         self.limit = limit
 
     def __str__(self):
-        return "{} - {} - {} - {}".format(self.skill, self.user, self.source, self.message)
+        return "{} - {} - {} - {}".format(
+            self.skill, self.user, self.source, self.message)
 
     def apply(self):
         outputs = []
@@ -95,6 +96,7 @@ class Event():
             else:
                 outputs += output
         return outputs
+
 
 def add_pause(l):
     return
