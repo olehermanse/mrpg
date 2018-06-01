@@ -13,9 +13,17 @@ class Adventure():
 
     def next_monster(self):
         self.monsters_left -= 1
-        level = self.player.level - random.randint(0, 5)
+        level = self.player.level - random.randint(0, 3)
         level = limit(level, 1, 100)
-        return Creature("Ogre", level, skill_names=["attack"])
+        skills = {
+            "Ogre": ["attack"],
+            "Cultist": ["attack", "life_drain", "blood_pact"],
+            "Wizard": ["attack", "fireball", "heal", "lightning"],
+            "Slime": ["attack", "heal", "slash", "true_strike"]
+        }
+        name = random.choice(list(skills))
+        skills = skills[name]
+        return Creature(name, level, skill_names=skills)
 
     def is_over(self):
         if self.player.fleeing:
