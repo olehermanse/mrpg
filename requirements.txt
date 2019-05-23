@@ -1,1 +1,1 @@
-pyglet==1.4.0a1
+pyglet==1.3.2

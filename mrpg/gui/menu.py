@@ -1,11 +1,12 @@
-from mrpg.gui.commons import SPACING, FRAME_SPACING, FONT_SIZE
+from mrpg.gui.commons import font_spacing, frame_spacing
 from mrpg.gui.label import MenuLabel
 
 
 class Menu:
-    def __init__(self, x=FRAME_SPACING, y=FRAME_SPACING):
+    def __init__(self, x, y, font_size):
         self._strings = []
         self.background = None
+        self.font_size = font_size
         self._labels = []
         self._length = 0
         self.index = 0
@@ -19,12 +20,17 @@ class Menu:
         strings = args
         labels = []
 
-        ROW_SIZE = FONT_SIZE + SPACING
-        y = len(strings) * (ROW_SIZE)
+        row_size = self.font_size + font_spacing(self.font_size)
+        y = len(strings) * (row_size)
         for s in strings:
-            y -= ROW_SIZE
+            y -= row_size
             s = s[0].upper() + s[1:]
-            label = MenuLabel(s, x=self.x, y=self.y + y)
+            label = MenuLabel(
+                8 * self.font_size,
+                s,
+                x=self.x,
+                y=self.y + y,
+                font_size=self.font_size)
             labels.append(label)
 
         length = len(labels)

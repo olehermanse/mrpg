@@ -1,6 +1,6 @@
 from mrpg.gui.menu import Menu
 from mrpg.gui.label import MenuLabel, Label, Printer
-from mrpg.gui.commons import FRAME_SPACING, FONT_SIZE_SMALL
+from mrpg.gui.commons import frame_spacing, font_big, font_normal, font_spacing
 from mrpg.core.game import Output
 
 
@@ -8,34 +8,39 @@ class GUI():
     def __init__(self, window):
         self.window = window
         self.labels = []
-        self.menu = Menu()
+        width, height = self.window.get_viewport_size()
+        spacing = frame_spacing(height)
+        self.menu = Menu(spacing, spacing, font_normal(height))
 
         self.init_content()
 
     def init_content(self):
+        width, height = self.window.get_viewport_size()
+
         self.header = Label(
             "MRPG Prototype",
-            x=FRAME_SPACING,
-            y=self.window.height - FRAME_SPACING,
+            x=frame_spacing(height),
+            y=height - frame_spacing(height),
+            font_size=font_big(height),
             anchor_x="left",
             anchor_y="top")
 
         self.display = Label(
             "",
-            x=FRAME_SPACING,
-            y=self.window.height - FRAME_SPACING,
+            x=frame_spacing(height),
+            y=height - frame_spacing(height),
+            font_size=font_normal(height),
             anchor_x="left",
             anchor_y="top",
-            font_size=FONT_SIZE_SMALL,
-            multiline=True,
-            width=600)
+            width=width // 2,
+            multiline=True)
         self.outputter = Printer(
             "",
-            x=self.window.width - FRAME_SPACING - 600,
-            y=self.window.height - FRAME_SPACING,
+            x=width // 2,
+            y=height - frame_spacing(height),
             anchor_x="left",
             anchor_y="top",
-            font_size=FONT_SIZE_SMALL)
+            font_size=font_normal(height))
         self.labels.append(self.header)
         self.labels.append(self.outputter)
         self.labels.append(self.display)

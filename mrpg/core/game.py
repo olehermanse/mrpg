@@ -71,6 +71,7 @@ class Game():
             "Battle Menu:", lst=skill_names, hints=skill_hints, f="flee")
 
     def main_menu_choice(self, choice):
+        self.put_output("", Output.Display)
         if choice == "new":
             self.player = new_player()
             self.put_output("Hello, {}.".format(self.player.name))
@@ -88,6 +89,7 @@ class Game():
             sys.exit(0)  # TODO
 
     def game_menu_choice(self, choice):
+        self.put_output("", Output.Display)
         if choice == "adventure":
             self.adventure = Adventure(self.player)
             self.progress_adventure()
@@ -101,6 +103,7 @@ class Game():
             sys.exit(0)  # TODO
 
     def battle_menu_choice(self, choice):
+        self.put_output("", Output.Display)
         if choice == "flee":
             self.put_output(self.player.flee())
             self.end_battle()
@@ -117,6 +120,7 @@ class Game():
             out += Event.apply_all(outcomes)
             out.append("")
         self.put_output(out)
+        self.put_output(self.battle.stats(), Output.Display)
         if self.battle.is_over():
             self.end_battle()
 
@@ -141,18 +145,24 @@ class Game():
         else:
             self.set_state(State.GAME_MENU)
 
-    def progress_adventure(self):
-        if self.adventure.is_over():
-            self.put_output(self.adventure.end())
-            self.adventure = None
-            self.battle = None
-            self.player.full_heal()
-            self.set_state(State.GAME_MENU)
-            return
+    def new_battle(self):
         enemy = self.adventure.next_monster()
         self.put_output("A wild {} appeared".format(enemy.name))
         self.battle = Battle(self.player, enemy)
         self.set_state(State.BATTLE_MENU)
+        self.put_output(self.battle.stats(), Output.Display)
+        pass
+
+    def progress_adventure(self):
+        if self.adventure.is_over():
+            self.put_output(self.adventure.end())
+            self.put_output("", Output.Display)
+            self.adventure = None
+            self.battle = None
+            self.player.full_heal()
+            self.set_state(State.GAME_MENU)
+        else:
+            self.new_battle()
 
     def submit(self, choice):
         result = self.menu.choice(choice)

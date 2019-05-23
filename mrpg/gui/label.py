@@ -1,13 +1,12 @@
 import pyglet
 
-from mrpg.gui.commons import FONT_SIZE, Color
+from mrpg.gui.commons import Color
 
 
 class Label(pyglet.text.Label):
     def __init__(self, *args, **kwargs):
         defaults = dict(
             font_name=["Ubuntu Mono", "Consolas", "Menlo", "Monaco"],
-            font_size=FONT_SIZE,
             anchor_x="left",
             anchor_y="bottom",
             color=Color.WHITE)
@@ -78,9 +77,9 @@ class TypingLabel(Label):
 
 
 class Printer:
-    def __init__(self, text, **kwargs):
+    def __init__(self, text, font_size, **kwargs):
         self.kwargs = kwargs
-        self.spacing = 40
+        self.font_size = font_size
         self.x = kwargs["x"]
         self.y = kwargs["y"]
         self.set_text(text)
@@ -89,11 +88,13 @@ class Printer:
     def set_text(self, text):
         self.strings = text.split("\n")
         self.labels = []
+        font_size = self.font_size
+        row_size = 3 * font_size // 2
         y = self.y
         for string in self.strings:
-            label = TypingLabel(string, **self.kwargs)
+            label = TypingLabel(string, font_size=font_size, **self.kwargs)
             label.y = y
-            y -= self.spacing
+            y -= row_size
             label.enabled = False
             self.labels.append(label)
 
@@ -120,19 +121,21 @@ class Printer:
             self.strings = self.strings[1:]
 
         y = self.y
+        font_size = self.font_size
+        row_size = 3 * font_size // 2
         for label in self.labels:
             label.target_y = y
-            y -= self.spacing
+            y -= row_size
 
         for label in self.labels:
             label.update(dt)
 
 
 class MenuLabel(Label):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, animation_speed, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.animation_speed = 200
+        self.animation_speed = animation_speed
         self.start_x = self.x
         self.travel_distance = self.content_width / len(self.text)
 

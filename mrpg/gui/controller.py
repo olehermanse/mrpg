@@ -10,11 +10,10 @@ from mrpg.gui.gui import GUI
 
 class Controller():
     def __init__(self, width=1280, height=720):
-        self.width = width
-        self.height = height
         self.window = wrapper.init(self, width, height, caption="MRPG")
         self.game = Game()
         self.gui = GUI(self.window)
+        self.width, self.height = self.window.get_viewport_size()
 
         self.gui.menu.choices(*self.game.menu.choices)
 
@@ -26,15 +25,20 @@ class Controller():
 
     def draw(self):
         self.window.clear()
+
         pyglet.gl.glClearColor(*Color.float(Color.BLACK))
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
+        pyglet.gl.glLoadIdentity()
+
+        width, height = self.window.get_viewport_size()
+
+        pyglet.gl.glOrtho(0, width, 0, height, -1, 1)
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
+
         self.gui.draw()
 
     def update(self, dt):
         self.gui.update(dt)
-        if self.game.battle:
-            self.gui.display.text = self.game.battle.stats()
-        else:
-            self.gui.display.text = ""
 
     def mouse_motion(self, x, y, dx, dy):
         pass
