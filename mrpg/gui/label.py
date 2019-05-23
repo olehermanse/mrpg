@@ -9,7 +9,8 @@ class Label(pyglet.text.Label):
             font_name=["Ubuntu Mono", "Consolas", "Menlo", "Monaco"],
             anchor_x="left",
             anchor_y="bottom",
-            color=Color.WHITE)
+            color=Color.WHITE,
+            width=500)
         for key in defaults:
             if key not in kwargs:
                 kwargs[key] = defaults[key]
@@ -77,13 +78,26 @@ class TypingLabel(Label):
 
 
 class Printer:
-    def __init__(self, text, font_size, **kwargs):
+    def __init__(self, text, font_size=100, **kwargs):
         self.kwargs = kwargs
-        self.font_size = font_size
-        self.x = kwargs["x"]
-        self.y = kwargs["y"]
+        x = kwargs["x"] if "x" in kwargs else 0
+        y = kwargs["y"] if "y" in kwargs else 0
+        font_size = font_size
+        self.labels = []
+        self.resize(x, y, font_size)
         self.set_text(text)
         self.index = 0
+
+    def resize(self, x, y, font_size):
+        self.x = x
+        self.y = y
+        self.font_size = font_size
+        row_size = 3 * font_size // 2
+        for label in self.labels:
+            label.x = x
+            label.y = y
+            label.font_size = font_size
+            y -= row_size
 
     def set_text(self, text):
         self.strings = text.split("\n")
@@ -93,6 +107,7 @@ class Printer:
         y = self.y
         for string in self.strings:
             label = TypingLabel(string, font_size=font_size, **self.kwargs)
+            label.x = self.x
             label.y = y
             y -= row_size
             label.enabled = False
@@ -134,13 +149,18 @@ class Printer:
 class MenuLabel(Label):
     def __init__(self, animation_speed, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.animation_speed = animation_speed
-        self.start_x = self.x
-        self.travel_distance = self.content_width / len(self.text)
-
         self.offset_x = 0
         self.selected = False
+        self.resize(animation_speed, self.x, self.y, self.font_size)
+
+    def resize(self, animation_speed, x, y, font_size):
+        self.animation_speed = animation_speed
+        self.y = y
+        self.start_x = x
+        self.font_size = font_size
+        self.travel_distance = self.content_width / len(self.text)
+        if self.offset_x > self.travel_distance:
+            self.offset_x = self.travel_distance
 
     def update(self, dt):
         if self.selected:

@@ -2,7 +2,7 @@ def font_big(window_height):
     return window_height // 24
 
 def font_normal(window_height):
-    return 3 * font_big(window_height) // 5
+    return int(0.7 * font_big(window_height))
 
 def font_spacing(font_size):
     return font_size // 2

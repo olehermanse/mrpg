@@ -13,6 +13,21 @@ class Menu:
         self.x = x
         self.y = y
 
+    def resize(self, x, y, font_size):
+        self.x = x
+        self.y = y
+        self.font_size = font_size
+
+        row_size = self.font_size + font_spacing(self.font_size)
+        y = len(self._labels) * (row_size)
+        for label in self._labels:
+            y -= row_size
+            label.resize(
+                8 * self.font_size,
+                x=self.x,
+                y=self.y + y,
+                font_size=self.font_size)
+
     def choices(self, *args):
         inv_index = len(self._labels) - self.index
         for arg in args:

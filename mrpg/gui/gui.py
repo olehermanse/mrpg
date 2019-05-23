@@ -19,31 +19,39 @@ class GUI():
 
         self.header = Label(
             "MRPG Prototype",
-            x=frame_spacing(height),
-            y=height - frame_spacing(height),
-            font_size=font_big(height),
             anchor_x="left",
             anchor_y="top")
 
         self.display = Label(
             "",
-            x=frame_spacing(height),
-            y=height - frame_spacing(height),
-            font_size=font_normal(height),
             anchor_x="left",
             anchor_y="top",
-            width=width // 2,
             multiline=True)
         self.outputter = Printer(
             "",
-            x=width // 2,
-            y=height - frame_spacing(height),
             anchor_x="left",
-            anchor_y="top",
-            font_size=font_normal(height))
+            anchor_y="top")
+
         self.labels.append(self.header)
         self.labels.append(self.outputter)
         self.labels.append(self.display)
+
+        self.resize(width, height)
+
+    def resize(self, width, height):
+        self.header.x=frame_spacing(height)
+        self.header.y=height - frame_spacing(height)
+        self.header.font_size=font_big(height)
+
+        self.display.x=frame_spacing(height)
+        self.display.y=height - frame_spacing(height)
+        self.display.font_size=font_normal(height)
+        self.display.width=width // 2
+
+        self.outputter.resize(width // 2, height - frame_spacing(height), font_normal(height))
+
+        spacing = frame_spacing(height)
+        self.menu.resize(spacing, spacing, font_normal(height))
 
     def draw(self):
         for label in self.labels:

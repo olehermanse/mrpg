@@ -2,9 +2,6 @@
 import pyglet
 from pyglet.window import mouse, key
 
-controller = None
-window = None
-
 key_map = {
     key.MOTION_UP: "up",
     key.MOTION_DOWN: "down",
@@ -18,66 +15,61 @@ key_map = {
     key.ESCAPE: "escape"
 }
 
-
-def update(dt):
-    controller.update(dt)
-
-
 def run():
     pyglet.app.run()
 
+class GameWindow(pyglet.window.Window):
+    def __init__(self, w, h, controller):
+        super().__init__(
+            w, h, caption='MRPG', resizable=True)
+        self.ratio = w / h
+        self.controller = controller
+        self.set_minimum_size(w // 2, h // 2)
 
-def init(ctrl, w, h, caption=None):
-    global window
-    global controller
-    controller = ctrl
-    window = pyglet.window.Window(w, h, resizable=True)
-    if caption:
-        window.set_caption(caption)
-    pyglet.clock.schedule_interval(update, 0.01)
+        pyglet.clock.schedule_interval(self.update, 0.01)
 
-    # Event callbacks need to be registered here because of the window object:
+    def update(self, dt):
+        self.controller.update(dt)
 
-    @window.event
-    def on_draw():
-        controller.draw()
+    def on_resize(self, w, h):
+        w = int(self.ratio * h)  # Locked aspect ratio
+        self.width = w
+        self.height = h
+        self.controller.resize(w, h)
 
-    @window.event
-    def on_resize(width, height):
-        print('The window was resized to {}x{}'.format(width, height))
+    def on_draw(self, ):
+        self.controller.draw()
 
-    @window.event
-    def on_mouse_motion(x, y, dx, dy):
-        controller.mouse_motion(x, y, dx, dy)
+    def on_mouse_motion(self, x, y, dx, dy):
+        self.controller.mouse_motion(x, y, dx, dy)
 
-    @window.event
-    def on_mouse_press(x, y, button, modifiers):
-        controller.mouse_press(x, y, button, modifiers)
+    def on_mouse_press(self, x, y, button, modifiers):
+        self.controller.mouse_press(x, y, button, modifiers)
 
-    @window.event
-    def on_mouse_release(x, y, button, modifiers):
-        controller.mouse_release(x, y, button, modifiers)
+    def on_mouse_release(self, x, y, button, modifiers):
+        self.controller.mouse_release(x, y, button, modifiers)
 
-    @window.event
-    def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
-        controller.mouse_drag(x, y, dx, dy, buttons, modifiers)
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        self.controller.mouse_drag(x, y, dx, dy, buttons, modifiers)
 
-    @window.event
-    def on_key_press(symbol, modifiers):
+    def on_key_press(self, symbol, modifiers):
         if symbol in key_map:
-            controller.key_press(key_map[symbol])
+            self.controller.key_press(key_map[symbol])
             return pyglet.event.EVENT_HANDLED
 
-    @window.event
-    def on_key_release(symbol, modifiers):
+    def on_key_release(self, symbol, modifiers):
         pass
 
-    @window.event
-    def on_text(text):
+    def on_text(self, text):
         pass
 
-    @window.event
-    def on_text_motion(text):
+    def on_text_motion(self, text):
         pass
+
+
+def init(controller, w, h, caption=None):
+    window = GameWindow(w, h, controller)
+    if caption:
+        window.set_caption(caption)
 
     return window

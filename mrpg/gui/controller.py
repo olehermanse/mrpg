@@ -20,6 +20,10 @@ class Controller():
         cursor = self.window.get_system_mouse_cursor("crosshair")
         self.window.set_mouse_cursor(cursor)
 
+    def resize(self, w, h):
+        width, height = self.window.get_viewport_size()
+        self.gui.resize(width, height)
+
     def run(self):
         wrapper.run()
 
