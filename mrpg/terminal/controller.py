@@ -1,4 +1,4 @@
-from mrpg.core.game import Game, Output, State
+from mrpg.core.game import Game, State
 from mrpg.terminal.io import clear, fancy_print
 
 
@@ -11,13 +11,7 @@ class Controller():
         if not messages:
             return
         for msg in messages:
-            if type(msg) is Output.Fancy:
-                fancy_print(msg.data, block=False)
-            elif type(msg) is Output.Display:
-                clear()
-                print(msg.data)
-            else:
-                raise AssertionError
+            fancy_print(msg, block=False)
         fancy_print("")
 
     def run(self):
@@ -26,6 +20,9 @@ class Controller():
             self.print_output()
             if self.game.state is State.BATTLE_MENU:
                 print(self.game.battle.stats())
+                print()
+            if self.game.state is State.GAME_MENU:
+                print(self.game.player.string_long())
                 print()
             if self.game.menu:
                 print(self.game.menu.as_string())

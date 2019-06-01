@@ -2,7 +2,7 @@ import sys
 
 import pyglet
 
-from mrpg.core.game import Game
+from mrpg.core.game import Game, State
 from mrpg.gui import wrapper
 from mrpg.gui.commons import Color
 from mrpg.gui.gui import GUI
@@ -61,6 +61,15 @@ class Controller():
         # if self.game.menu:
         #     self.gui.header.text = self.game.menu.headline.replace(":", "")
 
+    def update_text_display(self):
+        state = self.game.state
+        if state == State.MAIN_MENU:
+            self.gui.display.text = ""
+        elif state == State.GAME_MENU:
+            self.gui.display.text = self.game.player.string_long()
+        elif state == State.BATTLE_MENU:
+            self.gui.display.text = self.game.battle.stats()
+
     def enter(self):
         choice = self.gui.menu.pick()
         self.game.submit(choice)
@@ -68,6 +77,7 @@ class Controller():
             self.gui.menu.choices(*self.game.menu.choices)
         self.gui.set_output(self.game.get_output())
         self.update_header()
+        self.update_text_display()
 
     def key_press(self, inp):
         actions = {
