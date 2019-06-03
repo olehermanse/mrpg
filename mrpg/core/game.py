@@ -23,7 +23,7 @@ def new_player():
 class State(Enum):
     MAIN_MENU = auto()
     GAME_MENU = auto()
-    BATTLE_MENU = auto()
+    BATTLE = auto()
     NONE = auto()
 
 
@@ -49,7 +49,7 @@ class Game():
             self.battle = None
             self.menu = Menu(
                 "Game Menu:", "adventure", s="save", q="quit")
-        elif state == State.BATTLE_MENU:
+        elif state == State.BATTLE:
             self.set_battle_menu()
 
     def set_battle_menu(self):
@@ -85,7 +85,7 @@ class Game():
             save_data(data, "data/player.json")
             self.put_output("Save success!")
         elif choice == "quit":
-            sys.exit(0)  # TODO
+            self.set_state(State.MAIN_MENU)
 
     def battle_menu_choice(self, choice):
         if choice == "flee":
@@ -132,7 +132,7 @@ class Game():
         enemy = self.adventure.next_monster()
         self.put_output("A wild {} appeared".format(enemy.name))
         self.battle = Battle(self.player, enemy)
-        self.set_state(State.BATTLE_MENU)
+        self.set_state(State.BATTLE)
         pass
 
     def progress_adventure(self):
@@ -154,7 +154,7 @@ class Game():
             self.main_menu_choice(result)
         elif state is State.GAME_MENU:
             self.game_menu_choice(result)
-        elif state is State.BATTLE_MENU:
+        elif state is State.BATTLE:
             self.battle_menu_choice(result)
 
     def put_output(self, msg):

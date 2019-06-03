@@ -17,7 +17,7 @@ class GUI():
         width, height = self.window.get_viewport_size()
 
         self.header = Label(
-            "MRPG Prototype",
+            "",
             anchor_x="left",
             anchor_y="top")
 

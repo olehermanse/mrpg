@@ -15,10 +15,12 @@ class Controller():
         self.gui = GUI(self.window)
         self.width, self.height = self.window.get_viewport_size()
 
-        self.gui.menu.choices(*self.game.menu.choices)
+        if self.game.menu:
+            self.gui.menu.choices(*self.game.menu.choices)
 
         cursor = self.window.get_system_mouse_cursor("crosshair")
         self.window.set_mouse_cursor(cursor)
+        self.update_text()
 
     def resize(self, w, h):
         width, height = self.window.get_viewport_size()
@@ -56,19 +58,18 @@ class Controller():
     def mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         pass
 
-    def update_header(self):
-        self.gui.header.text = ""
-        # if self.game.menu:
-        #     self.gui.header.text = self.game.menu.headline.replace(":", "")
-
-    def update_text_display(self):
+    def update_text(self):
         state = self.game.state
+        self.gui.header.text = ""
+        self.gui.display.text = ""
         if state == State.MAIN_MENU:
-            self.gui.display.text = ""
+            self.gui.header.text = "MRPG Prototype"
         elif state == State.GAME_MENU:
             self.gui.display.text = self.game.player.string_long()
-        elif state == State.BATTLE_MENU:
+        elif state == State.BATTLE:
             self.gui.display.text = self.game.battle.stats()
+        else:
+            raise AssertionError
 
     def enter(self):
         choice = self.gui.menu.pick()
@@ -76,8 +77,7 @@ class Controller():
         if self.game.menu:
             self.gui.menu.choices(*self.game.menu.choices)
         self.gui.set_output(self.game.get_output())
-        self.update_header()
-        self.update_text_display()
+        self.update_text()
 
     def key_press(self, inp):
         actions = {

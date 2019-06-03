@@ -18,7 +18,7 @@ class Controller():
         while True:
             clear()
             self.print_output()
-            if self.game.state is State.BATTLE_MENU:
+            if self.game.state is State.BATTLE:
                 print(self.game.battle.stats())
                 print()
             if self.game.state is State.GAME_MENU:
