@@ -35,9 +35,26 @@ class GameWindow(pyglet.window.Window):
         w = int(self.ratio * h)  # Locked aspect ratio
         self.width = w
         self.height = h
-        self.controller.resize(w, h)
 
-    def on_draw(self, ):
+        # Don't use window dimensions for coordinate system, use viewport:
+        width, height = self.get_viewport_size() # May be scaled (on mac)
+
+        # Resize viewport (only necessary on windows):
+        pyglet.gl.glViewport(0, 0, max(1, width), max(1, height))
+
+        self.controller.resize(width, height)
+
+    def on_draw(self):
+        self.clear()
+
+        # Use viewport size to set the coordinate system:
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
+        pyglet.gl.glLoadIdentity()
+        width, height = self.get_viewport_size()
+        pyglet.gl.glOrtho(0, width, 0, height, -1, 1)
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
+        # The glOrtho call is necessary for high resolution mac font rendering
+
         self.controller.draw()
 
     def on_mouse_motion(self, x, y, dx, dy):
