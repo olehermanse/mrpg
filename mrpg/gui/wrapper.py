@@ -31,9 +31,6 @@ class GameWindow(pyglet.window.Window):
         self.controller.update(dt)
 
     def on_resize(self, w, h):
-        self.width = w
-        self.height = h
-
         # Don't use window dimensions for coordinate system, use viewport:
         width, height = self.get_viewport_size() # May be scaled (on mac)
 
