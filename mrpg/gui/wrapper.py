@@ -43,6 +43,7 @@ class GameWindow(pyglet.window.Window):
         pyglet.gl.glViewport(0, 0, max(1, width), max(1, height))
 
         self.controller.resize(width, height)
+        return pyglet.event.EVENT_HANDLED
 
     def on_draw(self):
         self.clear()
