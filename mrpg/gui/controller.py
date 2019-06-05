@@ -7,7 +7,7 @@ from mrpg.gui.gui import GUI
 
 
 class Controller():
-    def __init__(self, width=1280, height=720):
+    def __init__(self, width=960, height=540):
         self.window = wrapper.init(self, width, height, caption="MRPG")
         self.game = Game()
         self.gui = GUI(self.window)
