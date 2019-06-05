@@ -22,7 +22,6 @@ class GameWindow(pyglet.window.Window):
     def __init__(self, w, h, controller):
         super().__init__(
             w, h, caption='MRPG', resizable=True)
-        self.ratio = w / h
         self.controller = controller
         self.set_minimum_size(w // 2, h // 2)
 
@@ -32,7 +31,6 @@ class GameWindow(pyglet.window.Window):
         self.controller.update(dt)
 
     def on_resize(self, w, h):
-        w = int(self.ratio * h)  # Locked aspect ratio
         self.width = w
         self.height = h
 
