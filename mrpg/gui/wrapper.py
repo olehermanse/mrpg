@@ -34,22 +34,19 @@ class GameWindow(pyglet.window.Window):
         # Don't use window dimensions for coordinate system, use viewport:
         width, height = self.get_viewport_size() # May be scaled (on mac)
 
-        # Resize viewport (only necessary on windows):
+        # Use viewport size to set the coordinate system:
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
+        pyglet.gl.glLoadIdentity()
+        pyglet.gl.glOrtho(0, width, 0, height, -1, 1)
         pyglet.gl.glViewport(0, 0, max(1, width), max(1, height))
+        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
+        # The glOrtho call is necessary for high resolution mac font rendering
 
         self.controller.resize(width, height)
         return pyglet.event.EVENT_HANDLED
 
     def on_draw(self):
         self.clear()
-
-        # Use viewport size to set the coordinate system:
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
-        pyglet.gl.glLoadIdentity()
-        width, height = self.get_viewport_size()
-        pyglet.gl.glOrtho(0, width, 0, height, -1, 1)
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
-        # The glOrtho call is necessary for high resolution mac font rendering
 
         self.controller.draw()
 
