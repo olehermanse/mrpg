@@ -16,7 +16,8 @@ class Event():
             mana=None,
             mana_cost=None,
             used=False,
-            limit=False):
+            limit=False,
+            events=None):
 
         self.damage = damage
         self.skill = skill
@@ -32,8 +33,11 @@ class Event():
         self.mana = mana
         self.reduction = reduction
         self.limit = limit
+        self.events = events
 
     def __str__(self):
+        if self.events:
+            return "{} combined events".format(len(self.events))
         return "{} - {} - {} - {}".format(
             self.skill, self.user, self.source, self.message)
 
@@ -70,6 +74,10 @@ class Event():
         if self.dead:
             self.target.kill()
             outputs.append("{} died.".format(self.target.name))
+
+        if self.events:
+            for event in self.events:
+                outputs.extend(event.apply())
 
         if self.limit:
             self.target.limit_check()
