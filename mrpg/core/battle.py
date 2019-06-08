@@ -103,24 +103,25 @@ class Battle():
             assert type(event) is Event
             yield event
 
+    def effect_step_creature(self, creature):
+        events = []
+        events.append(Event(target=creature, clean=True))  # Remove expired
+        events.append(Event(target=creature, reset=True))  # Reset stats
+        events.append(Event(target=creature, modify=True)) # Apply modifiers
+        events.append(Event(target=creature, proc=True))  # Proc effect
+        events.append(Event(target=creature, limit=True))  # Maybe dead
+        return Event(events=events)  # Everything happens "at once"
+
     def effect_step(self):
         events = []
-        self.a.reset_stats()
-        self.b.reset_stats()
+        a,b = self.a, self.b
+        a_alive, b_alive = a.is_alive(), b.is_alive()
+        if a_alive:
+            events.append(self.effect_step_creature(a))
+        if b_alive:
+            events.append(self.effect_step_creature(b))
 
-        events.append(self.clean_effects())
-
-        a, b = self.a.is_alive(), self.b.is_alive()
-        if a:
-            events += self.a.modify_effects()
-            events += self.a.proc_effects()
-            events.append(self.limit_checks())
-        if b:
-            events += self.b.modify_effects()
-            events += self.b.proc_effects()
-            events.append(self.limit_checks())
-
-        return events
+        yield Event(events=events)
 
     def end_step_creature(self, creature):
         events = []
@@ -131,14 +132,17 @@ class Battle():
         return Event(events=events)  # Everything happens "at once"
 
     def end_step(self):
+        events = []
         a, b = self.a, self.b
         a_alive, b_alive = a.is_alive(), b.is_alive()
         a_hp, b_hp = a.current["hp"], b.current["hp"]
 
         if a_alive:
-            yield self.end_step_creature(a)
+            events.append(self.end_step_creature(a))
         if b_alive:
-            yield self.end_step_creature(b)
+            events.append(self.end_step_creature(b))
+
+        yield Event(events=events)  # Everything happens "at once"
 
         # Check that we didn't modify anything:
         assert a_alive == a.is_alive()

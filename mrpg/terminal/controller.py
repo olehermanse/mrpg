@@ -10,9 +10,9 @@ class Controller():
         messages = self.game.get_output()
         if not messages:
             return
-        for msg in messages:
+        for msg in messages[:-1]:
             fancy_print(msg, block=False)
-        fancy_print("")
+        fancy_print(messages[-1], block=True)
 
     def run(self):
         while True:
