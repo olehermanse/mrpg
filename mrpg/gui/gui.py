@@ -16,20 +16,11 @@ class GUI():
     def init_content(self):
         width, height = self.window.get_viewport_size()
 
-        self.header = Label(
-            "",
-            anchor_x="left",
-            anchor_y="top")
+        self.header = Label("", anchor_x="left", anchor_y="top")
 
         self.display = Label(
-            "",
-            anchor_x="left",
-            anchor_y="top",
-            multiline=True)
-        self.outputter = Printer(
-            "",
-            anchor_x="left",
-            anchor_y="top")
+            "", anchor_x="left", anchor_y="top", multiline=True)
+        self.outputter = Printer("", anchor_x="left", anchor_y="top")
 
         self.labels.append(self.header)
         self.labels.append(self.outputter)
@@ -38,16 +29,17 @@ class GUI():
         self.resize(width, height)
 
     def resize(self, width, height):
-        self.header.x=frame_spacing(height)
-        self.header.y=height - frame_spacing(height)
-        self.header.font_size=font_big(height)
+        self.header.x = frame_spacing(height)
+        self.header.y = height - frame_spacing(height)
+        self.header.font_size = font_big(height)
 
-        self.display.x=frame_spacing(height)
-        self.display.y=height - frame_spacing(height)
-        self.display.font_size=font_normal(height)
-        self.display.width=width // 2
+        self.display.x = frame_spacing(height)
+        self.display.y = height - frame_spacing(height)
+        self.display.font_size = font_normal(height)
+        self.display.width = width // 2
 
-        self.outputter.resize(width // 2, height - frame_spacing(height), font_normal(height))
+        self.outputter.resize(
+            width // 2, height - frame_spacing(height), font_normal(height))
 
         spacing = frame_spacing(height)
         self.menu.resize(spacing, spacing, font_normal(height))

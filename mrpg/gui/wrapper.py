@@ -15,13 +15,14 @@ key_map = {
     key.ESCAPE: "escape"
 }
 
+
 def run():
     pyglet.app.run()
 
+
 class GameWindow(pyglet.window.Window):
     def __init__(self, w, h, controller):
-        super().__init__(
-            w, h, caption='MRPG', resizable=True)
+        super().__init__(w, h, caption='MRPG', resizable=True)
         self.controller = controller
         self.set_minimum_size(w // 2, h // 2)
 
@@ -32,7 +33,7 @@ class GameWindow(pyglet.window.Window):
 
     def on_resize(self, w, h):
         # Don't use window dimensions for coordinate system, use viewport:
-        width, height = self.get_viewport_size() # May be scaled (on mac)
+        width, height = self.get_viewport_size()  # May be scaled (on mac)
 
         # Use viewport size to set the coordinate system:
         pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)

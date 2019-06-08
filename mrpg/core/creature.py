@@ -39,22 +39,22 @@ class Creature:
     def modify_effects(self):
         events = []
         for effect in self.effects:
-            events += effect.modify() # Modify funcs return events
+            events += effect.modify()  # Modify funcs return events
         return events
 
     def proc_effects(self):
         events = []
         for effect in self.effects:
-            events += effect.proc() # Proc funcs return events
+            events += effect.proc()  # Proc funcs return events
         return events
 
     def tick_effects(self):
         for effect in self.effects:
-            effect.tick() # This just decreases duration counter
+            effect.tick()  # This just decreases duration counter
 
     def clean_effects(self):
         names = []
-        new_effects = {} # Deduplicate and skip done (expired) effects
+        new_effects = {}  # Deduplicate and skip done (expired) effects
         for effect in self.effects:
             name = effect.name
             if effect.is_done():

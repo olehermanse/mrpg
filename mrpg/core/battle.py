@@ -1,6 +1,7 @@
 from mrpg.utils.utils import column_string, single_newline
 from mrpg.core.event import Event
 
+
 class Turn:
     def __init__(self, battle):
         self.battle = battle
@@ -21,6 +22,7 @@ class Turn:
         for event in self.battle.end_step():
             assert type(event) is Event
             yield event
+
 
 class Battle():
     def __init__(self, a, b):
@@ -122,11 +124,11 @@ class Battle():
 
     def end_step_creature(self, creature):
         events = []
-        events.append(Event(tick=True, target=creature))   # Decrease duration
-        events.append(Event(clean=True, target=creature))  # Remove expired
-        events.append(Event(reset=True, target=creature))  # Reset stats
-        events.append(Event(modify=True, target=creature)) # Reapply modifiers
-        return Event(events=events) # Everything happens "at once"
+        events.append(Event(target=creature, tick=True))  # Decrease duration
+        events.append(Event(target=creature, clean=True))  # Remove expired
+        events.append(Event(target=creature, reset=True))  # Reset stats
+        events.append(Event(target=creature, modify=True))  # Apply modifiers
+        return Event(events=events)  # Everything happens "at once"
 
     def end_step(self):
         a, b = self.a, self.b

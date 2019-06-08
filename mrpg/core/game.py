@@ -19,6 +19,7 @@ def new_player():
             "lightning", "true_strike", "slash"
         ])
 
+
 @unique
 class State(Enum):
     MAIN_MENU = auto()
@@ -47,8 +48,7 @@ class Game():
         elif state == State.GAME_MENU:
             self.adventure = None
             self.battle = None
-            self.menu = Menu(
-                "Game Menu:", "adventure", s="save", q="quit")
+            self.menu = Menu("Game Menu:", "adventure", s="save", q="quit")
         elif state == State.BATTLE:
             self.set_battle_menu()
 

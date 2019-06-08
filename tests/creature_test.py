@@ -1,6 +1,7 @@
 from mrpg.core.creature import Creature
 from mrpg.core.event import Event
 
+
 def test_creature():
     c = Creature("Tester", 2)
     assert c.name == "Tester"
