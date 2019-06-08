@@ -1,5 +1,5 @@
 from mrpg.utils.utils import column_string, single_newline
-from mrpg.core.event import Event, add_pause
+from mrpg.core.event import Event
 
 
 class Battle():
@@ -69,7 +69,6 @@ class Battle():
         outcomes += self.skill_use(b, a)
         outcomes.append(Event(limit=True, target=a))
         outcomes.append(Event(limit=True, target=b))
-        add_pause(outcomes)
         return outcomes
 
     def skill_step(self):
@@ -100,7 +99,6 @@ class Battle():
             out += self.b.modify_effects()
             out += self.b.proc_effects()
 
-        add_pause(out)
         return out
 
     def end_step(self):

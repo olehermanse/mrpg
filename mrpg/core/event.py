@@ -16,7 +16,6 @@ class Event():
             mana=None,
             mana_cost=None,
             used=False,
-            pause=False,
             limit=False):
 
         self.damage = damage
@@ -32,7 +31,6 @@ class Event():
         self.func = func
         self.mana = mana
         self.reduction = reduction
-        self.pause = pause
         self.limit = limit
 
     def __str__(self):
@@ -41,8 +39,6 @@ class Event():
 
     def apply(self):
         outputs = []
-        if self.pause:
-            outputs.append("")
         if self.message is not None:
             outputs.append(self.message)
         elif self.messages is not None:
@@ -81,10 +77,6 @@ class Event():
         return outputs
 
     @staticmethod
-    def pause():
-        return Event(pause=True)
-
-    @staticmethod
     def apply_all(all):
         outputs = []
         for outcome in all:
@@ -96,9 +88,3 @@ class Event():
             else:
                 outputs += output
         return outputs
-
-
-def add_pause(l):
-    return
-    if len(l) == 0 or l[-1] is None or l[-1].pause is False:
-        l.append(Event.pause())
