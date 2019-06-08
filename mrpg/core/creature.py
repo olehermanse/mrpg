@@ -3,7 +3,6 @@ from collections import OrderedDict
 from mrpg.utils.utils import limit, internal
 from mrpg.core.skill_collections import CreatureSkillCollection
 from mrpg.core.stats import Stats
-from mrpg.core.event import Event
 
 
 class Creature:
@@ -38,35 +37,37 @@ class Creature:
         return False
 
     def modify_effects(self):
-        outcomes = []
+        events = []
         for effect in self.effects:
-            outcomes += effect.modify()
-        return outcomes
+            events += effect.modify() # Modify funcs return events
+        return events
 
     def proc_effects(self):
-        outcomes = []
+        events = []
         for effect in self.effects:
-            outcomes += effect.proc()
-        return outcomes
+            events += effect.proc() # Proc funcs return events
+        return events
 
     def tick_effects(self):
-        return filter(None, [effect.tick() for effect in self.effects])
+        for effect in self.effects:
+            effect.tick() # This just decreases duration counter
 
     def clean_effects(self):
-        messages = []
-        new_effects = {}
+        names = []
+        new_effects = {} # Deduplicate and skip done (expired) effects
         for effect in self.effects:
             name = effect.name
             if effect.is_done():
-                msg = Event(message="{}'s {} faded".format(self.name, name))
-                messages.append(msg)
+                # Record name so we can print faded message:
+                names.append(name)
+                # Don't add to new_effects
             else:
                 if (name not in new_effects) or (effect.duration >
                                                  new_effects[name].duration):
                     new_effects[name] = effect
 
-        self.effects = [val for key, val in new_effects.items()]
-        return messages
+        self.effects = [effect for name, effect in new_effects.items()]
+        return names
 
     def battle_end(self):
         self.effects = []
@@ -126,10 +127,10 @@ class Creature:
     def limit_check(self):
         if self.alive and (self.current["hp"] <= 0):
             self.current["hp"] = 0
-            return [Event(target=self, dead=True)]
         if self.current["hp"] > self.base["hp"]:
             self.current["hp"] = self.base["hp"]
-        return []
+
+        return self.current["hp"] == 0 and self.is_alive()
 
     def is_alive(self):
         return self.alive

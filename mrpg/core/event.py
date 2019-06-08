@@ -9,14 +9,18 @@ class Event():
             message=None,
             messages=None,
             restore=None,
-            effect=None,
-            dead=None,
+            kill=None,
             reduction=None,
             func=None,
             mana=None,
             mana_cost=None,
-            used=False,
             limit=False,
+            effect=None,
+            tick=False,
+            clean=False,
+            reset=False,
+            proc=False,
+            modify=False,
             events=None):
 
         self.damage = damage
@@ -27,13 +31,22 @@ class Event():
         self.message = message
         self.messages = messages
         self.restore = restore
-        self.effect = effect
-        self.dead = dead
+        self.kill = kill
         self.func = func
         self.mana = mana
-        self.reduction = reduction
         self.limit = limit
-        self.events = events
+        self.effect = effect
+        self.tick = tick
+        self.clean = clean
+        self.reset = reset
+        self.proc = proc
+        self.modify = modify
+        self.reduction = reduction
+        self.events = []
+
+        for event in events or []:
+            assert type(event) is Event
+            self.events.append(event)
 
     def __str__(self):
         if self.events:
@@ -51,10 +64,6 @@ class Event():
             outputs.append(
                 "{} used {}".format(self.user.name, self.skill.name))
 
-        if self.reduction:
-            current = self.target.current
-            for stat in self.reduction:
-                current[stat] -= self.reduction[stat]
         if self.func:
             ret = self.func(self.target)
             if type(ret) is list:
@@ -67,32 +76,57 @@ class Event():
             outputs += self.target.restore(self.restore)
         if self.damage:
             outputs += self.target.damage(self.damage, source=self.source)
+
+        # Effect related events:
+
         if self.effect:
             self.target.add_effect(self.effect)
             outputs.append(
                 "{} gained {}".format(self.target.name, self.effect.name))
-        if self.dead:
-            self.target.kill()
-            outputs.append("{} died.".format(self.target.name))
+
+        if self.tick:
+            self.target.tick_effects()
+
+        if self.clean:
+            names = self.target.clean_effects()
+            for name in names:
+                outputs.append("{}'s {} faded".format(self.target.name, name))
+
+        if self.reset:
+            self.target.reset_stats()
+
+        if self.proc:
+            events = self.target.proc_effects()
+            for event in events:
+                outputs.extend(event.apply())
+
+        if self.modify:
+            events = self.target.modify_effects()
+            for event in events:
+                outputs.extend(event.apply())
+
+        if self.reduction:
+            current = self.target.current
+            for stat in self.reduction:
+                current[stat] -= self.reduction[stat]
+
+        # Combined events:
 
         if self.events:
             for event in self.events:
                 outputs.extend(event.apply())
 
+        # Bounding hp and mana between 0 and max, and kill if hp is 0:
+
         if self.limit:
-            self.target.limit_check()
+            should_kill = self.target.limit_check()
+            if should_kill:
+                self.kill = True
 
-        return outputs
+        if self.kill and self.target.is_alive():
+            self.target.kill()
+            outputs.append("{} died.".format(self.target.name))
 
-    @staticmethod
-    def apply_all(all):
-        outputs = []
-        for outcome in all:
-            output = outcome.apply()
-            if not output:
-                continue
-            if type(output) is str:
-                outputs.append(output)
-            else:
-                outputs += output
+        # Return a list of strings to print, may be empty:
+
         return outputs

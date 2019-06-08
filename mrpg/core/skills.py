@@ -109,7 +109,7 @@ class SkillFuncs:
         def use(skill, user, target):
             if user.has_effect("Bleed"):
                 msg = None  # "{} bled out.".format(user.name)
-                return Event(target=user, dead=True, message=msg)
+                return Event(target=user, kill=True, message=msg)
 
             healing = user.base["hp"]
             bleed = Effects.get("Bleed", skill=skill, target=user)

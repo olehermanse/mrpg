@@ -1,11 +1,32 @@
 from mrpg.utils.utils import column_string, single_newline
 from mrpg.core.event import Event
 
+class Turn:
+    def __init__(self, battle):
+        self.battle = battle
+        self.events = self.generator()
+
+    def progress(self):
+        assert self.events
+        assert not self.is_over
+        ret = next(self.events)
+
+    def generator(self):
+        for event in self.battle.skill_step():
+            assert type(event) is Event
+            yield event
+        for event in self.battle.effect_step():
+            assert type(event) is Event
+            yield event
+        for event in self.battle.end_step():
+            assert type(event) is Event
+            yield event
 
 class Battle():
     def __init__(self, a, b):
         self.a = a
         self.b = b
+        self.turn = None
 
     def stats(self):
         a = self.a.string_long(skills=False).split(sep="\n")
@@ -26,102 +47,99 @@ class Battle():
         s = skill.use()
         return s
 
-    def apply(self, outcomes):
-        return Event.apply_all(outcomes)
-
-    def skill_use_apply(self, user, target):
-        return self.apply(self.skill_use(user, target))
-
     def one_player_turn(self, src, target):
-        outcomes = []
-        outcomes += self.skill_use(src, target)
-        outcomes += self.limit_checks()
-        outcomes += self.clean_effects()
-        return outcomes
+        events = []
+        events += self.skill_use(src, target)
+        events.append(self.limit_checks())
+        events.append(self.clean_effects())
+        return events
 
     def clean_effects(self):
-        out = []
-        if self.a.is_alive():
-            out += self.a.clean_effects()
-        if self.b.is_alive():
-            out += self.b.clean_effects()
-        return out
+        events = []
+        a, b = self.a, self.b
+        if a.is_alive():
+            events.append(Event(clean=True, target=a))
+        if b.is_alive():
+            events.append(Event(clean=True, target=b))
+        return Event(events=events)
 
     def limit_checks(self):
-        out = []
-        out += self.a.limit_check()
-        out += self.b.limit_check()
-        return out
+        events = []
+        events.append(Event(limit=True, target=self.a))
+        events.append(Event(limit=True, target=self.b))
+        return Event(events=events)
 
     def sequential_turn(self, first, last):
-        outcomes = []
-        yield self.one_player_turn(first, last)
-        if last.is_alive():
-            yield self.one_player_turn(last, first)
+        events = list(self.one_player_turn(first, last))
+        yield Event(events=events)
 
-        return outcomes
+        # At this point, yielded events must be applied so check works:
+        if last.is_alive():
+            events = list(self.one_player_turn(last, first))
+            yield Event(events=events)
 
     def concurrent_turn(self, a, b):
-        outcomes = []
+        events = []
         msg = Event(message="{} and {} acted at the same time!".format(a, b))
-        outcomes.append(msg)
-        outcomes += self.skill_use(a, b)
-        outcomes += self.skill_use(b, a)
-        outcomes.append(Event(limit=True, target=a))
-        outcomes.append(Event(limit=True, target=b))
-        return outcomes
+        events.append(msg)
+        events += self.skill_use(a, b)
+        events += self.skill_use(b, a)
+        events.append(self.limit_checks())
+        yield Event(events=events)
 
     def skill_step(self):
-        self.limit_checks()
         a, b = self.a, self.b
         if a.current["dex"] == b.current["dex"]:
-            yield self.concurrent_turn(a, b)
+            for event in self.concurrent_turn(a, b):
+                assert type(event) is Event
+                yield event
             return
         if a.current["dex"] < b.current["dex"]:
             a, b = b, a
         first, last = a, b
-        for outcomes in self.sequential_turn(first, last):
-            yield outcomes
+        for event in self.sequential_turn(first, last):
+            assert type(event) is Event
+            yield event
 
     def effect_step(self):
-        out = []
+        events = []
         self.a.reset_stats()
         self.b.reset_stats()
 
-        out += self.limit_checks()
-        out += self.clean_effects()
+        events.append(self.clean_effects())
 
         a, b = self.a.is_alive(), self.b.is_alive()
         if a:
-            out += self.a.modify_effects()
-            out += self.a.proc_effects()
+            events += self.a.modify_effects()
+            events += self.a.proc_effects()
+            events.append(self.limit_checks())
         if b:
-            out += self.b.modify_effects()
-            out += self.b.proc_effects()
+            events += self.b.modify_effects()
+            events += self.b.proc_effects()
+            events.append(self.limit_checks())
 
-        return out
+        return events
+
+    def end_step_creature(self, creature):
+        events = []
+        events.append(Event(tick=True, target=creature))   # Decrease duration
+        events.append(Event(clean=True, target=creature))  # Remove expired
+        events.append(Event(reset=True, target=creature))  # Reset stats
+        events.append(Event(modify=True, target=creature)) # Reapply modifiers
+        return Event(events=events) # Everything happens "at once"
 
     def end_step(self):
-        out = []
-        out += self.limit_checks()
-        if self.a.is_alive():
-            out += self.a.tick_effects()
-            out += self.a.clean_effects()
-            self.a.reset_stats()
-            out += self.a.modify_effects()
-        if self.b.is_alive():
-            out += self.b.tick_effects()
-            out += self.b.clean_effects()
-            self.b.reset_stats()
-            out += self.b.modify_effects()
+        a, b = self.a, self.b
+        a_alive, b_alive = a.is_alive(), b.is_alive()
+        a_hp, b_hp = a.current["hp"], b.current["hp"]
 
-        self.a.reset_stats()
-        self.b.reset_stats()
+        if a_alive:
+            yield self.end_step_creature(a)
+        if b_alive:
+            yield self.end_step_creature(b)
 
-        return out
-
-    def turn(self):
-        for outcomes in self.skill_step():
-            yield outcomes
-        yield self.effect_step()
-        yield self.end_step()
+        # Check that we didn't modify anything:
+        assert a_alive == a.is_alive()
+        assert b_alive == b.is_alive()
+        assert a_hp == a.current["hp"]
+        assert b_hp == b.current["hp"]

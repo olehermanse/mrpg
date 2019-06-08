@@ -70,6 +70,7 @@ class EffectFuncs:
 
     def shock():
         def modifier(effect, skill, target):
+            # Calculate a reduction which will be applied later:
             reduction = target.base["dex"] // 3
             return Event(target=target, reduction={"dex": reduction})
 

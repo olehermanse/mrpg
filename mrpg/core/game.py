@@ -7,7 +7,7 @@ from mrpg.utils.utils import flatten_strings, single_newline
 from mrpg.system.files import save_data, load_data
 from mrpg.core.creature import Creature
 from mrpg.core.adventure import Adventure
-from mrpg.core.battle import Battle
+from mrpg.core.battle import Battle, Turn
 from mrpg.core.event import Event
 
 
@@ -94,15 +94,18 @@ class Game():
             return
         self.battle.a.pick_skill(choice)
         self.battle.b.ai()
+        assert self.battle.turn is None
+        self.battle.turn = Turn(self.battle)
         self.progress_battle()
 
     def progress_battle(self):
         if self.battle.is_over():
             self.end_battle()
         out = []
-        for outcomes in self.battle.turn():
-            out += Event.apply_all(outcomes)
+        for event in self.battle.turn.events:
+            out += event.apply()
             out.append("")
+        self.battle.turn = None
         self.put_output(out)
         if self.battle.is_over():
             self.end_battle()

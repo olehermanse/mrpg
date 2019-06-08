@@ -1,5 +1,5 @@
 from mrpg.core.creature import Creature
-
+from mrpg.core.event import Event
 
 def test_creature():
     c = Creature("Tester", 2)
@@ -33,15 +33,15 @@ def test_creature_skills():
 def test_creature_damage():
     c = Creature("Fighter", 11)
     msg = c.damage(c.current["hp"] - 1)
-    for o in c.limit_check():
-        o.apply()
+    limit = Event(limit=True, target=c)
+    limit.apply()
 
     assert msg
     assert len(msg) > 0
     assert c.is_alive()
     msg = c.damage(1)
-    for o in c.limit_check():
-        o.apply()
+    limit = Event(limit=True, target=c)
+    limit.apply()
     assert msg
     assert len(msg) > 0
     assert not c.is_alive()
@@ -52,8 +52,8 @@ def test_creature_restore():
     msg = []
     msg += c.damage(c.current["hp"])
     msg += c.restore(1)
-    for o in c.limit_check():
-        o.apply()
+    limit = Event(limit=True, target=c)
+    limit.apply()
 
     assert msg
     assert len(msg) >= 2
