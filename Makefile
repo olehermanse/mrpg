@@ -7,7 +7,7 @@ terminal:
 	python3 -m mrpg --terminal
 
 yapf:
-	yapf --recursive . -i
+	yapf --recursive . -i --parallel
 
 fmt: yapf
 format: yapf
