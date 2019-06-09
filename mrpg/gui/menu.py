@@ -12,6 +12,7 @@ class Menu:
         self.index = 0
         self.x = x
         self.y = y
+        self.display = True
 
     def resize(self, x, y, font_size):
         self.x = x
@@ -59,8 +60,9 @@ class Menu:
         self.index = index
 
     def draw(self):
-        for label in self._labels:
-            label.draw()
+        if self.display:
+            for label in self._labels:
+                label.draw()
 
     def update(self, dt):
         if self.index is None and len(self._labels) > 0:

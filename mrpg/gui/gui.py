@@ -62,6 +62,9 @@ class GUI():
             strings.append(message)
         self.outputter.set_text("\n".join(strings))
 
+    def has_output(self):
+        return len("\n".join(self.outputter.strings)) > 0
+
     def update(self, dt):
         self.menu.update(dt)
         self.outputter.update(dt)

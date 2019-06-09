@@ -56,7 +56,16 @@ class Controller():
         else:
             raise AssertionError
 
+        if self.gui.has_output():
+            self.gui.menu.display = False
+        else:
+            self.gui.menu.display = True
+
     def enter(self):
+        if self.gui.has_output():
+            self.gui.set_output("")
+            self.update_text()
+            return
         choice = self.gui.menu.pick()
         self.game.submit(choice)
         if self.game.menu:
