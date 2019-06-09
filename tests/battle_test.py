@@ -10,7 +10,7 @@ def one_turn(battle):
     printed_something = False
     for event in battle.turn.events:
         assert type(event) is Event
-        messages = event.apply()
+        messages = event.resolve()
         assert type(messages) is list
         for msg in messages:
             assert type(msg) is str
@@ -96,7 +96,7 @@ def test_shock():
     a.current["mp"] = b.current["mp"] = 0
     a.add_effect(Effects.get("shock", target=a))
 
-    # Effects don't do anything before their events are applied:
+    # Effects don't do anything before their events are resolved:
     assert a.current["dex"] == b.current["dex"]
     assert a.current == b.current
 

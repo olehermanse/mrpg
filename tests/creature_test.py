@@ -35,14 +35,14 @@ def test_creature_damage():
     c = Creature("Fighter", 11)
     msg = c.damage(c.current["hp"] - 1)
     limit = Event(limit=True, target=c)
-    limit.apply()
+    limit.resolve()
 
     assert msg
     assert len(msg) > 0
     assert c.is_alive()
     msg = c.damage(1)
     limit = Event(limit=True, target=c)
-    limit.apply()
+    limit.resolve()
     assert msg
     assert len(msg) > 0
     assert not c.is_alive()
@@ -54,7 +54,7 @@ def test_creature_restore():
     msg += c.damage(c.current["hp"])
     msg += c.restore(1)
     limit = Event(limit=True, target=c)
-    limit.apply()
+    limit.resolve()
 
     assert msg
     assert len(msg) >= 2

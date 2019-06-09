@@ -54,7 +54,7 @@ class Event():
         return "{} - {} - {} - {}".format(
             self.skill, self.user, self.source, self.message)
 
-    def apply(self):
+    def resolve(self):
         outputs = []
         if self.message is not None:
             outputs.append(self.message)
@@ -98,12 +98,12 @@ class Event():
         if self.proc:
             events = self.target.proc_effects()
             for event in events:
-                outputs.extend(event.apply())
+                outputs.extend(event.resolve())
 
         if self.modify:
             events = self.target.modify_effects()
             for event in events:
-                outputs.extend(event.apply())
+                outputs.extend(event.resolve())
 
         if self.reduction:
             current = self.target.current
@@ -114,7 +114,7 @@ class Event():
 
         if self.events:
             for event in self.events:
-                outputs.extend(event.apply())
+                outputs.extend(event.resolve())
 
         # Bounding hp and mana between 0 and max, and kill if hp is 0:
 

@@ -75,7 +75,7 @@ class Battle():
         events = list(self.one_player_turn(first, last))
         yield Event(events=events)
 
-        # At this point, yielded events must be applied so check works:
+        # At this point, yielded events must be resolved so check works:
         if last.is_alive():
             events = list(self.one_player_turn(last, first))
             yield Event(events=events)

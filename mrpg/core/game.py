@@ -103,7 +103,7 @@ class Game():
             self.end_battle()
         out = []
         for event in self.battle.turn.events:
-            messages = event.apply()
+            messages = event.resolve()
             if messages:
                 out.extend(messages)
                 out.append("")
