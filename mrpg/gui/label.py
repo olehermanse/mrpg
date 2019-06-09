@@ -1,6 +1,6 @@
 import pyglet
 
-from mrpg.gui.commons import Color
+from mrpg.gui.commons import Color, font_spacing
 
 
 class Label(pyglet.text.Label):
@@ -84,6 +84,7 @@ class Printer:
         y = kwargs["y"] if "y" in kwargs else 0
         font_size = font_size
         self.labels = []
+        self.max = 3
         self.resize(x, y, font_size)
         self.set_text(text)
 
@@ -91,7 +92,7 @@ class Printer:
         self.x = x
         self.y = y
         self.font_size = font_size
-        row_size = 3 * font_size // 2
+        row_size = font_size + font_spacing(font_size)
         for label in self.labels:
             label.x = x
             label.y = y
@@ -102,7 +103,7 @@ class Printer:
         self.strings = text.split("\n")
         self.labels = []
         font_size = self.font_size
-        row_size = 3 * font_size // 2
+        row_size = font_size + font_spacing(font_size)
         y = self.y
         for string in self.strings:
             label = TypingLabel(string, font_size=font_size, **self.kwargs)
@@ -125,7 +126,7 @@ class Printer:
                 enable = False
                 if printing_index is None:
                     printing_index = index
-        if printing_index is not None and printing_index > 3:
+        if printing_index is not None and printing_index > self.max:
             printing_index = None
             self.labels = self.labels[1:]
             self.strings = self.strings[1:]
@@ -136,7 +137,7 @@ class Printer:
 
         y = self.y
         font_size = self.font_size
-        row_size = 3 * font_size // 2
+        row_size = font_size + font_spacing(font_size)
         for label in self.labels:
             label.target_y = y
             y -= row_size
