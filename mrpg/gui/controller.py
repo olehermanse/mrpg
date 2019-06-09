@@ -48,9 +48,11 @@ class Controller():
         self.gui.header.text = ""
         self.gui.display.text = ""
         if state == State.MAIN_MENU:
-            self.gui.header.text = "MRPG Prototype"
+            if not self.gui.has_output():
+                self.gui.header.text = "MRPG Prototype"
         elif state == State.GAME_MENU:
-            self.gui.display.text = self.game.player.string_long()
+            if not self.gui.has_output():
+                self.gui.display.text = self.game.player.string_long()
         elif state == State.BATTLE:
             self.gui.display.text = self.game.battle.stats()
         else:
