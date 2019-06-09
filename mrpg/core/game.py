@@ -99,7 +99,9 @@ class Game():
         self.progress()
 
     def progress(self):
-        if self.adventure and not self.battle:
+        if not self.adventure and self.state == State.BATTLE:
+            self.set_state(State.GAME_MENU)
+        elif self.adventure and not self.battle:
             self.progress_adventure()
         elif self.battle.is_over():
             self.end_battle()
@@ -128,11 +130,6 @@ class Game():
             out += player.gain_exp(enemy.exp_reward())
             single_newline(out)
             self.put_output(out)
-
-        if self.adventure:
-            self.progress()
-        else:
-            self.set_state(State.GAME_MENU)
 
     def new_battle(self):
         enemy = self.adventure.next_monster()

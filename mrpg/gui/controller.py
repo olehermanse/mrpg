@@ -53,7 +53,8 @@ class Controller():
             if not self.gui.has_output():
                 self.gui.display.text = self.game.player.string_long()
         elif state == State.BATTLE:
-            self.gui.display.text = self.game.battle.stats()
+            if self.game.battle:
+                self.gui.display.text = self.game.battle.stats()
         else:
             raise AssertionError
 
@@ -75,6 +76,11 @@ class Controller():
         if output:
             return output
         while self.game.battle and self.game.battle.turn:
+            self.game.progress()
+            output = self.resolve_to_output()
+            if output:
+                return output
+        if self.game.adventure and not self.game.battle:
             self.game.progress()
             output = self.resolve_to_output()
             if output:
