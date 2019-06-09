@@ -86,7 +86,6 @@ class Printer:
         self.labels = []
         self.resize(x, y, font_size)
         self.set_text(text)
-        self.index = 0
 
     def resize(self, x, y, font_size):
         self.x = x
@@ -119,15 +118,15 @@ class Printer:
 
     def update(self, dt):
         enable = True
-        self.index = None
+        printing_index = None
         for index, label in enumerate(self.labels):
             label.enabled = enable
             if not label.is_done():
                 enable = False
-                if self.index is None:
-                    self.index = index
-        if self.index is not None and self.index > 3:
-            self.index = None
+                if printing_index is None:
+                    printing_index = index
+        if printing_index is not None and printing_index > 3:
+            printing_index = None
             self.labels = self.labels[1:]
             self.strings = self.strings[1:]
 
