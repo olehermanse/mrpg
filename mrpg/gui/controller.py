@@ -75,7 +75,7 @@ class Controller():
         if output:
             return output
         while self.game.battle and self.game.battle.turn:
-            self.game.progress_battle()
+            self.game.progress()
             output = self.resolve_to_output()
             if output:
                 return output

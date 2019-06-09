@@ -96,10 +96,12 @@ class Game():
         self.battle.b.ai()
         assert self.battle.turn is None
         self.battle.turn = Turn(self.battle)
-        self.progress_battle()
+        self.progress()
 
-    def progress_battle(self):
-        if self.battle.is_over():
+    def progress(self):
+        if self.adventure and not self.battle:
+            self.progress_adventure()
+        elif self.battle.is_over():
             self.end_battle()
         elif self.battle.turn:
             try:
@@ -128,7 +130,7 @@ class Game():
             self.put_output(out)
 
         if self.adventure:
-            self.progress_adventure()
+            self.progress()
         else:
             self.set_state(State.GAME_MENU)
 
