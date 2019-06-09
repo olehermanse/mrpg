@@ -20,7 +20,7 @@ class GUI():
 
         self.display = Label(
             "", anchor_x="left", anchor_y="top", multiline=True)
-        self.outputter = Printer("", anchor_x="left", anchor_y="top")
+        self.outputter = Printer("", anchor_x="left", anchor_y="bottom")
 
         self.labels.append(self.header)
         self.labels.append(self.outputter)
@@ -38,11 +38,11 @@ class GUI():
         self.display.font_size = font_normal(height)
         self.display.width = width // 2
 
-        self.outputter.resize(
-            width // 2, height - frame_spacing(height), font_normal(height))
-
-        spacing = frame_spacing(height)
-        self.menu.resize(spacing, spacing, font_normal(height))
+        x = y = frame_spacing(height)
+        font_size = font_normal(height)
+        row_size = font_size + font_spacing(font_size)
+        self.menu.resize(x, y, font_size)
+        self.outputter.resize(x, y + 8 * row_size, font_size)
 
     def draw(self):
         for label in self.labels:
