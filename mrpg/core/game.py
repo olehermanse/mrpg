@@ -34,7 +34,7 @@ class Game():
         self.menu = None
         self.player = None
         self.adventure = None
-        self.output = []
+        self.events = []
 
         self.set_state(State.MAIN_MENU)
 
@@ -101,16 +101,15 @@ class Game():
     def progress_battle(self):
         if self.battle.is_over():
             self.end_battle()
-        out = []
-        for event in self.battle.turn.events:
-            messages = event.resolve()
-            if messages:
-                out.extend(messages)
-                out.append("")
-        self.battle.turn = None
-        self.put_output(out)
-        if self.battle.is_over():
-            self.end_battle()
+        elif self.battle.turn:
+            try:
+                event = next(self.battle.turn.events)
+            except StopIteration:
+                event = None
+            if not event:
+                self.battle.turn = None
+            else:
+                self.events.append(event)
 
     def end_battle(self):
         player, enemy = self.battle.a, self.battle.b
@@ -165,9 +164,9 @@ class Game():
     def put_output(self, msg):
         strings = flatten_strings(msg)
         for s in strings:
-            self.output.append(s)
+            self.events.append(Event(message=s))
 
-    def get_output(self):
-        output = self.output
-        self.output = []
-        return output
+    def get_event(self):
+        assert self.events
+        event, self.events = self.events[0], self.events[1:]
+        return event

@@ -12,8 +12,7 @@ class Controller():
         self.game = Game()
         self.gui = GUI(self.window)
 
-        if self.game.menu:
-            self.gui.menu.choices(*self.game.menu.choices)
+        self.update_choices()
 
         cursor = self.window.get_system_mouse_cursor("crosshair")
         self.window.set_mouse_cursor(cursor)
@@ -63,16 +62,50 @@ class Controller():
         else:
             self.gui.menu.display = True
 
+    def resolve_to_output(self):
+        while self.game.events:
+            outputs = self.game.get_event().resolve()
+            outputs = [s.strip() for s in outputs if s.strip()]
+            if outputs:
+                return outputs
+        return None
+
+    def progress_to_output(self):
+        output = self.resolve_to_output()
+        if output:
+            return output
+        while self.game.battle and self.game.battle.turn:
+            self.game.progress_battle()
+            output = self.resolve_to_output()
+            if output:
+                return output
+        return None
+
+    def update_choices(self):
+        if self.game.menu:
+            self.gui.menu.choices(*self.game.menu.choices)
+
     def enter(self):
+        output = self.progress_to_output()
+        if output:
+            self.gui.set_output(output)
+            self.update_text()
+            self.update_choices()
+            return
+
         if self.gui.has_output():
             self.gui.set_output("")
             self.update_text()
             return
+
         choice = self.gui.menu.pick()
         self.game.submit(choice)
-        if self.game.menu:
-            self.gui.menu.choices(*self.game.menu.choices)
-        self.gui.set_output(self.game.get_output())
+
+        output = self.progress_to_output()
+        if output:
+            self.gui.set_output(output)
+
+        self.update_choices()
         self.update_text()
 
     def key_press(self, inp):

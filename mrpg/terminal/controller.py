@@ -7,12 +7,15 @@ class Controller():
         self.game = Game()
 
     def print_output(self):
-        messages = self.game.get_output()
-        if not messages:
-            return
-        for msg in messages[:-1]:
-            fancy_print(msg, block=False)
-        fancy_print(messages[-1], block=True)
+        while self.game.events:
+            event = self.game.get_event()
+            messages = event.resolve()
+            messages = [s.strip() for s in messages if s.strip()]
+            if not messages:
+                continue
+            for msg in messages[:-1]:
+                fancy_print(msg, block=False)
+            fancy_print(messages[-1], block=True)
 
     def run(self):
         while True:
