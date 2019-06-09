@@ -42,7 +42,7 @@ class GUI():
         font_size = font_normal(height)
         row_size = font_size + font_spacing(font_size)
         self.menu.resize(x, y, font_size)
-        self.outputter.resize(x, y + 8 * row_size, font_size)
+        self.outputter.resize(x, y + 3 * row_size, font_size)
 
     def draw(self):
         for label in self.labels:

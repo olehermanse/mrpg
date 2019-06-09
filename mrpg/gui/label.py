@@ -126,7 +126,7 @@ class Printer:
                 enable = False
                 if self.index is None:
                     self.index = index
-        if self.index is not None and self.index > 6:
+        if self.index is not None and self.index > 3:
             self.index = None
             self.labels = self.labels[1:]
             self.strings = self.strings[1:]
