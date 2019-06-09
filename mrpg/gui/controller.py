@@ -16,7 +16,7 @@ class Controller():
 
         cursor = self.window.get_system_mouse_cursor("crosshair")
         self.window.set_mouse_cursor(cursor)
-        self.update_text()
+        self.refresh_gui()
 
     def resize(self, w, h):
         self.gui.resize(w, h)
@@ -42,7 +42,7 @@ class Controller():
     def mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         pass
 
-    def update_text(self):
+    def refresh_gui(self):
         state = self.game.state
         self.gui.header.text = ""
         self.gui.display.text = ""
@@ -95,13 +95,13 @@ class Controller():
         output = self.progress_to_output()
         if output:
             self.gui.set_output(output)
-            self.update_text()
+            self.refresh_gui()
             self.update_choices()
             return
 
         if self.gui.has_output():
             self.gui.set_output("")
-            self.update_text()
+            self.refresh_gui()
             return
 
         choice = self.gui.menu.pick()
@@ -112,7 +112,7 @@ class Controller():
             self.gui.set_output(output)
 
         self.update_choices()
-        self.update_text()
+        self.refresh_gui()
 
     def key_press(self, inp):
         actions = {
