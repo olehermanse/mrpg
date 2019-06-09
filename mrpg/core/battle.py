@@ -107,14 +107,14 @@ class Battle():
         events = []
         events.append(Event(target=creature, clean=True))  # Remove expired
         events.append(Event(target=creature, reset=True))  # Reset stats
-        events.append(Event(target=creature, modify=True)) # Apply modifiers
+        events.append(Event(target=creature, modify=True))  # Apply modifiers
         events.append(Event(target=creature, proc=True))  # Proc effect
         events.append(Event(target=creature, limit=True))  # Maybe dead
         return Event(events=events)  # Everything happens "at once"
 
     def effect_step(self):
         events = []
-        a,b = self.a, self.b
+        a, b = self.a, self.b
         a_alive, b_alive = a.is_alive(), b.is_alive()
         if a_alive:
             events.append(self.effect_step_creature(a))
