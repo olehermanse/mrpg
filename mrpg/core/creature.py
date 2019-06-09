@@ -79,10 +79,12 @@ class Creature:
 
     def pick_skill(self, skill):
         assert skill is not None
+        assert self.use_skill is None
         self.use_skill = self.skills.equipped.get(skill)
         assert self.use_skill is not None
 
     def ai(self):
+        assert self.use_skill is None
         self.use_skill = self.skills.equipped.get_random()
         assert self.use_skill is not None
 

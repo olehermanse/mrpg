@@ -82,6 +82,8 @@ def test_burn():
     assert a.current["hp"] == b.current["hp"] == 1
     assert a.is_alive() and b.is_alive()
 
+    a.pick_skill("Heal")
+    b.pick_skill("Heal")
     one_turn(battle)
     assert a.is_alive() and b.is_dead()
 

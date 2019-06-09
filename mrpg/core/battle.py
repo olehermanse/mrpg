@@ -44,7 +44,9 @@ class Battle():
         return self.a.is_dead() or self.b.is_dead()
 
     def skill_use(self, user, target):
+        assert (user.use_skill)
         skill = user.use_skill
+        user.use_skill = None
         skill.setup(user, target)
         s = skill.use()
         return s
