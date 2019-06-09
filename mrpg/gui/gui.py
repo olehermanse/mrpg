@@ -20,10 +20,10 @@ class GUI():
 
         self.display = Label(
             "", anchor_x="left", anchor_y="top", multiline=True)
-        self.outputter = Printer("", anchor_x="left", anchor_y="bottom")
+        self.printer = Printer("", anchor_x="left", anchor_y="bottom")
 
         self.labels.append(self.header)
-        self.labels.append(self.outputter)
+        self.labels.append(self.printer)
         self.labels.append(self.display)
 
         self.resize(width, height)
@@ -42,7 +42,7 @@ class GUI():
         font_size = font_normal(height)
         row_size = font_size + font_spacing(font_size)
         self.menu.resize(x, y, font_size)
-        self.outputter.resize(x, y + 3 * row_size, font_size)
+        self.printer.resize(x, y + 3 * row_size, font_size)
 
     def draw(self):
         for label in self.labels:
@@ -51,7 +51,7 @@ class GUI():
 
     def set_output(self, outputs):
         if type(outputs) is str:
-            self.outputter.set_text(outputs)
+            self.printer.set_text(outputs)
         strings = []
         for message in outputs:
             if type(message) is str:
@@ -60,11 +60,11 @@ class GUI():
             if type(message) is list:
                 message = "\n".join(message)
             strings.append(message)
-        self.outputter.set_text("\n".join(strings))
+        self.printer.set_text("\n".join(strings))
 
     def has_output(self):
-        return len("\n".join(self.outputter.strings)) > 0
+        return len("\n".join(self.printer.strings)) > 0
 
     def update(self, dt):
         self.menu.update(dt)
-        self.outputter.update(dt)
+        self.printer.update(dt)
