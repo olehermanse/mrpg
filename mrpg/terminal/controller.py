@@ -13,14 +13,22 @@ class Controller():
             messages = [s.strip() for s in messages if s.strip()]
             if not messages:
                 continue
-            for msg in messages[:-1]:
+            for msg in messages:
                 fancy_print(msg, block=False)
-            fancy_print(messages[-1], block=True)
+            fancy_print("", block=True)
+
+    def print_and_progress(self):
+        if not self.game.battle:
+            clear()
+        self.print_output()
+        self.game.progress()
+        if self.game.events:
+            self.print_and_progress()
 
     def run(self):
         while True:
             clear()
-            self.print_output()
+            self.print_and_progress()
             if self.game.state is State.BATTLE:
                 print(self.game.battle.stats())
                 print()
@@ -31,4 +39,4 @@ class Controller():
                 print(self.game.menu.as_string())
             choice = input("> ")
             self.game.submit(choice)
-            self.print_output()
+            self.print_and_progress()

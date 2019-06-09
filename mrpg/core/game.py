@@ -99,6 +99,9 @@ class Game():
         self.progress()
 
     def progress(self):
+        if not self.adventure:
+            return
+
         if not self.adventure and self.state == State.BATTLE:
             self.set_state(State.GAME_MENU)
         elif self.adventure and not self.battle:
