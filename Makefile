@@ -12,4 +12,8 @@ yapf:
 fmt: yapf
 format: yapf
 
-.PHONY: default run fmt format yapf terminal
+check:
+	py.test
+test: check
+
+.PHONY: default run fmt format yapf terminal test check
