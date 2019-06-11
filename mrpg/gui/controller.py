@@ -44,24 +44,15 @@ class Controller():
 
     def refresh_gui(self):
         state = self.game.state
-        self.gui.header.text = ""
-        self.gui.display.text = ""
         if state == State.MAIN_MENU:
-            if not self.gui.has_output():
-                self.gui.header.text = "MRPG Prototype"
+            self.gui.main_menu()
         elif state == State.GAME_MENU:
-            if not self.gui.has_output():
-                self.gui.display.text = self.game.player.string_long()
+            self.gui.game_menu(self.game.player)
         elif state == State.BATTLE:
-            if self.game.battle:
-                self.gui.display.text = self.game.battle.stats()
+            self.gui.battle(self.game.battle)
         else:
             raise AssertionError
-
-        if self.gui.has_output():
-            self.gui.menu.display = False
-        else:
-            self.gui.menu.display = True
+        self.gui.refresh()
 
     def resolve_to_output(self):
         while self.game.events:

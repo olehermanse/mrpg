@@ -66,5 +66,32 @@ class GUI():
         return len("\n".join(self.printer.strings)) > 0
 
     def update(self, dt):
+        """Called at a regular interval to animate labels etc."""
         self.menu.update(dt)
         self.printer.update(dt)
+
+    def refresh(self):
+        """After an enter click, we need to show/hide some elements"""
+        if self.has_output():
+            self.menu.display = False
+        else:
+            self.menu.display = True
+
+    def reset_labels(self):
+        self.header.text = ""
+        self.display.text = ""
+
+    def main_menu(self):
+        self.reset_labels()
+        if not self.has_output():
+            self.header.text = "MRPG Prototype"
+
+    def game_menu(self, player):
+        self.reset_labels()
+        if not self.has_output():
+            self.display.text = player.string_long()
+
+    def battle(self, battle):
+        self.reset_labels()
+        if battle:
+            self.display.text = battle.stats()
