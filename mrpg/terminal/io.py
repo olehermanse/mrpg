@@ -40,8 +40,7 @@ def skill_picker(max_skills):
             [print(picked) for picked in picked_skills]
             print()
         choice = menu(
-            "Pick skill no.{}/{}".format(counter, max_skills),
-            *remaining_skills)
+            f"Pick skill no.{counter}/{max_skills}", *remaining_skills)
         picked_skills.append(choice)
         remaining_skills.remove(choice)
         counter += 1

@@ -12,7 +12,7 @@ class Stats(CustomDict):
         values = []
         for key in keys:
             if compare and key in compare:
-                values.append("{}/{}".format(self[key], compare[key]))
+                values.append(f"{self[key]}/{compare[key]}")
             else:
                 values.append(str(self[key]))
         lines = column_lines(keys, " = ", values)

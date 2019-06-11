@@ -11,7 +11,7 @@ def json_load(data):
     try:
         return json.loads(data, object_pairs_hook=OrderedDict)
     except json.decoder.JSONDecodeError as err:
-        print("ERROR: Invalid json syntax: {}".format(data, err))
+        print(f"ERROR: Invalid json syntax: {data}")
         sys.exit(1)
 
 

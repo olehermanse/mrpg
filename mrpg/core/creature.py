@@ -75,7 +75,7 @@ class Creature:
 
     def flee(self):
         self.fleeing = True
-        return "{} fled like a big coward.".format(self.name)
+        return f"{self.name} fled like a big coward."
 
     def pick_skill(self, skill):
         assert skill is not None
@@ -97,16 +97,14 @@ class Creature:
 
     def damage(self, amount, source=None):
         self.current["hp"] -= amount
-        msg = ["{} lost {} hit points".format(self.name, amount)]
-        if source:
-            msg[0] += " from {}".format(source)
+        source = f" from {source}" if source else ""
+        msg = [f"{self.name} lost {amount} hit points{source}."]
         return msg
 
     def restore(self, amount, source=None):
         self.current["hp"] += amount
-        msg = ["{} restored {} hit points".format(self.name, amount)]
-        if source:
-            msg[0] += " from {}".format(source)
+        source = f" from {source}" if source else ""
+        msg = [f"{self.name} restored {amount} hit points{source}."]
         return msg
 
     def reset_stats(self):
@@ -152,17 +150,17 @@ class Creature:
         return self.exp_reward() * limit(self.level, 1, 8)
 
     def gain_exp(self, exp):
-        msg = ["{} gained {} experience points".format(self.name, exp)]
+        msg = [f"{self.name} gained {exp} experience points."]
         self.exp += exp
         max_exp = self.max_exp()
         if self.exp >= max_exp:
             self.exp -= max_exp
             self.set_level(self.level + 1)
-            msg.append("{} leveled up".format(self.name))
+            msg.append(f"{self.name} leveled up!")
         return msg
 
     def string_short(self):
-        return "Lv.{lvl} {n}".format(n=self.name, lvl=self.level)
+        return f"Lv.{self.level} {self.name}"
 
     def long_lines(self, skills=False):
         lines = [self.string_short()]

@@ -62,16 +62,16 @@ class Game():
     def main_menu_choice(self, choice):
         if choice == "new":
             self.player = new_player()
-            self.put_output("Hello, {}.".format(self.player.name))
+            self.put_output(f"Hello, {self.player.name}.")
             self.set_state(State.GAME_MENU)
         elif choice == "load":
             data = load_data("data/player.json")
             if not data:
-                self.put_output("No saved game found")
+                self.put_output("No saved game found!")
                 return
             self.player = Creature()
             self.player.import_data(data)
-            self.put_output("Welcome back, {}.".format(self.player.name))
+            self.put_output(f"Welcome back, {self.player.name}.")
             self.set_state(State.GAME_MENU)
         elif choice == "quit":
             sys.exit(0)  # TODO
@@ -129,14 +129,14 @@ class Game():
 
         if enemy.is_dead():
             out = []
-            out.append("Victory, you defeated {}.".format(enemy.name))
+            out.append(f"Victory, you defeated {enemy.name}.")
             out += player.gain_exp(enemy.exp_reward())
             single_newline(out)
             self.put_output(out)
 
     def new_battle(self):
         enemy = self.adventure.next_monster()
-        self.put_output("A wild {} appeared".format(enemy.name))
+        self.put_output(f"A wild {enemy.name} appeared!")
         self.battle = Battle(self.player, enemy)
         self.set_state(State.BATTLE)
         pass

@@ -66,13 +66,13 @@ def test_burn():
     a.current["mp"] = b.current["mp"] = 0
 
     burn = Effects.get("burn", target=a)
-    burn.message = "{} was burned".format(a.name)
+    burn.message = f"{a.name} was burned."
     burn.damage = 1
     burn.duration = 1
     a.add_effect(burn)
 
     burn = Effects.get("burn", target=b)
-    burn.message = "{} was burned".format(b.name)
+    burn.message = f"{b.name} was burned"
     burn.damage = 1
     burn.duration = 2
     b.add_effect(burn)

@@ -39,7 +39,9 @@ class Skill:
         if not self._use:
             return []
         if self.mana_cost and self.mana_cost > self.user.current["mp"]:
-            return [Event(message="Not enough mana")]
+            return [
+                Event(message=f"{self.user.name} does not have enough mana")
+            ]
         outcomes = self._use(self, self.user, self.target)
         assert outcomes
         if type(outcomes) is not list:
@@ -79,7 +81,7 @@ class SkillFuncs:
             damage = target.mitigation(power, "magic")
 
             burn = Effects.get("burn", skill=skill, target=target)
-            burn.message = "{} was burned".format(target.name)
+            burn.message = f"{target.name} was burned."
             burn.damage = damage // 5
             burn.duration = 5
             return Event(target=target, damage=damage, effect=burn)
@@ -108,7 +110,7 @@ class SkillFuncs:
     def blood_pact():
         def use(skill, user, target):
             if user.has_effect("Bleed"):
-                msg = None  # "{} bled out.".format(user.name)
+                msg = None
                 return Event(target=user, kill=True, message=msg)
 
             healing = user.base["hp"]
@@ -142,7 +144,6 @@ class SkillFuncs:
             damage = target.mitigation(power, "physical")
 
             bleed = Effects.get("Bleed", skill=skill, target=target)
-            # bleed.message = "{} started bleeding".format(target.name)
             return Event(target=target, damage=damage, effect=bleed)
 
         return Skill(hint="Causes bleed", use=use)

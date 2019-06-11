@@ -50,9 +50,8 @@ class Event():
 
     def __str__(self):
         if self.events:
-            return "{} combined events".format(len(self.events))
-        return "{} - {} - {} - {}".format(
-            self.skill, self.user, self.source, self.message)
+            return f"{len(self.events)} combined events"
+        return f"{self.skill} - {self.user} - {self.source} - {self.message}"
 
     def resolve(self):
         outputs = []
@@ -61,8 +60,7 @@ class Event():
         elif self.messages is not None:
             outputs.extend(self.messages)
         elif self.skill and self.user:
-            outputs.append(
-                "{} used {}".format(self.user.name, self.skill.name))
+            outputs.append(f"{self.user.name} used {self.skill.name}.")
 
         if self.func:
             ret = self.func(self.target)
@@ -81,8 +79,7 @@ class Event():
 
         if self.effect:
             self.target.add_effect(self.effect)
-            outputs.append(
-                "{} gained {}".format(self.target.name, self.effect.name))
+            outputs.append(f"{self.target.name} gained {self.effect.name}.")
 
         if self.tick:
             self.target.tick_effects()
@@ -90,7 +87,7 @@ class Event():
         if self.clean:
             names = self.target.clean_effects()
             for name in names:
-                outputs.append("{}'s {} faded".format(self.target.name, name))
+                outputs.append(f"{self.target.name}'s {name} faded.")
 
         if self.reset:
             self.target.reset_stats()
@@ -125,7 +122,7 @@ class Event():
 
         if self.kill and self.target.is_alive():
             self.target.kill()
-            outputs.append("{} died.".format(self.target.name))
+            outputs.append(f"{self.target.name} died.")
 
         # Return a list of strings to print, may be empty:
 
