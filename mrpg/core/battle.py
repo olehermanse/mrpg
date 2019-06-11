@@ -51,12 +51,28 @@ class Battle():
         s = skill.use()
         return s
 
+    def update_stats(self):
+        events = []
+        events.append(Event(target=self.a, reset=True))
+        events.append(Event(target=self.a, modify=True))
+        events.append(Event(target=self.b, reset=True))
+        events.append(Event(target=self.b, modify=True))
+        return Event(events=events)
+
+    def update_effects(self):
+        events = []
+        events.append(Event(target=self.a, clean=True))
+        events.append(Event(target=self.b, clean=True))
+        events.append(self.update_stats())
+        return Event(events=events)
+
     def one_player_turn(self, src, target):
         events = []
         events += self.skill_use(src, target)
+        events.append(self.update_stats())
         events.append(self.limit_checks())
-        events.append(self.clean_effects())
-        return events
+        yield Event(events=events)
+        yield self.update_effects()
 
     def clean_effects(self):
         events = []
@@ -74,13 +90,13 @@ class Battle():
         return Event(events=events)
 
     def sequential_turn(self, first, last):
-        events = list(self.one_player_turn(first, last))
-        yield Event(events=events)
+        for event in self.one_player_turn(first, last):
+            yield event
 
         # At this point, yielded events must be resolved so check works:
         if last.is_alive():
-            events = list(self.one_player_turn(last, first))
-            yield Event(events=events)
+            for event in self.one_player_turn(last, first):
+                yield event
 
     def concurrent_turn(self, a, b):
         events = []
@@ -88,6 +104,7 @@ class Battle():
         events.append(msg)
         events += self.skill_use(a, b)
         events += self.skill_use(b, a)
+        events.append(self.update_stats())
         events.append(self.limit_checks())
         yield Event(events=events)
 

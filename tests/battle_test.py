@@ -4,13 +4,15 @@ from mrpg.core.event import Event
 from mrpg.core.effects import Effects
 
 
-def one_turn(battle):
+def one_turn(battle, event_callback=None):
     assert battle.turn is None
     battle.turn = Turn(battle)
     printed_something = False
     for event in battle.turn.events:
         assert type(event) is Event
         messages = event.resolve()
+        if event_callback:
+            event_callback(battle)
         assert type(messages) is list
         for msg in messages:
             assert type(msg) is str
@@ -107,3 +109,23 @@ def test_shock():
     assert a.is_alive() and b.is_alive()
     assert a.current["dex"] < b.current["dex"]
     assert a.current != b.current
+
+
+def test_lightning():
+    """Test that lightning applies shock correctly"""
+    a, b = new_player(), new_player()
+    battle = Battle(a, b)
+    a.set_level(b.level + 1)
+    a.pick_skill("Lightning")
+    b.pick_skill("Heal")
+    dex = b.current["dex"]
+    hp = battle.b.current["hp"]
+
+    def check_dexterity_reduction(battle):
+        assert (battle.b.current["hp"] == hp or battle.b.current["dex"] < dex)
+
+    check_dexterity_reduction(battle)
+    one_turn(battle, check_dexterity_reduction)
+
+    assert a.is_alive() and b.is_alive()
+    assert b.current["dex"] < dex < a.current["dex"]
