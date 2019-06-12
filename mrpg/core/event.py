@@ -54,6 +54,7 @@ class Event():
         return f"{self.skill} - {self.user} - {self.source} - {self.message}"
 
     def resolve(self):
+        target = self.target
         outputs = []
         if self.message is not None:
             outputs.append(self.message)
@@ -63,47 +64,47 @@ class Event():
             outputs.append(f"{self.user.name} used {self.skill.name}.")
 
         if self.func:
-            ret = self.func(self.target)
+            ret = self.func(target)
             if type(ret) is list:
                 outputs += ret
             if type(ret) is str:
                 outputs.append(str)
         if self.mana is not None:
-            self.target.current["mp"] += self.mana
+            target.current["mp"] += self.mana
         if self.restore:
-            outputs += self.target.restore(self.restore)
+            outputs += target.restore(self.restore)
         if self.damage:
-            outputs += self.target.damage(self.damage, source=self.source)
+            outputs += target.damage(self.damage, source=self.source)
 
         # Effect related events:
 
         if self.effect:
-            self.target.add_effect(self.effect)
-            outputs.append(f"{self.target.name} gained {self.effect.name}.")
+            target.add_effect(self.effect)
+            outputs.append(f"{target.name} gained {self.effect.name}.")
 
         if self.tick:
-            self.target.tick_effects()
+            target.tick_effects()
 
         if self.clean:
-            names = self.target.clean_effects()
+            names = target.clean_effects()
             for name in names:
-                outputs.append(f"{self.target.name}'s {name} faded.")
+                outputs.append(f"{target.name}'s {name} faded.")
 
         if self.reset:
-            self.target.reset_stats()
+            target.reset_stats()
 
         if self.proc:
-            events = self.target.proc_effects()
+            events = target.proc_effects()
             for event in events:
                 outputs.extend(event.resolve())
 
         if self.modify:
-            events = self.target.modify_effects()
+            events = target.modify_effects()
             for event in events:
                 outputs.extend(event.resolve())
 
         if self.reduction:
-            current = self.target.current
+            current = target.current
             for stat in self.reduction:
                 current[stat] -= self.reduction[stat]
 
@@ -116,13 +117,13 @@ class Event():
         # Bounding hp and mana between 0 and max, and kill if hp is 0:
 
         if self.limit:
-            should_kill = self.target.limit_check()
+            should_kill = target.limit_check()
             if should_kill:
                 self.kill = True
 
-        if self.kill and self.target.is_alive():
-            self.target.kill()
-            outputs.append(f"{self.target.name} died.")
+        if self.kill and target.is_alive():
+            target.kill()
+            outputs.append(f"{target.name} died.")
 
         # Return a list of strings to print, may be empty:
 
