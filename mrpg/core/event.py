@@ -78,9 +78,13 @@ class Event():
 
         # Effect related events:
 
-        if self.effect:
-            target.add_effect(self.effect)
-            outputs.append(f"{target.name} gained {self.effect.name}.")
+        effect = self.effect
+        if effect:
+            target.add_effect(effect)
+            if effect.message:
+                outputs.append(effect.message)
+            else:
+                outputs.append(f"{target.name} gained {effect.name}.")
 
         if self.tick:
             target.tick_effects()

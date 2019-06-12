@@ -12,7 +12,8 @@ class Effect:
             name=None,
             skip=False,
             source=None,
-            target=None):
+            target=None,
+            message=None):
         self.duration = duration
         self.hint = hint
         self._proc = proc
@@ -21,6 +22,7 @@ class Effect:
         self.skip = skip
         self.source = source
         self.target = target
+        self.message = message
 
     def __str__(self):
         return self.name
