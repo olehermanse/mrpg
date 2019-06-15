@@ -1,12 +1,13 @@
 from mrpg.gui.menu import Menu
 from mrpg.gui.label import MenuLabel, Label, Printer
+from mrpg.gui.battle_gui import BattleGUI
 from mrpg.gui.commons import frame_spacing, font_big, font_normal, font_spacing
 
 
 class GUI():
     def __init__(self, window):
         self.window = window
-        self.labels = []
+        self.draw_list = []
         width, height = self.window.get_viewport_size()
         spacing = frame_spacing(height)
         self.menu = Menu(spacing, spacing, font_normal(height))
@@ -22,9 +23,12 @@ class GUI():
             "", anchor_x="left", anchor_y="top", multiline=True)
         self.printer = Printer("", anchor_x="left", anchor_y="bottom")
 
-        self.labels.append(self.header)
-        self.labels.append(self.printer)
-        self.labels.append(self.display)
+        self.battle_gui = BattleGUI()
+
+        self.draw_list.append(self.header)
+        self.draw_list.append(self.printer)
+        self.draw_list.append(self.display)
+        self.draw_list.append(self.battle_gui)
 
         self.resize(width, height)
 
@@ -44,8 +48,14 @@ class GUI():
         self.menu.resize(x, y, font_size)
         self.printer.resize(x, y + 3 * row_size, font_size)
 
+        x = width // 2
+        y = height - frame_spacing(height)
+        w = width // 2 - frame_spacing(height)
+        h = height // 2 - frame_spacing(height)
+        self.battle_gui.resize(x, y, w, h, font_size)
+
     def draw(self):
-        for label in self.labels:
+        for label in self.draw_list:
             label.draw()
         self.menu.draw()
 
@@ -83,15 +93,20 @@ class GUI():
 
     def main_menu(self):
         self.reset_labels()
+        self.battle_gui.hide()
         if not self.has_output():
             self.header.text = "MRPG Prototype"
 
     def game_menu(self, player):
         self.reset_labels()
+        self.battle_gui.hide()
         if not self.has_output():
             self.display.text = player.string_long()
 
     def battle(self, battle):
         self.reset_labels()
         if battle:
+            self.battle_gui.refresh(battle)
             self.display.text = battle.stats()
+        else:
+            self.battle_gui.hide()
