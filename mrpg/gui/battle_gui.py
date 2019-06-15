@@ -77,7 +77,7 @@ class CreatureGUI:
         self.str.font_size = small_font
         self.dex.font_size = small_font
         self.int.font_size = small_font
-        row_size =  1.5 * font_size
+        row_size = 1.5 * font_size
         self.hp.resize(x, y - row_size, w, font_size, small_font)
         self.mp.resize(x, y - 2 * row_size, w, font_size, small_font)
         self.str.x = x + w // 32
