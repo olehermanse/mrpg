@@ -48,9 +48,9 @@ class GUI():
         self.menu.resize(x, y, font_size)
         self.printer.resize(x, y + 3 * row_size, font_size)
 
-        x = width // 2
+        x = frame_spacing(height)
         y = height - frame_spacing(height)
-        w = width // 2 - frame_spacing(height)
+        w = width - 2 * frame_spacing(height)
         h = height // 2 - frame_spacing(height)
         self.battle_gui.resize(x, y, w, h, font_size)
 
@@ -107,6 +107,5 @@ class GUI():
         self.reset_labels()
         if battle:
             self.battle_gui.refresh(battle)
-            self.display.text = battle.stats()
         else:
             self.battle_gui.hide()
