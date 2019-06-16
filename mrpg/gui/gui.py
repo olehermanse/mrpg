@@ -79,6 +79,7 @@ class GUI():
         """Called at a regular interval to animate labels etc."""
         self.menu.update(dt)
         self.printer.update(dt)
+        self.battle_gui.update(dt)
 
     def refresh(self):
         """After an enter click, we need to show/hide some elements"""

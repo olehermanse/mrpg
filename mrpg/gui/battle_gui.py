@@ -9,12 +9,14 @@ class ResourceBar:
         self.background = None
         self.color = color
         self.fraction = 1.0
+        self.target_fraction = 1.0
 
     def resize(self, x, y, w, h, font_size):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
+        self.animation_speed = 1.0
         self.label.x = x + w // 32
         self.label.y = y - h // 2
         self.label.w = w
@@ -37,10 +39,29 @@ class ResourceBar:
 
     def refresh(self, current, max):
         self.label.text = f"{current}/{max}"
-        self.fraction = current / max
+        self.target_fraction = current / max
         color = self.color
-        f = self.fraction
-        x, y, w, h = self.x, self.y, self.w, self.h
+
+    def update(self, dt):
+        if self.target_fraction is None:
+            return
+        difference = self.target_fraction - self.fraction
+        if difference < 0.0:
+            self.fraction -= self.animation_speed * dt
+            if self.fraction <= self.target_fraction:
+                self.fraction = self.target_fraction
+                self.target_fraction = None
+        elif difference > 0.0:
+            self.fraction += self.animation_speed * dt
+            if self.fraction >= self.target_fraction:
+                self.fraction = self.target_fraction
+                self.target_fraction = None
+        else:
+            self.fraction = self.target_fraction
+            self.target_fraction = None
+
+        color = self.color
+        x, y, w, h, f = self.x, self.y, self.w, self.h, self.fraction
         self.foreground = pyglet.graphics.vertex_list(
             4, ('v2f', (x, y, x + w * f, y, x + w * f, y - h, x, y - h)),
             ('c3B', (*color, *color, *color, *color)))
@@ -94,6 +115,10 @@ class CreatureGUI:
         self.dex.draw()
         self.int.draw()
 
+    def update(self, dt):
+        self.hp.update(dt)
+        self.mp.update(dt)
+
     def refresh(self, creature):
         self.name.text = creature.name
         self.level.text = f"Lv. {creature.level}"
@@ -126,6 +151,11 @@ class BattleGUI:
         self.enabled = True
         self.a.refresh(battle.a)
         self.b.refresh(battle.b)
+
+    def update(self, dt):
+        if self.enabled:
+            self.a.update(dt)
+            self.b.update(dt)
 
     def hide(self):
         self.enabled = False
