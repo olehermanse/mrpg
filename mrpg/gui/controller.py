@@ -12,11 +12,10 @@ class Controller():
         self.game = Game()
         self.gui = GUI(self.window)
 
-        self.update_choices()
-
         cursor = self.window.get_system_mouse_cursor("crosshair")
         self.window.set_mouse_cursor(cursor)
-        self.refresh_gui()
+        self.update_choices()
+        self.gui.refresh(self.game)
 
     def resize(self, w, h):
         self.gui.resize(w, h)
@@ -41,18 +40,6 @@ class Controller():
 
     def mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         pass
-
-    def refresh_gui(self):
-        state = self.game.state
-        if state == State.MAIN_MENU:
-            self.gui.main_menu()
-        elif state == State.GAME_MENU:
-            self.gui.game_menu(self.game.player)
-        elif state == State.BATTLE:
-            self.gui.battle(self.game.battle)
-        else:
-            raise AssertionError
-        self.gui.refresh()
 
     def resolve_to_output(self):
         while self.game.events:
@@ -86,24 +73,16 @@ class Controller():
         output = self.progress_to_output()
         if output:
             self.gui.set_output(output)
-            self.refresh_gui()
-            self.update_choices()
-            return
-
-        if self.gui.has_output():
+        elif self.gui.has_output():
             self.gui.set_output("")
-            self.refresh_gui()
-            return
+        else:
+            choice = self.gui.menu.pick()
+            self.game.submit(choice)
 
-        choice = self.gui.menu.pick()
-        self.game.submit(choice)
-
-        output = self.progress_to_output()
-        if output:
-            self.gui.set_output(output)
-
+            output = self.progress_to_output()
+            if output:
+                self.gui.set_output(output)
         self.update_choices()
-        self.refresh_gui()
 
     def key_press(self, inp):
         actions = {
@@ -114,3 +93,4 @@ class Controller():
         }
         if inp in actions:
             actions[inp]()
+        self.gui.refresh(self.game)

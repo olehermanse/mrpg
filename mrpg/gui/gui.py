@@ -2,6 +2,7 @@ from mrpg.gui.menu import Menu
 from mrpg.gui.label import MenuLabel, Label, Printer
 from mrpg.gui.battle_gui import BattleGUI
 from mrpg.gui.commons import frame_spacing, font_big, font_normal, font_spacing
+from mrpg.core.game import State
 
 
 class GUI():
@@ -81,8 +82,18 @@ class GUI():
         self.printer.update(dt)
         self.battle_gui.update(dt)
 
-    def refresh(self):
-        """After an enter click, we need to show/hide some elements"""
+    def refresh(self, game):
+        """After a click, we need to show/hide some elements"""
+        state = game.state
+        if state == State.MAIN_MENU:
+            self.refresh_main_menu()
+        elif state == State.GAME_MENU:
+            self.refresh_game_menu(game.player)
+        elif state == State.BATTLE:
+            self.refresh_battle(game.battle)
+        else:
+            raise AssertionError
+
         if self.has_output():
             self.menu.display = False
         else:
@@ -92,19 +103,19 @@ class GUI():
         self.header.text = ""
         self.display.text = ""
 
-    def main_menu(self):
+    def refresh_main_menu(self):
         self.reset_labels()
         self.battle_gui.hide()
         if not self.has_output():
             self.header.text = "MRPG Prototype"
 
-    def game_menu(self, player):
+    def refresh_game_menu(self, player):
         self.reset_labels()
         self.battle_gui.hide()
         if not self.has_output():
             self.display.text = player.string_long()
 
-    def battle(self, battle):
+    def refresh_battle(self, battle):
         self.reset_labels()
         if battle:
             self.battle_gui.refresh(battle)
