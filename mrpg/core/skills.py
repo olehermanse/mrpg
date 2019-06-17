@@ -163,7 +163,10 @@ class Skills:
             name = name.name
         internal_name = internal(name)
         default_name = printable(internal_name)
-        skill_func = getattr(SkillFuncs, internal_name)
+        try:
+            skill_func = getattr(SkillFuncs, internal_name)
+        except AttributeError:
+            return None
         skill_obj = skill_func()
         if not skill_obj.name:
             assert "'" not in name  # Skills with quotes must always set name

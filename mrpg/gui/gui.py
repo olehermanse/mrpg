@@ -3,6 +3,7 @@ from mrpg.gui.label import MenuLabel, Label, Printer
 from mrpg.gui.battle_gui import BattleGUI
 from mrpg.gui.commons import frame_spacing, font_big, font_normal, font_spacing
 from mrpg.core.game import State
+from mrpg.core.skills import Skills
 
 
 class GUI():
@@ -22,6 +23,7 @@ class GUI():
 
         self.display = Label(
             "", anchor_x="left", anchor_y="top", multiline=True)
+        self.skill_hint = Label("HINT", anchor_x="right", anchor_y="bottom")
         self.printer = Printer("", anchor_x="left", anchor_y="bottom")
 
         self.battle_gui = BattleGUI()
@@ -29,6 +31,7 @@ class GUI():
         self.draw_list.append(self.header)
         self.draw_list.append(self.printer)
         self.draw_list.append(self.display)
+        self.draw_list.append(self.skill_hint)
         self.draw_list.append(self.battle_gui)
 
         self.resize(width, height)
@@ -42,6 +45,11 @@ class GUI():
         self.display.y = height - frame_spacing(height)
         self.display.font_size = font_normal(height)
         self.display.width = width // 2
+
+        self.skill_hint.x = width - frame_spacing(height)
+        self.skill_hint.y = frame_spacing(height)
+        self.skill_hint.font_size = font_normal(height)
+        self.skill_hint.width = width // 2
 
         x = y = frame_spacing(height)
         font_size = font_normal(height)
@@ -96,12 +104,14 @@ class GUI():
 
         if self.has_output():
             self.menu.display = False
+            self.skill_hint.text = ""
         else:
             self.menu.display = True
 
     def reset_labels(self):
         self.header.text = ""
         self.display.text = ""
+        self.skill_hint.text = ""
 
     def refresh_main_menu(self):
         self.reset_labels()
@@ -119,5 +129,7 @@ class GUI():
         self.reset_labels()
         if battle:
             self.battle_gui.refresh(battle)
+            skill = Skills.get(self.menu.selected())
+            self.skill_hint.text = skill.hint if skill else ""
         else:
             self.battle_gui.hide()
