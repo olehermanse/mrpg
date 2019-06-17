@@ -12,13 +12,15 @@ class Skill:
             skip=False,
             user=None,
             mana_cost=None,
-            target=None):
+            target=None,
+            priority=None):
         self.skip = skip
         self.hint = hint
         self._use = use
         self.user = user
         self.name = name
         self._mana_cost = mana_cost
+        self._priority = priority
 
     def __str__(self):
         return self.name
@@ -26,6 +28,12 @@ class Skill:
     def setup(self, user, target):
         self.user = user
         self.target = target
+
+    @property
+    def priority(self):
+        if not self._priority:
+            return 0
+        return self._priority
 
     @property
     def mana_cost(self):
@@ -136,7 +144,7 @@ class SkillFuncs:
             damage = user.current["dex"]
             return Event(target=target, damage=damage)
 
-        return Skill(hint="Ignores damage mitigation", use=use)
+        return Skill(hint="Ignores damage mitigation", use=use, priority=1)
 
     def slash():
         def use(skill, user, target):

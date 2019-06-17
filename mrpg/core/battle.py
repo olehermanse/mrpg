@@ -110,12 +110,15 @@ class Battle():
 
     def skill_step(self):
         a, b = self.a, self.b
-        if a.current["dex"] == b.current["dex"]:
+        a_speed, b_speed = a.current["dex"], b.current["dex"]
+        a_priority, b_priority = a.use_skill.priority, b.use_skill.priority
+        if a_priority == b_priority and a_speed == b_speed:
             for event in self.concurrent_turn(a, b):
                 assert type(event) is Event
                 yield event
             return
-        if a.current["dex"] < b.current["dex"]:
+        if a_priority < b_priority or (a_speed < b_speed
+                                       and a_priority == b_priority):
             a, b = b, a
         first, last = a, b
         for event in self.sequential_turn(first, last):

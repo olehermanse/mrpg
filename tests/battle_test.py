@@ -51,8 +51,10 @@ def test_speed():
         b.pick_skill(defender_skill)
         a.current["hp"] = b.current["hp"] = 1
         one_turn(battle)
-        assert a.is_alive() and not b.is_alive()
-        assert not a.is_dead() and b.is_dead()
+        if defender_skill == "True strike":  # Priority
+            assert a.is_dead() and b.is_alive()
+        else:
+            assert a.is_alive() and b.is_dead()
 
 
 def test_burn():
