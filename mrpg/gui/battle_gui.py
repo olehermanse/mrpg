@@ -1,5 +1,8 @@
+from os.path import isfile
+
 import pyglet
 
+from mrpg.gui.sprite import Sprite
 from mrpg.gui.label import Label
 
 
@@ -86,8 +89,18 @@ class CreatureGUI:
         self.int = Label("", anchor_x="right", anchor_y="top")
         self.hp = ResourceBar((0, 128, 0))
         self.mp = ResourceBar((0, 0, 128))
+        self.sprite = None
 
     def resize(self, x, y, w, h, font_size):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.font_size = font_size
+        self._resize()
+
+    def _resize(self):
+        x, y, w, h, font_size = self.x, self.y, self.w, self.h, self.font_size
         self.name.x = x
         self.name.y = y
         self.name.font_size = font_size
@@ -106,6 +119,11 @@ class CreatureGUI:
         self.int.x = x + w - w // 32
         self.str.y = self.dex.y = self.int.y = y - 3 * row_size
 
+        if self.sprite:
+            self.sprite.scale = 8
+            self.sprite.x = x + w / 2 - self.sprite.width / 2
+            self.sprite.y = y - 5 * row_size - self.sprite.height
+
     def draw(self):
         self.name.draw()
         self.level.draw()
@@ -114,12 +132,19 @@ class CreatureGUI:
         self.str.draw()
         self.dex.draw()
         self.int.draw()
+        if self.sprite:
+            self.sprite.draw()
 
     def update(self, dt):
         self.hp.update(dt)
         self.mp.update(dt)
 
     def refresh(self, creature):
+        if self.name.text != creature.name:
+            filename = f"assets/{creature.name.lower()}.png"
+            image = pyglet.image.load(filename)
+            self.sprite = Sprite(img=image)
+            self._resize()
         self.name.text = creature.name
         self.level.text = f"Lv. {creature.level}"
         current = creature.current
