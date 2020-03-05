@@ -1,7 +1,7 @@
 from mrpg.utils.utils import column_lines
 
 
-class Menu():
+class Menu:
     def __init__(self, *args, **kwargs):
         headline = args[0]
         args = list(args[1:])
@@ -46,8 +46,8 @@ class Menu():
         lines = [self.headline]
         if self.hints:
             lines += column_lines(
-                self.indices, self.separator, self.choices, self.hints_sep,
-                self.hints)
+                self.indices, self.separator, self.choices, self.hints_sep, self.hints
+            )
         else:
             lines += column_lines(self.indices, self.separator, self.choices)
         return lines

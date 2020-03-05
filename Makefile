@@ -6,14 +6,10 @@ run:
 terminal:
 	python3 -m mrpg --terminal
 
-yapf:
-	yapf --recursive . -i --parallel
-
-fmt: yapf
-format: yapf
+format:
+	black .
 
 check:
 	py.test
-test: check
 
-.PHONY: default run fmt format yapf terminal test check
+.PHONY: default run format terminal check

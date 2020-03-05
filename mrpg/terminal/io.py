@@ -9,7 +9,7 @@ import os
 
 
 def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
     sys.stdout.flush()
 
 
@@ -39,8 +39,7 @@ def skill_picker(max_skills):
             print("Your skills:")
             [print(picked) for picked in picked_skills]
             print()
-        choice = menu(
-            f"Pick skill no.{counter}/{max_skills}", *remaining_skills)
+        choice = menu(f"Pick skill no.{counter}/{max_skills}", *remaining_skills)
         picked_skills.append(choice)
         remaining_skills.remove(choice)
         counter += 1
@@ -54,7 +53,7 @@ def character_creator():
     player.set_level(1)
     # player.set_level(level=int(input("Level: ")))
     # skill_names = skill_picker(8)
-    skill_names = ['Attack', 'Heal']
+    skill_names = ["Attack", "Heal"]
     player.skills.learn(skill_names)
     player.skills.equip(skill_names)
     return player

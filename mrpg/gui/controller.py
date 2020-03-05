@@ -6,7 +6,7 @@ from mrpg.gui.commons import Color
 from mrpg.gui.gui import GUI
 
 
-class Controller():
+class Controller:
     def __init__(self, width=960, height=540):
         self.window = wrapper.init(self, width, height, caption="MRPG")
         self.game = Game()
@@ -89,7 +89,7 @@ class Controller():
             "up": self.gui.menu.up,
             "down": self.gui.menu.down,
             "escape": sys.exit,
-            "enter": self.enter
+            "enter": self.enter,
         }
         if inp in actions:
             actions[inp]()

@@ -24,10 +24,8 @@ class Menu:
         for label in self._labels:
             y -= row_size
             label.resize(
-                8 * self.font_size,
-                x=self.x,
-                y=self.y + y,
-                font_size=self.font_size)
+                8 * self.font_size, x=self.x, y=self.y + y, font_size=self.font_size
+            )
 
     def choices(self, *args):
         inv_index = len(self._labels) - self.index
@@ -42,11 +40,8 @@ class Menu:
             y -= row_size
             s = s[0].upper() + s[1:]
             label = MenuLabel(
-                8 * self.font_size,
-                s,
-                x=self.x,
-                y=self.y + y,
-                font_size=self.font_size)
+                8 * self.font_size, s, x=self.x, y=self.y + y, font_size=self.font_size
+            )
             labels.append(label)
 
         length = len(labels)

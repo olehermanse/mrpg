@@ -29,16 +29,22 @@ class ResourceBar:
         color = r, g, b
         f = self.fraction
         self.foreground = pyglet.graphics.vertex_list(
-            4, ('v2f', (x, y, x + w * f, y, x + w * f, y - h, x, y - h)),
-            ('c3B', (*color, *color, *color, *color)))
+            4,
+            ("v2f", (x, y, x + w * f, y, x + w * f, y - h, x, y - h)),
+            ("c3B", (*color, *color, *color, *color)),
+        )
         self.border = pyglet.graphics.vertex_list(
-            4, ('v2f', (x, y, x + w, y, x + w, y - h, x, y - h)),
-            ('c3B', (*color, *color, *color, *color)))
+            4,
+            ("v2f", (x, y, x + w, y, x + w, y - h, x, y - h)),
+            ("c3B", (*color, *color, *color, *color)),
+        )
         r, g, b = r // 3, g // 3, b // 3
         color = r, g, b
         self.background = pyglet.graphics.vertex_list(
-            4, ('v2f', (x, y, x + w, y, x + w, y - h, x, y - h)),
-            ('c3B', (*color, *color, *color, *color)))
+            4,
+            ("v2f", (x, y, x + w, y, x + w, y - h, x, y - h)),
+            ("c3B", (*color, *color, *color, *color)),
+        )
 
     def refresh(self, current, max):
         self.label.text = f"{current}/{max}"
@@ -66,8 +72,10 @@ class ResourceBar:
         color = self.color
         x, y, w, h, f = self.x, self.y, self.w, self.h, self.fraction
         self.foreground = pyglet.graphics.vertex_list(
-            4, ('v2f', (x, y, x + w * f, y, x + w * f, y - h, x, y - h)),
-            ('c3B', (*color, *color, *color, *color)))
+            4,
+            ("v2f", (x, y, x + w * f, y, x + w * f, y - h, x, y - h)),
+            ("c3B", (*color, *color, *color, *color)),
+        )
 
     def draw(self):
         if self.background:

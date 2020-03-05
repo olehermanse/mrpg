@@ -24,7 +24,7 @@ class Turn:
             yield event
 
 
-class Battle():
+class Battle:
     def __init__(self, a, b):
         self.a = a
         self.b = b
@@ -44,7 +44,7 @@ class Battle():
         return self.a.is_dead() or self.b.is_dead()
 
     def skill_use(self, user, target):
-        assert (user.use_skill)
+        assert user.use_skill
         skill = user.use_skill
         user.use_skill = None
         skill.setup(user, target)
@@ -117,8 +117,7 @@ class Battle():
                 assert type(event) is Event
                 yield event
             return
-        if a_priority < b_priority or (a_speed < b_speed
-                                       and a_priority == b_priority):
+        if a_priority < b_priority or (a_speed < b_speed and a_priority == b_priority):
             a, b = b, a
         first, last = a, b
         for event in self.sequential_turn(first, last):

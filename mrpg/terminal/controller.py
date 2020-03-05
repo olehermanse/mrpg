@@ -2,7 +2,7 @@ from mrpg.core.game import Game, State
 from mrpg.terminal.io import clear, fancy_print
 
 
-class Controller():
+class Controller:
     def __init__(self):
         self.game = Game()
 

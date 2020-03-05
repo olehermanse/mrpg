@@ -4,16 +4,17 @@ from mrpg.core.event import Event
 
 class Effect:
     def __init__(
-            self,
-            duration=None,
-            hint=None,
-            proc=None,
-            modifier=None,
-            name=None,
-            skip=False,
-            source=None,
-            target=None,
-            message=None):
+        self,
+        duration=None,
+        hint=None,
+        proc=None,
+        modifier=None,
+        name=None,
+        skip=False,
+        source=None,
+        target=None,
+        message=None,
+    ):
         self.duration = duration
         self.hint = hint
         self._proc = proc
@@ -32,7 +33,7 @@ class Effect:
         self.duration -= 1
 
     def is_done(self):
-        return (self.duration <= 0)
+        return self.duration <= 0
 
     def proc(self):
         if self._proc:

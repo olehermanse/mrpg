@@ -10,7 +10,8 @@ class Label(pyglet.text.Label):
             anchor_x="left",
             anchor_y="bottom",
             color=Color.WHITE,
-            width=500)
+            width=500,
+        )
         for key in defaults:
             if key not in kwargs:
                 kwargs[key] = defaults[key]

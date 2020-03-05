@@ -21,13 +21,13 @@ def save_data(data, path):
         os.makedirs(folder, exist_ok=True)
     if isinstance(data, dict) or isinstance(data, list):
         data = jsonify(data)
-    with open(path, 'w', encoding="utf-8") as out_file:
+    with open(path, "w", encoding="utf-8") as out_file:
         out_file.write(data)
 
 
 def load_data(path):
     try:
-        with open(path, 'r', encoding="utf-8") as in_file:
+        with open(path, "r", encoding="utf-8") as in_file:
             return json_load(in_file.read())
     except FileNotFoundError:
         return None

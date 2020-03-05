@@ -15,9 +15,16 @@ def new_player():
     return Creature(
         "Alice",
         skill_names=[
-            "attack", "heal", "fireball", "life_drain", "blood_pact",
-            "lightning", "true_strike", "slash"
-        ])
+            "attack",
+            "heal",
+            "fireball",
+            "life_drain",
+            "blood_pact",
+            "lightning",
+            "true_strike",
+            "slash",
+        ],
+    )
 
 
 @unique
@@ -28,7 +35,7 @@ class State(Enum):
     NONE = auto()
 
 
-class Game():
+class Game:
     def __init__(self):
         self.state = State.NONE
         self.menu = None
@@ -56,8 +63,7 @@ class Game():
         player = self.player
         skill_names = player.skills.equipped.names()
         skill_hints = player.skills.equipped.hints()
-        self.menu = Menu(
-            "Battle Menu:", lst=skill_names, hints=skill_hints, f="flee")
+        self.menu = Menu("Battle Menu:", lst=skill_names, hints=skill_hints, f="flee")
 
     def main_menu_choice(self, choice):
         if choice == "new":

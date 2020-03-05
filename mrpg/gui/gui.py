@@ -6,7 +6,7 @@ from mrpg.core.game import State
 from mrpg.core.skills import Skills
 
 
-class GUI():
+class GUI:
     def __init__(self, window):
         self.window = window
         self.draw_list = []
@@ -21,8 +21,7 @@ class GUI():
 
         self.header = Label("", anchor_x="left", anchor_y="top")
 
-        self.display = Label(
-            "", anchor_x="left", anchor_y="top", multiline=True)
+        self.display = Label("", anchor_x="left", anchor_y="top", multiline=True)
         self.skill_hint = Label("HINT", anchor_x="right", anchor_y="bottom")
         self.printer = Printer("", anchor_x="left", anchor_y="bottom")
 

@@ -124,7 +124,7 @@ def test_lightning():
     hp = battle.b.current["hp"]
 
     def check_dexterity_reduction(battle):
-        assert (battle.b.current["hp"] == hp or battle.b.current["dex"] < dex)
+        assert battle.b.current["hp"] == hp or battle.b.current["dex"] < dex
 
     check_dexterity_reduction(battle)
     one_turn(battle, check_dexterity_reduction)

@@ -5,15 +5,16 @@ from mrpg.core.event import Event
 
 class Skill:
     def __init__(
-            self,
-            hint=None,
-            use=None,
-            name=None,
-            skip=False,
-            user=None,
-            mana_cost=None,
-            target=None,
-            priority=None):
+        self,
+        hint=None,
+        use=None,
+        name=None,
+        skip=False,
+        user=None,
+        mana_cost=None,
+        target=None,
+        priority=None,
+    ):
         self.skip = skip
         self.hint = hint
         self._use = use
@@ -47,9 +48,7 @@ class Skill:
         if not self._use:
             return []
         if self.mana_cost and self.mana_cost > self.user.current["mp"]:
-            return [
-                Event(message=f"{self.user.name} does not have enough mana")
-            ]
+            return [Event(message=f"{self.user.name} does not have enough mana")]
         outcomes = self._use(self, self.user, self.target)
         assert outcomes
         if type(outcomes) is not list:
@@ -107,7 +106,7 @@ class SkillFuncs:
 
             return [
                 Event(damage=amount, target=target),
-                Event(restore=amount, target=user)
+                Event(restore=amount, target=user),
             ]
 
         def mana_cost(user):

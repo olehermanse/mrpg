@@ -12,7 +12,7 @@ key_map = {
     key.S: "down",
     key.D: "right",
     key.ENTER: "enter",
-    key.ESCAPE: "escape"
+    key.ESCAPE: "escape",
 }
 
 
@@ -22,7 +22,7 @@ def run():
 
 class GameWindow(pyglet.window.Window):
     def __init__(self, w, h, controller):
-        super().__init__(w, h, caption='MRPG', resizable=True)
+        super().__init__(w, h, caption="MRPG", resizable=True)
         self.controller = controller
         self.set_minimum_size(w // 2, h // 2)
 

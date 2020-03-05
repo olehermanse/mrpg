@@ -62,8 +62,9 @@ class Creature:
                 names.append(name)
                 # Don't add to new_effects
             else:
-                if (name not in new_effects) or (effect.duration >
-                                                 new_effects[name].duration):
+                if (name not in new_effects) or (
+                    effect.duration > new_effects[name].duration
+                ):
                     new_effects[name] = effect
 
         self.effects = [effect for name, effect in new_effects.items()]

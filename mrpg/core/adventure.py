@@ -4,7 +4,7 @@ from mrpg.core.creature import Creature
 from mrpg.utils.utils import limit, single_newline
 
 
-class Adventure():
+class Adventure:
     def __init__(self, player):
         self.player = player
         self.player.fleeing = False
@@ -19,7 +19,7 @@ class Adventure():
             "Ogre": ["attack"],
             "Cultist": ["attack", "life_drain", "blood_pact"],
             "Wizard": ["attack", "fireball", "heal", "lightning"],
-            "Slime": ["attack", "heal", "slash", "true_strike"]
+            "Slime": ["attack", "heal", "slash", "true_strike"],
         }
         name = random.choice(list(skills))
         skills = skills[name]
@@ -47,7 +47,5 @@ class Adventure():
     def fail(self):
         self.player.fleeing = False
         return random.choice(
-            [
-                "The adventure was an embarassing failure.",
-                "Failed adventure!"
-            ])
+            ["The adventure was an embarassing failure.", "Failed adventure!"]
+        )
