@@ -3,7 +3,7 @@ import sys
 from enum import Enum, unique, auto
 
 from mrpg.utils.menu import Menu
-from mrpg.utils.utils import flatten_strings, single_newline
+from mrpg.utils.utils import flatten_strings, single_newline, ExitException
 from mrpg.system.files import save_data, load_data
 from mrpg.core.creature import Creature
 from mrpg.core.adventure import Adventure
@@ -80,7 +80,7 @@ class Game:
             self.put_output(f"Welcome back, {self.player.name}.")
             self.set_state(State.GAME_MENU)
         elif choice == "quit":
-            sys.exit(0)  # TODO
+            raise ExitException
 
     def game_menu_choice(self, choice):
         if choice == "adventure":

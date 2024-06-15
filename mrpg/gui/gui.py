@@ -10,14 +10,14 @@ class GUI:
     def __init__(self, window):
         self.window = window
         self.draw_list = []
-        width, height = self.window.get_viewport_size()
+        _, _, _, height = self.window.viewport
         spacing = frame_spacing(height)
         self.menu = Menu(spacing, spacing, font_normal(height))
 
         self.init_content()
 
     def init_content(self):
-        width, height = self.window.get_viewport_size()
+        _, _, width, height = self.window.viewport
 
         self.header = Label("", anchor_x="left", anchor_y="top")
 

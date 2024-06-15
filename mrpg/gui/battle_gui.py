@@ -26,25 +26,9 @@ class ResourceBar:
         self.label.h = h
         self.label.font_size = font_size
         r, g, b = self.color
-        color = r, g, b
-        f = self.fraction
-        self.foreground = pyglet.graphics.vertex_list(
-            4,
-            ("v2f", (x, y, x + w * f, y, x + w * f, y - h, x, y - h)),
-            ("c3B", (*color, *color, *color, *color)),
-        )
-        self.border = pyglet.graphics.vertex_list(
-            4,
-            ("v2f", (x, y, x + w, y, x + w, y - h, x, y - h)),
-            ("c3B", (*color, *color, *color, *color)),
-        )
-        r, g, b = r // 3, g // 3, b // 3
-        color = r, g, b
-        self.background = pyglet.graphics.vertex_list(
-            4,
-            ("v2f", (x, y, x + w, y, x + w, y - h, x, y - h)),
-            ("c3B", (*color, *color, *color, *color)),
-        )
+        self.foreground = None
+        self.border = pyglet.shapes.Box(x=self.x,y=self.y-self.h, width=self.w, height=self.h, color = (r,g,b))
+        self.background = pyglet.shapes.Rectangle(x=self.x,y=self.y-self.h, width=self.w, height=self.h, color=(r // 3, g // 3, b // 3))
 
     def refresh(self, current, max):
         self.label.text = f"{current}/{max}"
@@ -69,21 +53,15 @@ class ResourceBar:
             self.fraction = self.target_fraction
             self.target_fraction = None
 
-        color = self.color
-        x, y, w, h, f = self.x, self.y, self.w, self.h, self.fraction
-        self.foreground = pyglet.graphics.vertex_list(
-            4,
-            ("v2f", (x, y, x + w * f, y, x + w * f, y - h, x, y - h)),
-            ("c3B", (*color, *color, *color, *color)),
-        )
+        self.foreground = pyglet.shapes.Rectangle(x=self.x,y=self.y-self.h, width=self.w * self.fraction, height=self.h, color=self.color)
 
     def draw(self):
         if self.background:
-            self.background.draw(pyglet.gl.GL_QUADS)
+            self.background.draw()
         if self.foreground:
-            self.foreground.draw(pyglet.gl.GL_QUADS)
+            self.foreground.draw()
         if self.border:
-            self.border.draw(pyglet.gl.GL_LINE_LOOP)
+            self.border.draw()
         if self.label:
             self.label.draw()
 

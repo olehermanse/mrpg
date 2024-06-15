@@ -1,5 +1,6 @@
 import sys
 
+from mrpg.utils.utils import ExitException
 from mrpg.core.game import Game, State
 from mrpg.gui import wrapper
 from mrpg.gui.commons import Color
@@ -7,7 +8,7 @@ from mrpg.gui.gui import GUI
 
 
 class Controller:
-    def __init__(self, width=960, height=540):
+    def __init__(self, width=1280, height=720):
         self.window = wrapper.init(self, width, height, caption="MRPG")
         self.game = Game()
         self.gui = GUI(self.window)
@@ -21,13 +22,19 @@ class Controller:
         self.gui.resize(w, h)
 
     def run(self):
-        wrapper.run()
+        try:
+            wrapper.run()
+        except ExitException:
+            self.window.close()
 
     def draw(self):
         self.gui.draw()
 
     def update(self, dt):
         self.gui.update(dt)
+
+    def exit(self):
+        raise ExitException
 
     def mouse_motion(self, x, y, dx, dy):
         pass
@@ -88,9 +95,12 @@ class Controller:
         actions = {
             "up": self.gui.menu.up,
             "down": self.gui.menu.down,
-            "escape": sys.exit,
+            "escape": self.exit,
             "enter": self.enter,
         }
         if inp in actions:
-            actions[inp]()
+            try:
+                actions[inp]()
+            except ExitException:
+                self.window.close()
         self.gui.refresh(self.game)

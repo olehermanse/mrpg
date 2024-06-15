@@ -2,6 +2,8 @@ import json
 
 from collections import OrderedDict
 
+class ExitException(BaseException):
+    pass
 
 def printable(name):
     return name[0].upper() + name[1:].lower().replace("_", " ")

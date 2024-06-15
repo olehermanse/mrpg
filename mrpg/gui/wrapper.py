@@ -1,6 +1,7 @@
 """Create a pyglet window and attach appropriate callbacks"""
 import pyglet
 from pyglet.window import mouse, key
+from pyglet.math import Mat4
 
 key_map = {
     key.MOTION_UP: "up",
@@ -31,17 +32,9 @@ class GameWindow(pyglet.window.Window):
     def update(self, dt):
         self.controller.update(dt)
 
-    def on_resize(self, w, h):
-        # Don't use window dimensions for coordinate system, use viewport:
-        width, height = self.get_viewport_size()  # May be scaled (on mac)
-
-        # Use viewport size to set the coordinate system:
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_PROJECTION)
-        pyglet.gl.glLoadIdentity()
-        pyglet.gl.glOrtho(0, width, 0, height, -1, 1)
-        pyglet.gl.glViewport(0, 0, max(1, width), max(1, height))
-        pyglet.gl.glMatrixMode(pyglet.gl.GL_MODELVIEW)
-        # The glOrtho call is necessary for high resolution mac font rendering
+    def on_resize(self, width, height):
+        print("Resize: " + str(width) + "x" + str(height))
+        self.projection = Mat4.orthogonal_projection(0, width, 0, height, z_near=-255, z_far=255)
 
         self.controller.resize(width, height)
         return pyglet.event.EVENT_HANDLED
@@ -80,6 +73,12 @@ class GameWindow(pyglet.window.Window):
 
 def init(controller, w, h, caption=None):
     window = GameWindow(w, h, controller)
+
+    event_loop = pyglet.app.EventLoop()
+
+    @event_loop.event
+    def on_window_close(window):
+        event_loop.exit()
     if caption:
         window.set_caption(caption)
 
